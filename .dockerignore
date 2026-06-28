@@ -1,0 +1,10 @@
+.next
+out
+build
+.git
+.gitignore
+*.md
+Dockerfile
+docker-compose.yml
+.npm
+npm-debug.log
