@@ -28,13 +28,12 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf9f5]/80 backdrop-blur-md border-b border-zinc-200 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <a href="#" className="group flex items-center gap-2.5">
-            <Sun className="size-7 text-amber-500 transition-transform duration-500 group-hover:rotate-90" />
-            <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+            <span className="text-xl font-black tracking-widest text-zinc-900 transition-colors duration-200 group-hover:text-amber-500">
               SUN RUN
             </span>
           </a>
@@ -45,7 +44,7 @@ export function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="px-3 py-2 text-sm font-medium text-zinc-400 transition-colors duration-200 hover:text-amber-500 rounded-lg hover:bg-zinc-800/50"
+                className="px-3 py-2 text-sm font-semibold text-zinc-600 transition-colors duration-200 hover:text-amber-500 rounded-lg hover:bg-zinc-100"
               >
                 {link.label}
               </a>
@@ -57,7 +56,7 @@ export function Navbar() {
             {/* Desktop CTA */}
             <Button
               asChild
-              className="hidden lg:inline-flex bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold border-amber-500/50 shadow-lg shadow-amber-500/10 transition-all duration-200 hover:shadow-amber-500/20"
+              className="hidden lg:inline-flex bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-xl shadow-md transition-all duration-200"
             >
               <a
                 href="https://frslublin.pl"
@@ -74,7 +73,7 @@ export function Navbar() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden text-zinc-400 hover:text-amber-500"
+                  className="lg:hidden text-zinc-600 hover:text-amber-500 hover:bg-zinc-100"
                   aria-label="Otwórz menu"
                 >
                   <Menu className="size-5" />
@@ -83,12 +82,11 @@ export function Navbar() {
 
               <SheetContent
                 side="right"
-                className="w-72 bg-zinc-950 border-zinc-800 p-0"
+                className="w-72 bg-[#faf9f5] border-zinc-200 p-0"
               >
                 {/* Sheet header */}
-                <div className="flex items-center gap-2.5 border-b border-zinc-800 px-6 py-5">
-                  <Sun className="size-6 text-amber-500" />
-                  <SheetTitle className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+                <div className="flex items-center gap-2.5 border-b border-zinc-200 px-6 py-5">
+                  <SheetTitle className="text-lg font-black tracking-widest text-zinc-900">
                     SUN RUN
                   </SheetTitle>
                 </div>
@@ -100,7 +98,7 @@ export function Navbar() {
                       key={link.href}
                       href={link.href}
                       onClick={handleLinkClick}
-                      className="rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-400 transition-colors duration-200 hover:text-amber-500 hover:bg-zinc-800/60"
+                      className="rounded-lg px-3 py-2.5 text-sm font-semibold text-zinc-600 transition-colors duration-200 hover:text-amber-500 hover:bg-zinc-100"
                     >
                       {link.label}
                     </a>
@@ -108,10 +106,10 @@ export function Navbar() {
                 </div>
 
                 {/* Mobile CTA */}
-                <div className="mt-auto border-t border-zinc-800 px-4 py-4">
+                <div className="mt-auto border-t border-zinc-200 px-4 py-4">
                   <Button
                     asChild
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold border-amber-500/50 shadow-lg shadow-amber-500/10"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold rounded-xl shadow-md"
                   >
                     <a
                       href="https://frslublin.pl"
