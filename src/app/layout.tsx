@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Sun Run 2026",
+  title: "SunRun",
   description: "Bieg Charytatywny dla Hospicjum Dobrego Samarytanina w Lublinie",
 };
 
