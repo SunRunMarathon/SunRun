@@ -73,6 +73,7 @@ export default function ArchiwumPage() {
           grainAmount={0.09}
           zoom={0.9}
         />
+        <div className="absolute inset-0 bg-black/45" />
       </div>
 
       <Navbar />
