@@ -1,0 +1,39 @@
+.route-start-pin {
+  width: 22px;
+  height: 22px;
+  background: #FFEC8E;
+  border: 3px solid #0d0d11;
+  border-radius: 50%;
+  box-shadow: 0 0 14px rgba(255, 236, 142, 0.7);
+}
+
+.leaflet-container {
+  background: #121218 !important;
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(13, 13, 17, 0.95) !important;
+  border: 1px solid rgba(255, 236, 142, 0.3) !important;
+  color: #E8EBF7 !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-popup-content {
+  color: #E8EBF7;
+  font-size: 0.875rem;
+}
+
+.leaflet-popup-tip {
+  background: rgba(13, 13, 17, 0.95) !important;
+}
+
+.leaflet-popup-close-button {
+  color: #E8EBF7 !important;
+}
+
+.leaflet-attribution-flag {
+  display: none !important;
+}
