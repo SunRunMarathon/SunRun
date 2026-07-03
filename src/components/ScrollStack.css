@@ -16,10 +16,10 @@
 }
 
 .scroll-stack-inner {
-  padding: 10vh 2rem 55rem;
+  padding: 6vh 2rem 2rem;
   max-width: 1100px;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: 0;
 }
 
 .scroll-stack-card {
@@ -28,7 +28,7 @@
   backface-visibility: hidden;
   transform-style: preserve-3d;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  min-height: 85vh;
+  min-height: 0;
   width: 100%;
   padding: 3.5rem 2.5rem;
   border-radius: 32px;

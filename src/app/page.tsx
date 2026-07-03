@@ -71,6 +71,7 @@ export default function Home() {
           centerY={0.0}
           zoom={0.9}
         />
+        <div className="absolute inset-0 bg-black/50" />
       </div>
 
       <Navbar />

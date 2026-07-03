@@ -126,6 +126,7 @@ export default function PartnerzyPage() {
           grainAmount={0.08}
           zoom={0.9}
         />
+        <div className="absolute inset-0 bg-black/55" />
       </div>
 
       <Navbar />
