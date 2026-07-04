@@ -122,7 +122,7 @@ export default function ONasPage() {
         </section>
 
         {/* Misja */}
-        <section className="py-20 px-8 sm:px-16 md:px-28">
+        <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <div className="bg-white/70 border border-[#E2DBCC] backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-4">
@@ -158,7 +158,7 @@ export default function ONasPage() {
         </section>
 
         {/* Struktura organizacyjna */}
-        <section className="py-20 px-8 sm:px-16 md:px-28">
+        <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
               Struktura
@@ -189,7 +189,7 @@ export default function ONasPage() {
         </section>
 
         {/* Zespół */}
-        <section className="py-20 px-8 sm:px-16 md:px-28">
+        <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block mb-3">
               Kluczowe osoby
@@ -227,7 +227,7 @@ export default function ONasPage() {
         </section>
 
         {/* Droga komunikacji */}
-        <section className="py-20 px-8 sm:px-16 md:px-28">
+        <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <div className="bg-white/70 border border-[#E2DBCC] backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
               <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-4">
@@ -266,7 +266,7 @@ export default function ONasPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-24 px-8 text-center">
+        <section className="py-16 px-8 text-center">
           <div className="max-w-xl mx-auto space-y-6">
             <h2 className="text-3xl font-black uppercase text-[#1A1712]">
               Dołącz do nas!

@@ -2,69 +2,45 @@
 "use client";
 
 import React from "react";
-import BubbleMenu from "./BubbleMenu";
+import StaggeredMenu from "./StaggeredMenu";
 
 const items = [
-  {
-    label: "o nas",
-    href: "/o-nas",
-    ariaLabel: "O nas – organizatorzy Sun Run",
-    rotation: -8,
-    hoverStyles: { bgColor: "#EB8714", textColor: "#1A1712" },
-  },
-  {
-    label: "partnerzy",
-    href: "/partnerzy",
-    ariaLabel: "Dla partnerów i sponsorów",
-    rotation: 8,
-    hoverStyles: { bgColor: "#EB8714", textColor: "#0d0d11" },
-  },
-  {
-    label: "archiwum",
-    href: "/archiwum",
-    ariaLabel: "Archiwum I edycji Sun Run 2025",
-    rotation: -5,
-    hoverStyles: { bgColor: "#ED3939", textColor: "#E8EBF7" },
-  },
+  { label: "o nas", link: "/o-nas", ariaLabel: "O nas – organizatorzy Sun Run" },
+  { label: "partnerzy", link: "/partnerzy", ariaLabel: "Dla partnerów i sponsorów" },
+  { label: "archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
   {
     label: "zapisz się",
-    href: "https://frslublin.pl",
+    link: "https://frslublin.pl",
     ariaLabel: "Zapisz się na bieg — system FRS",
-    rotation: 6,
-    hoverStyles: { bgColor: "#FFEC8E", textColor: "#0d0d11" },
+    external: true,
   },
-  {
-    label: "instagram",
-    href: "https://instagram.com/sunrunlublin",
-    ariaLabel: "Sun Run na Instagramie",
-    rotation: -7,
-    hoverStyles: { bgColor: "#E8EBF7", textColor: "#0d0d11" },
-  },
-  {
-    label: "facebook",
-    href: "https://facebook.com/sunrunlublin",
-    ariaLabel: "Sun Run na Facebooku",
-    rotation: 4,
-    hoverStyles: { bgColor: "#2E6BB8", textColor: "#ffffff" },
-  },
+];
+
+const socialItems = [
+  { label: "Instagram", link: "https://instagram.com/sunrunlublin" },
+  { label: "Facebook", link: "https://facebook.com/sunrunlublin" },
+  { label: "TikTok", link: "https://tiktok.com/@sunrunlublin" },
 ];
 
 export function Navbar() {
   return (
-    <BubbleMenu
-      logo={
-        <span className="font-black text-white tracking-widest text-sm sm:text-base">
+    <StaggeredMenu
+      position="right"
+      isFixed
+      items={items}
+      socialItems={socialItems}
+      displaySocials
+      displayItemNumbering
+      colors={["#EB8714", "#0B4282"]}
+      accentColor="#EB8714"
+      menuButtonColor="#1A1712"
+      openMenuButtonColor="#1A1712"
+      changeMenuColorOnOpen={false}
+      logoNode={
+        <span className="font-black text-[#1A1712] tracking-widest text-base sm:text-lg">
           SUN RUN
         </span>
       }
-      items={items}
-      menuAriaLabel="Otwórz nawigację"
-      menuBg="#0B4282"
-      menuContentColor="#ffffff"
-      useFixedPosition={true}
-      animationEase="back.out(1.5)"
-      animationDuration={0.5}
-      staggerDelay={0.1}
     />
   );
 }

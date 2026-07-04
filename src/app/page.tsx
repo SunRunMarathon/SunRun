@@ -1,30 +1,25 @@
 // @ts-nocheck
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import TargetCursor from "@/components/TargetCursor";
 import ScrollStack, { ScrollStackItem } from "@/components/ScrollStack";
+import Stack from "@/components/Stack";
 
 const Grainient = dynamic(() => import("@/components/Grainient"), { ssr: false });
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
-const ImageTrail = dynamic(() => import("@/components/ImageTrail"), { ssr: false });
 const MetaBalls = dynamic(() => import("@/components/MetaBalls"), { ssr: false });
 
-// Placeholder zdjęcia z I edycji — zastąpić prawdziwymi w /public
-const TRAIL_IMAGES = [
-  "/sun_run_runners.png",
-  "https://picsum.photos/id/1015/400/400",
-  "https://picsum.photos/id/1018/400/400",
-  "https://picsum.photos/id/1039/400/400",
-  "https://picsum.photos/id/1043/400/400",
-  "https://picsum.photos/id/1060/400/400",
-  "https://picsum.photos/id/325/400/400",
-  "https://picsum.photos/id/338/400/400",
-  "https://picsum.photos/id/372/400/400",
-  "https://picsum.photos/id/376/400/400",
+// Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja "Wspomnienia").
+// Zastąp docelowymi fotografiami z biegu w /public/photos.
+const STACK_CARDS = [
+  { id: 1, img: "/sun_run_runners.png", alt: "Biegacze Sun Run 2025" },
+  { id: 2, img: "/photos/ekipa.webp", alt: "Ekipa Sun Run 2025" },
+  { id: 3, img: "/photos/sztab.jpg", alt: "Sztab i wolontariusze" },
+  { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
 const PARTNERS = [
@@ -50,12 +45,103 @@ const SketchUnderline = ({ color = "#EB8714", width = 200 }) => (
 
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
+  const [ctaDismissed, setCtaDismissed] = useState(false);
+  const [heroProgress, setHeroProgress] = useState(0);
+
+  // "Magnes" — strzałkę można próbować odciągnąć, ale jest przyklejona: rusza się
+  // tylko odrobinę (rubber-band z nasyceniem), a po puszczeniu sprężyście wraca.
+  const [pull, setPull] = useState({ x: 0, y: 0 });
+  const [pulling, setPulling] = useState(false);
+  const dragRef = useRef({ active: false, startX: 0, startY: 0 });
+
+  const rubberBand = (v) => {
+    const max = 28; // maks. wychylenie w px — magnes prawie nie puszcza
+    return max * Math.tanh(v / (max * 2.4));
+  };
+  const onArrowPointerDown = (e) => {
+    dragRef.current = { active: true, startX: e.clientX, startY: e.clientY };
+    setPulling(true);
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onArrowPointerMove = (e) => {
+    if (!dragRef.current.active) return;
+    setPull({
+      x: rubberBand(e.clientX - dragRef.current.startX),
+      y: rubberBand(e.clientY - dragRef.current.startY),
+    });
+  };
+  const endArrowDrag = () => {
+    if (!dragRef.current.active) return;
+    dragRef.current.active = false;
+    setPulling(false);
+    setPull({ x: 0, y: 0 }); // sprężysty powrót (transition na warstwie pull)
+  };
+
+  const wspomnieniaRef = useRef(null);
+  const [returnProgress, setReturnProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.38);
+    const onScroll = () => {
+      const vh = window.innerHeight;
+      setScrolled(window.scrollY > vh * 0.38);
+      // Postęp 0→1 w obrębie sekcji HERO — steruje animacją "łapiącej" strzałki
+      setHeroProgress(Math.min(1, window.scrollY / (vh * 0.9)));
+
+      // Postęp powrotu strzałki: rośnie, gdy sekcja "Wspomnienia" wjeżdża w ekran.
+      // 0 gdy jej góra jest jeszcze poniżej dołu okna, 1 gdy dojdzie do ~40% wysokości.
+      const el = wspomnieniaRef.current;
+      if (el) {
+        const top = el.getBoundingClientRect().top;
+        setReturnProgress(Math.max(0, Math.min(1, (vh - top) / (vh * 0.6))));
+      }
+    };
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // FAZA 1 — Strzałka (fixed, przy hamburgerze) próbuje go "złapać": najpierw sięga
+  // w górę i w prawo (reach), a pod koniec sekcji startowej poddaje się i całkowicie
+  // znika (giveUp).
+  const reach = Math.min(1, heroProgress / 0.72);
+  const giveUp = Math.max(0, (heroProgress - 0.72) / 0.28);
+  const heroTx = reach * 70 - giveUp * 24;
+  const heroTy = -reach * 66 + giveUp * 170;
+  const heroRot = reach * 8 + giveUp * 55;
+  const heroScale = 1 + reach * 0.15 - giveUp * 0.3;
+  const heroOpacity = Math.max(0, 1 - giveUp * 1.3); // pełne zniknięcie
+
+  // FAZA 2 — Powrót przy "Wspomnieniach": strzałka zabawnie wpada z góry z obrotem
+  // i znów zachęca do kliknięcia ("obejrzane? to teraz tutaj"). Ląduje w pozycji
+  // BAZOWEJ (0,0) — czyli wskazuje hamburgera z dystansu, dokładnie jak górna poza,
+  // a NIE wsuwa się pod niego. Tylko mniejsza.
+  const ret = returnProgress;
+  const retTx = (1 - ret) * 48;
+  const retTy = (1 - ret) * -120;
+  const retRot = (1 - ret) * 210; // pełen obrót do 0°
+  const retScale = 0.5 + ret * 0.42; // ląduje na ~0.92 — mniejsza niż górna
+  const retOpacity = Math.min(1, ret * 1.6);
+
+  // Wybór aktywnej fazy — powrót ma priorytet, gdy tylko się zaczyna.
+  const inReturn = ret > 0.01;
+  const arrowTx = inReturn ? retTx : heroTx;
+  const arrowTy = inReturn ? retTy : heroTy;
+  const arrowRot = inReturn ? retRot : heroRot;
+  const arrowScale = inReturn ? retScale : heroScale;
+  const arrowOpacity = inReturn ? retOpacity : heroOpacity;
+  const arrowText = pulling
+    ? "zostaw!"
+    : inReturn
+    ? "obejrzane? to teraz tutaj!"
+    : giveUp > 0.32
+    ? "no dobra..."
+    : reach > 0.5
+    ? "prawie!"
+    : "kliknij tutaj!";
+
+  // Drganie: przy "wysilaniu się" (mocno sięga, jeszcze się nie poddała) LUB gdy
+  // ktoś próbuje ją odciągnąć — wtedy magnes nerwowo drga.
+  const isStraining = (!inReturn && reach > 0.7 && giveUp < 0.35) || pulling;
 
   return (
     <div className="relative bg-[#F5F1E8] text-[#1A1712] overflow-x-hidden">
@@ -104,10 +190,10 @@ export default function Home() {
       ═══════════════════════════════════════════ */}
       <div
         className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-500 ${
-          scrolled ? "translate-y-0" : "translate-y-full"
+          scrolled && !ctaDismissed ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="bg-[#FCFBF7]/90 backdrop-blur-md border-t border-[#E2DBCC] py-3 px-6 flex justify-center items-center gap-5 shadow-2xl">
+        <div className="relative bg-[#FCFBF7]/90 backdrop-blur-md border-t border-[#E2DBCC] py-3 px-6 sm:px-12 flex justify-center items-center gap-5 shadow-2xl">
           <span className="text-sm text-[#6B6357] hidden sm:block tracking-wide">
             Zapisz się na <span className="text-brand-orange font-bold">II edycję Sun Run 2026!</span>
           </span>
@@ -119,6 +205,14 @@ export default function Home() {
           >
             Zapisz się →
           </a>
+          <button
+            type="button"
+            onClick={() => setCtaDismissed(true)}
+            aria-label="Zamknij pasek zapisów"
+            className="cursor-target absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full text-[#9A9080] hover:text-[#1A1712] hover:bg-black/5 transition-colors text-xl leading-none"
+          >
+            ×
+          </button>
         </div>
       </div>
 
@@ -148,16 +242,47 @@ export default function Home() {
           />
         </div>
 
-        {/* "kliknij tutaj!" — zakrzywiona strzałka od wykrzyknika prosto w hamburger menu */}
-        <div className="absolute top-28 right-16 hidden sm:flex flex-row items-end pointer-events-none" style={{ zIndex: 20 }}>
-          <span style={{ fontFamily: "cursive", color: "#EB8714", fontSize: "1.7rem", fontWeight: 700, transform: "rotate(-8deg)", textShadow: "0 2px 8px rgba(245,241,232,0.8)", whiteSpace: "nowrap" }}>
-            kliknij tutaj!
-          </span>
-          <svg viewBox="0 0 110 100" width={110} height={100} style={{ marginLeft: "-10px", marginBottom: "14px", overflow: "visible" }}>
-            {/* łuk startuje przy wykrzykniku i zakręca w górę, w stronę hamburgera */}
-            <path d="M4,86 C 42,88 76,64 94,16" fill="none" stroke="#EB8714" strokeWidth="3.2" strokeLinecap="round" opacity="0.95" />
-            <path d="M82,22 L95,13 L96,29" fill="none" stroke="#EB8714" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
-          </svg>
+        {/* "kliknij tutaj!" — zakrzywiona strzałka, która przy scrollu sięga w stronę
+            hamburgera, próbując go "złapać", a pod koniec sekcji startowej poddaje się.
+            POZYCJA FIXED — zostaje na ekranie zamiast odjeżdżać z sekcją hero. */}
+        <div
+          className="fixed top-24 right-28 hidden sm:flex flex-row items-end pointer-events-none"
+          style={{
+            zIndex: 40,
+            transform: `translate(${arrowTx}px, ${arrowTy}px) rotate(${arrowRot}deg) scale(${arrowScale})`,
+            transformOrigin: "bottom right",
+            opacity: arrowOpacity,
+            transition: "transform 0.12s ease-out, opacity 0.12s ease-out",
+          }}
+        >
+          {/* Warstwa "pull" — łapie wskaźnik i pozwala próbować odciągnąć strzałkę.
+              Rusza się minimalnie (rubber-band), a po puszczeniu sprężyście wraca. */}
+          <div
+            onPointerDown={onArrowPointerDown}
+            onPointerMove={onArrowPointerMove}
+            onPointerUp={endArrowDrag}
+            onPointerCancel={endArrowDrag}
+            style={{
+              pointerEvents: arrowOpacity > 0.05 ? "auto" : "none",
+              cursor: pulling ? "grabbing" : "grab",
+              touchAction: "none",
+              transform: `translate(${pull.x}px, ${pull.y}px)`,
+              transition: pulling
+                ? "none"
+                : "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            }}
+          >
+            <div className={`flex flex-row items-end ${isStraining ? "arrow-shake" : ""}`}>
+              <span style={{ fontFamily: "cursive", color: "#EB8714", fontSize: "1.7rem", fontWeight: 700, transform: "rotate(-8deg)", textShadow: "0 2px 8px rgba(245,241,232,0.8)", whiteSpace: "nowrap" }}>
+                {arrowText}
+              </span>
+              <svg viewBox="0 0 110 100" width={110} height={100} style={{ marginLeft: "-10px", marginBottom: "14px", overflow: "visible" }}>
+                {/* łuk startuje przy wykrzykniku i zakręca w górę, w stronę hamburgera */}
+                <path d="M4,86 C 42,88 76,64 94,16" fill="none" stroke="#EB8714" strokeWidth="3.2" strokeLinecap="round" opacity="0.95" />
+                <path d="M82,22 L95,13 L96,29" fill="none" stroke="#EB8714" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         <div className="max-w-4xl space-y-6 pt-24 pb-16">
@@ -287,7 +412,7 @@ export default function Home() {
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-red mb-1 block">Cel Charytatywny</span>
+                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-red mb-2 block">Cel Charytatywny</span>
                     <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange">
                       Hospicjum Dobrego Samarytanina
                     </h2>
@@ -336,7 +461,7 @@ export default function Home() {
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-orange mb-1 block">Dołącz do ekipy</span>
+                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-orange mb-2 block">Dołącz do ekipy</span>
                     <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-red">
                       Zostań Wolontariuszem
                     </h2>
@@ -382,7 +507,7 @@ export default function Home() {
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <div>
-                    <span className="text-xs font-bold uppercase tracking-[0.25em] text-brand-orange mb-1 block">Współpraca</span>
+                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-orange mb-2 block">Współpraca</span>
                     <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-red">
                       Zostań Partnerem
                     </h2>
@@ -427,34 +552,34 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           4. PARTNERZY
       ═══════════════════════════════════════════ */}
-      <section className="relative z-10 w-full pt-44 pb-28 px-6 sm:px-12">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange">Wsparcie</span>
-            <h2 className="text-3xl sm:text-4xl font-black uppercase text-[#1A1712]">
+      <section className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
+        <div className="max-w-6xl mx-auto w-full">
+          <div className="text-center mb-16 space-y-4">
+            <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange">Wsparcie</span>
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase text-[#1A1712]">
               Partnerzy i Sponsorzy
             </h2>
-            <p className="text-sm text-[#6B6357] max-w-md mx-auto">
+            <p className="text-base sm:text-lg text-[#6B6357] max-w-xl mx-auto">
               Kliknij na logo, by dowiedzieć się więcej o wkładzie partnera w projekt!
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-6">
             {PARTNERS.map((p) => (
               <Link
                 key={p.name}
                 href={`/partnerzy#${p.anchor}`}
-                className="cursor-target group flex flex-col items-center justify-center gap-2 p-5 bg-white border border-[#E2DBCC] hover:border-[#D8CFBD] rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:shadow-xl text-center"
+                className="cursor-target group flex flex-col items-center justify-center gap-3 p-8 bg-white border border-[#E2DBCC] hover:border-[#D8CFBD] rounded-3xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl text-center"
               >
                 <div
-                  className="w-14 h-14 rounded-xl flex items-center justify-center text-white font-black text-xs"
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-black text-lg"
                   style={{ backgroundColor: p.color }}
                 >
                   {p.name.slice(0, 2).toUpperCase()}
                 </div>
-                <span className="text-xs font-bold text-[#3A342B] group-hover:text-[#1A1712] transition-colors">
+                <span className="text-sm sm:text-base font-bold text-[#3A342B] group-hover:text-[#1A1712] transition-colors">
                   {p.name}
                 </span>
-                <span className="text-[10px] text-[#9A9080] leading-snug">{p.desc}</span>
+                <span className="text-xs text-[#9A9080] leading-snug">{p.desc}</span>
               </Link>
             ))}
           </div>
@@ -462,28 +587,39 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          5. IMAGE TRAIL — Wspomnienia z I edycji
+          5. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
       ═══════════════════════════════════════════ */}
-      <section
-        className="relative z-10 w-full h-screen cursor-pointer group overflow-hidden bg-[#EDE7DA]/40"
-        onClick={() => (window.location.href = "/archiwum")}
-      >
-        <ImageTrail items={TRAIL_IMAGES} threshold={70} />
-        {/* Overlay z tekstem */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div className="text-center space-y-4 px-8 bg-white/55 backdrop-blur-sm rounded-3xl py-8 border border-[#E2DBCC]">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block">
+      <section ref={wspomnieniaRef} className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
+        <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+          {/* Tekst + CTA */}
+          <div className="space-y-6">
+            <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange block">
               Archiwum · I Edycja 2025
             </span>
-            <h2 className="text-4xl sm:text-5xl font-black uppercase text-[#1A1712]">
+            <h2 className="text-6xl sm:text-7xl lg:text-8xl font-black uppercase text-[#1A1712] leading-none">
               Wspomnienia
             </h2>
-            <p className="text-sm text-[#6B6357]">
-              Przesuń kursor, by zobaczyć zdjęcia z biegu
+            <p className="text-base sm:text-lg text-[#4A4438] leading-relaxed max-w-md">
+              Ponad 350 uczestników, świetna atmosfera i realna pomoc dla hospicjum.
+              Przeciągnij zdjęcia obok, a po całą relację, wyniki i galerię zajrzyj do archiwum.
             </p>
-            <div className="inline-flex items-center gap-2 text-brand-orange text-sm font-bold group-hover:gap-3 transition-all">
+            <Link
+              href="/archiwum"
+              className="cursor-target inline-flex items-center gap-2 px-9 py-4 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-full text-base tracking-widest uppercase transition-all duration-300 shadow-lg hover:-translate-y-0.5"
+            >
               Odwiedź Archiwum →
-            </div>
+            </Link>
+          </div>
+
+          {/* Stack zdjęć — przeciągalny stos wspomnień */}
+          <div className="flex justify-center md:justify-end py-6">
+            <Stack
+              randomRotation
+              sensitivity={150}
+              sendToBackOnClick
+              cardDimensions={{ width: 380, height: 380 }}
+              cardsData={STACK_CARDS}
+            />
           </div>
         </div>
       </section>

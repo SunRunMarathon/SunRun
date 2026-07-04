@@ -64,12 +64,13 @@ void main() {
 
   // Miękka maska krawędzi — pole wygasza się przy brzegach canvasu,
   // dzięki czemu kule rozpływają się w tło zamiast być twardo ucinane "ścianą".
-  // Lewa krawędź ma znacznie szerszą strefę zaniku (0.40), bo styka się z treścią
-  // strony — kula znika tam dużo wcześniej, zamiast delikatnie prześwitywać.
+  // Strefa zaniku jest JEDNAKOWA i szeroka w każdą stronę (0.34), żeby każda kula
+  // w całości mieściła się w polu i płynnie znikała ze wszystkich krawędzi.
   vec2 su = gl_FragCoord.xy / iResolution.xy; // 0..1 w obu osiach
+  float fade = 0.34;
   float edge =
-      smoothstep(0.0, 0.40, su.x) * smoothstep(0.0, 0.16, 1.0 - su.x) *
-      smoothstep(0.0, 0.16, su.y) * smoothstep(0.0, 0.16, 1.0 - su.y);
+      smoothstep(0.0, fade, su.x) * smoothstep(0.0, fade, 1.0 - su.x) *
+      smoothstep(0.0, fade, su.y) * smoothstep(0.0, fade, 1.0 - su.y);
   alpha *= edge;
 
   fragColor = vec4(col * alpha, alpha);

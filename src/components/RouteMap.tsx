@@ -1,10 +1,66 @@
 // @ts-nocheck
 "use client";
 
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
+import { useEffect } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './RouteMap.css';
+
+// Wykrywanie intencji scrolla nad mapą.
+// Domyślnie zoom kółkiem jest WYŁĄCZONY, więc gdy użytkownik przewija stronę
+// z góry na dół i tylko przejeżdża kursorem nad mapą — strona scrolluje się dalej.
+// Zoom UZBRAJA SIĘ dopiero, gdy kursor "odpocznie" nad mapą ~450 ms bez ruchu
+// kółka (czyli świadomie zatrzymał się, by przybliżać). Każde kółko w trakcie
+// aktywnego przewijania resetuje ten licznik, więc scroll nigdy nie zostaje "złapany".
+function ScrollZoomIntent() {
+  const map = useMap();
+
+  useEffect(() => {
+    const container = map.getContainer();
+    let armTimer = null;
+    let armed = false;
+
+    const disarm = () => {
+      armed = false;
+      map.scrollWheelZoom.disable();
+    };
+    const arm = () => {
+      armed = true;
+      map.scrollWheelZoom.enable();
+    };
+    const scheduleArm = () => {
+      clearTimeout(armTimer);
+      armTimer = setTimeout(arm, 450);
+    };
+
+    disarm();
+
+    const onEnter = () => scheduleArm();
+    const onLeave = () => {
+      clearTimeout(armTimer);
+      disarm();
+    };
+    const onWheel = () => {
+      // Dopóki nie uzbrojone, każde kółko odracza uzbrojenie — aktywny scroll
+      // przez stronę nie włączy zoomu. Po zatrzymaniu (brak kółka 450 ms) → zoom.
+      if (!armed) scheduleArm();
+    };
+
+    container.addEventListener('mouseenter', onEnter);
+    container.addEventListener('mouseleave', onLeave);
+    container.addEventListener('wheel', onWheel, { passive: true });
+
+    return () => {
+      clearTimeout(armTimer);
+      container.removeEventListener('mouseenter', onEnter);
+      container.removeEventListener('mouseleave', onLeave);
+      container.removeEventListener('wheel', onWheel);
+    };
+  }, [map]);
+
+  return null;
+}
 
 // Przybliżona trasa 5 km przez Park Ludowy w Lublinie (2 pętle × ~2.5 km)
 const ROUTE: [number, number][] = [
@@ -72,6 +128,7 @@ export default function RouteMap() {
           <strong>Start / Meta</strong><br />Park Ludowy, al. Piłsudskiego
         </Popup>
       </Marker>
+      <ScrollZoomIntent />
     </MapContainer>
   );
 }

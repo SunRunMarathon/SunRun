@@ -105,7 +105,7 @@ export default function ArchiwumPage() {
         </section>
 
         {/* Statystyki 2025 */}
-        <section className="py-16 px-8 sm:px-16 md:px-28">
+        <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block mb-8">
               I edycja w liczbach
@@ -127,7 +127,7 @@ export default function ArchiwumPage() {
         </section>
 
         {/* Inicjatywy towarzyszące */}
-        <section className="py-16 px-8 sm:px-16 md:px-28">
+        <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
               Wokół biegu
@@ -172,7 +172,7 @@ export default function ArchiwumPage() {
         </section>
 
         {/* Wyniki */}
-        <section className="py-16 px-8 sm:px-16 md:px-28">
+        <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
               Sport
@@ -232,7 +232,7 @@ export default function ArchiwumPage() {
         </section>
 
         {/* Artykuły */}
-        <section className="py-16 px-8 sm:px-16 md:px-28">
+        <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block mb-3">
               Media
@@ -278,7 +278,7 @@ export default function ArchiwumPage() {
         </section>
 
         {/* Galeria zdjęć */}
-        <section className="py-16 px-8 sm:px-16 md:px-28">
+        <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-6xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
               Fotografie
@@ -309,7 +309,7 @@ export default function ArchiwumPage() {
         </section>
 
         {/* CTA do II edycji */}
-        <section className="py-24 px-8 text-center">
+        <section className="py-16 px-8 text-center">
           <div className="max-w-xl mx-auto space-y-6">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block">
               Co dalej?

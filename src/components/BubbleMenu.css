@@ -146,6 +146,8 @@
 }
 
 .bubble-menu-items .pill-list {
+  position: relative;
+  z-index: 1;
   list-style: none;
   margin: 0;
   padding: 0 24px;

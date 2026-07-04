@@ -149,3 +149,18 @@
     @apply font-sans;
   }
 }
+/* Drganie strzałki "kliknij tutaj" gdy wysila się, by dosięgnąć hamburgera.
+   Oparte o czas (nie o scroll) — działa w osobnej warstwie, więc nie koliduje
+   z transformacją pozycji sterowaną scrollem na elemencie nadrzędnym. */
+@keyframes arrow-strain-shake {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  20%  { transform: translate(2.5px, -1px) rotate(1.4deg); }
+  40%  { transform: translate(-2px, 1.5px) rotate(-1.6deg); }
+  60%  { transform: translate(2px, 1px) rotate(1.2deg); }
+  80%  { transform: translate(-2.5px, -1.5px) rotate(-1.3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.arrow-shake {
+  animation: arrow-strain-shake 0.16s linear infinite;
+}

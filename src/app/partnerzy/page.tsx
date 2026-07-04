@@ -173,7 +173,7 @@ export default function PartnerzyPage() {
             </div>
 
             {/* Zdjęcie partnera — Uniwersytet Jazdy */}
-            <div className="hidden lg:block relative w-full max-w-md mx-auto aspect-[4/5] rounded-3xl overflow-hidden border border-[#E2DBCC] shadow-2xl">
+            <div className="hidden lg:block relative w-full max-w-xl mx-auto aspect-[4/5] rounded-3xl overflow-hidden border border-[#E2DBCC] shadow-2xl">
               <img
                 src="/photos/uniwersytet-jazdy.webp"
                 alt="Ekipa Uniwersytetu Jazdy — partner Sun Run"
@@ -291,7 +291,7 @@ export default function PartnerzyPage() {
         {/* ═══════════════════════════════════════
             AKT V — WSPÓŁPRACA (minimalistyczne info + forms)
         ═══════════════════════════════════════ */}
-        <section className="py-24 px-8 sm:px-16 md:px-28">
+        <section className="py-16 px-8 sm:px-16 md:px-28">
           <div className="max-w-2xl mx-auto space-y-16">
             {/* Pakiety — minimalistycznie */}
             <div className="space-y-5">

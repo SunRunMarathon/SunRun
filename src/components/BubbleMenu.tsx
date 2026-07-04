@@ -77,6 +77,12 @@ export default function BubbleMenu({
     onMenuClick?.(nextState);
   };
 
+  const closeMenu = () => {
+    if (!isMenuOpen) return;
+    setIsMenuOpen(false);
+    onMenuClick?.(false);
+  };
+
   useEffect(() => {
     const overlay = overlayRef.current;
     const bubbles = bubblesRef.current.filter(Boolean);
@@ -217,6 +223,11 @@ export default function BubbleMenu({
           ref={overlayRef}
           className={`bubble-menu-items ${useFixedPosition ? 'fixed' : 'absolute'}`}
           aria-hidden={!isMenuOpen}
+          style={{ pointerEvents: isMenuOpen ? 'auto' : 'none' }}
+          onClick={(e) => {
+            // Klik gdziekolwiek poza pigułką (przyciskiem) zamyka menu
+            if (!e.target.closest('.pill-link')) closeMenu();
+          }}
         >
           <ul className="pill-list" role="menu" aria-label="Menu links">
             {menuItems.map((item, idx) => (
