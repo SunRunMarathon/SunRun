@@ -5,12 +5,17 @@ services:
       dockerfile: Dockerfile
       target: dev
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/.next
+      - next_cache:/app/.next
     environment:
       - NODE_ENV=development
       - PORT=3000
-      - WATCHPACK_POLLING=true # Helps with hot-reloading inside containers on some OS setups
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=500
+
+volumes:
+  next_cache:

@@ -132,6 +132,45 @@ export default function BubbleMenu({
     }
   }, [isMenuOpen, showOverlay, animationEase, animationDuration, staggerDelay]);
 
+  // Scroll przy otwartym menu zamyka je (razem z overlay'em pigułek).
+  // WAŻNE: nasłuchujemy tylko realnego inputu użytkownika — `wheel` (kółko myszy)
+  // i `touchmove` (palec). NIE nasłuchujemy `scroll`, bo ten event odpala się także
+  // podczas płynnego wyhamowywania strony (inercja/smooth scroll) i zamykał menu
+  // tuż po otwarciu. Dodatkowo wymagamy minimalnego ruchu kółka (próg deltaY),
+  // żeby zignorować mikro-drgania touchpada.
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    let armed = false;
+    const armTimeout = setTimeout(() => {
+      armed = true;
+    }, 300);
+
+    const close = () => {
+      setIsMenuOpen(false);
+      onMenuClick?.(false);
+    };
+
+    const onWheel = (e) => {
+      if (!armed) return;
+      if (Math.abs(e.deltaY) < 8 && Math.abs(e.deltaX) < 8) return;
+      close();
+    };
+    const onTouchMove = () => {
+      if (!armed) return;
+      close();
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+
+    return () => {
+      clearTimeout(armTimeout);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchmove', onTouchMove);
+    };
+  }, [isMenuOpen, onMenuClick]);
+
   useEffect(() => {
     const handleResize = () => {
       if (isMenuOpen) {
@@ -155,11 +194,11 @@ export default function BubbleMenu({
   return (
     <>
       <nav className={containerClassName} style={style} aria-label="Main navigation">
-        <div className="bubble logo-bubble" aria-label="Logo" style={{ background: menuBg }}>
+        <a href="/" className="bubble logo-bubble cursor-target" aria-label="Strona główna" style={{ background: menuBg }}>
           <span className="logo-content">
             {typeof logo === 'string' ? <img src={logo} alt="Logo" className="bubble-logo" /> : logo}
           </span>
-        </div>
+        </a>
 
         <button
           type="button"

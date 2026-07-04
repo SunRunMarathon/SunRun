@@ -53,14 +53,14 @@ export default function RouteMap() {
       attributionControl={false}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         subdomains="abcd"
         maxZoom={20}
       />
       <Polyline
         positions={ROUTE}
         pathOptions={{
-          color: '#FFEC8E',
+          color: '#ED3939',
           weight: 5,
           opacity: 0.95,
           lineCap: 'round',

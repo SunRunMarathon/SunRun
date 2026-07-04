@@ -10,7 +10,7 @@ const items = [
     href: "/o-nas",
     ariaLabel: "O nas – organizatorzy Sun Run",
     rotation: -8,
-    hoverStyles: { bgColor: "#0B4282", textColor: "#E8EBF7" },
+    hoverStyles: { bgColor: "#EB8714", textColor: "#1A1712" },
   },
   {
     label: "partnerzy",
@@ -45,7 +45,7 @@ const items = [
     href: "https://facebook.com/sunrunlublin",
     ariaLabel: "Sun Run na Facebooku",
     rotation: 4,
-    hoverStyles: { bgColor: "#0B4282", textColor: "#E8EBF7" },
+    hoverStyles: { bgColor: "#2E6BB8", textColor: "#ffffff" },
   },
 ];
 
@@ -59,7 +59,7 @@ export function Navbar() {
       }
       items={items}
       menuAriaLabel="Otwórz nawigację"
-      menuBg="#0d0d11"
+      menuBg="#0B4282"
       menuContentColor="#ffffff"
       useFixedPosition={true}
       animationEase="back.out(1.5)"

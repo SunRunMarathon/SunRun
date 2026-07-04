@@ -31,6 +31,8 @@ const ScrollStack = ({
   const cardsRef = useRef([]);
   const lastTransformsRef = useRef(new Map());
   const isUpdatingRef = useRef(false);
+  const cardOffsetsRef = useRef([]);
+  const endOffsetRef = useRef(0);
 
   const calculateProgress = useCallback((scrollTop, start, end) => {
     if (scrollTop < start) return 0;
@@ -62,17 +64,29 @@ const ScrollStack = ({
     }
   }, [useWindowScroll]);
 
-  const getElementOffset = useCallback(
-    element => {
-      if (useWindowScroll) {
-        const rect = element.getBoundingClientRect();
-        return rect.top + window.scrollY;
-      } else {
-        return element.offsetTop;
+  // Pozycje liczone z layoutu (offsetTop), nie z getBoundingClientRect —
+  // rect uwzględnia bieżący transform karty, co tworzyło pętlę sprzężenia
+  // zwrotnego i skakanie kart przy scrollu. Cachujemy raz + przy resize.
+  const computeOffsets = useCallback(() => {
+    const getDocOffset = el => {
+      let top = 0;
+      let node = el;
+      while (node) {
+        top += node.offsetTop;
+        node = node.offsetParent;
       }
-    },
-    [useWindowScroll]
-  );
+      return top;
+    };
+
+    const getOffset = el => (useWindowScroll ? getDocOffset(el) : el.offsetTop);
+
+    cardOffsetsRef.current = cardsRef.current.map(card => (card ? getOffset(card) : 0));
+
+    const endElement = useWindowScroll
+      ? document.querySelector('.scroll-stack-end')
+      : scrollerRef.current?.querySelector('.scroll-stack-end');
+    endOffsetRef.current = endElement ? getOffset(endElement) : 0;
+  }, [useWindowScroll]);
 
   const updateCardTransforms = useCallback(() => {
     if (!cardsRef.current.length || isUpdatingRef.current) return;
@@ -83,16 +97,12 @@ const ScrollStack = ({
     const stackPositionPx = parsePercentage(stackPosition, containerHeight);
     const scaleEndPositionPx = parsePercentage(scaleEndPosition, containerHeight);
 
-    const endElement = useWindowScroll
-      ? document.querySelector('.scroll-stack-end')
-      : scrollerRef.current?.querySelector('.scroll-stack-end');
-
-    const endElementTop = endElement ? getElementOffset(endElement) : 0;
+    const endElementTop = endOffsetRef.current;
 
     cardsRef.current.forEach((card, i) => {
       if (!card) return;
 
-      const cardTop = getElementOffset(card);
+      const cardTop = cardOffsetsRef.current[i] ?? 0;
       const triggerStart = cardTop - stackPositionPx - itemStackDistance * i;
       const triggerEnd = cardTop - scaleEndPositionPx;
       const pinStart = cardTop - stackPositionPx - itemStackDistance * i;
@@ -107,7 +117,7 @@ const ScrollStack = ({
       if (blurAmount) {
         let topCardIndex = 0;
         for (let j = 0; j < cardsRef.current.length; j++) {
-          const jCardTop = getElementOffset(cardsRef.current[j]);
+          const jCardTop = cardOffsetsRef.current[j] ?? 0;
           const jTriggerStart = jCardTop - stackPositionPx - itemStackDistance * j;
           if (scrollTop >= jTriggerStart) {
             topCardIndex = j;
@@ -178,8 +188,7 @@ const ScrollStack = ({
     onStackComplete,
     calculateProgress,
     parsePercentage,
-    getScrollData,
-    getElementOffset
+    getScrollData
   ]);
 
   const handleScroll = useCallback(() => {
@@ -271,11 +280,54 @@ const ScrollStack = ({
       card.style.webkitPerspective = '1000px';
     });
 
+    computeOffsets();
     setupLenis();
 
     updateCardTransforms();
 
+    // Pozycje kart przeliczamy tylko gdy zmienia się layout (resize,
+    // doładowane obrazy/fonty), nigdy w pętli scrolla.
+    const handleRecalc = () => {
+      computeOffsets();
+      lastTransformsRef.current.clear();
+      updateCardTransforms();
+    };
+
+    // Przeliczenie offsetów spinamy do jednej klatki, by uniknąć wielokrotnych
+    // przeliczeń w tej samej ramce (np. gdy naraz doładuje się kilka obrazów).
+    let recalcRaf = 0;
+    const scheduleRecalc = () => {
+      if (recalcRaf) return;
+      recalcRaf = requestAnimationFrame(() => {
+        recalcRaf = 0;
+        handleRecalc();
+      });
+    };
+
+    window.addEventListener('resize', handleRecalc);
+    window.addEventListener('load', handleRecalc);
+    const recalcTimeout = setTimeout(handleRecalc, 500);
+
+    // ResizeObserver — gdy treść karty zmieni wysokość (doładowane obrazy, fonty,
+    // reflow), przeliczamy pozycje. Transform (scale/translate) nie zmienia
+    // box-modelu, więc RO nie wpada w pętlę sprzężenia zwrotnego.
+    const ro = new ResizeObserver(scheduleRecalc);
+    const innerEl = scroller.querySelector('.scroll-stack-inner');
+    if (innerEl) ro.observe(innerEl);
+    cards.forEach(card => card && ro.observe(card));
+
+    // Obrazy w kartach mogą doładować się później niż layout — przelicz po ich load.
+    const imgs = (useWindowScroll ? document : scroller).querySelectorAll('.scroll-stack-card img');
+    imgs.forEach(img => {
+      if (!img.complete) img.addEventListener('load', scheduleRecalc, { once: true });
+    });
+
     return () => {
+      window.removeEventListener('resize', handleRecalc);
+      window.removeEventListener('load', handleRecalc);
+      clearTimeout(recalcTimeout);
+      ro.disconnect();
+      if (recalcRaf) cancelAnimationFrame(recalcRaf);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -284,6 +336,7 @@ const ScrollStack = ({
       }
       stackCompletedRef.current = false;
       cardsRef.current = [];
+      cardOffsetsRef.current = [];
       transformsCache.clear();
       isUpdatingRef.current = false;
     };
@@ -299,6 +352,7 @@ const ScrollStack = ({
     blurAmount,
     useWindowScroll,
     onStackComplete,
+    computeOffsets,
     setupLenis,
     updateCardTransforms
   ]);

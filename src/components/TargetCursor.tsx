@@ -42,8 +42,9 @@ const TargetCursor = ({
 }) => {
   const cursorRef = useRef(null);
   const cornersRef = useRef(null);
-  const spinTl = useRef(null);
   const dotRef = useRef(null);
+  const sunRef = useRef(null);
+  const spinTweenRef = useRef(null);
   const containingBlockRef = useRef(null);
 
   const isActiveRef = useRef(false);
@@ -96,7 +97,6 @@ const TargetCursor = ({
 
     let activeTarget = null;
     let currentLeaveHandler = null;
-    let resumeTimeout = null;
 
     const cleanupTarget = target => {
       if (currentLeaveHandler) {
@@ -113,16 +113,22 @@ const TargetCursor = ({
       y: window.innerHeight / 2 - initialOffset.y
     });
 
-    const createSpinTimeline = () => {
-      if (spinTl.current) {
-        spinTl.current.kill();
-      }
-      spinTl.current = gsap
-        .timeline({ repeat: -1 })
-        .to(cursor, { rotation: '+=360', duration: spinDuration, ease: 'none' });
-    };
+    // Kursor pozostaje nieruchomy — bez animacji obrotu
+    gsap.set(cursor, { rotation: 0 });
 
-    createSpinTimeline();
+    // Stan spoczynkowy: widoczne słoneczko, schowany celownik (rogi + kropka)
+    if (sunRef.current) gsap.set(sunRef.current, { opacity: 1, scale: 1 });
+    if (dotRef.current) gsap.set(dotRef.current, { opacity: 0 });
+
+    // Delikatny, ciągły obrót słoneczka w spoczynku
+    if (sunRef.current) {
+      spinTweenRef.current = gsap.to(sunRef.current, {
+        rotation: '+=360',
+        duration: spinDuration * 4,
+        ease: 'none',
+        repeat: -1
+      });
+    }
 
     const tickerFn = () => {
       if (!targetCornerPositionsRef.current || !cursorRef.current || !cornersRef.current) {
@@ -181,14 +187,14 @@ const TargetCursor = ({
     window.addEventListener('scroll', scrollHandler, { passive: true });
 
     const mouseDownHandler = () => {
-      if (!dotRef.current) return;
-      gsap.to(dotRef.current, { scale: 0.7, duration: 0.3 });
+      if (dotRef.current) gsap.to(dotRef.current, { scale: 0.7, duration: 0.3 });
+      if (sunRef.current && !isActiveRef.current) gsap.to(sunRef.current, { scale: 0.82, duration: 0.2 });
       gsap.to(cursorRef.current, { scale: 0.9, duration: 0.2 });
     };
 
     const mouseUpHandler = () => {
-      if (!dotRef.current) return;
-      gsap.to(dotRef.current, { scale: 1, duration: 0.3 });
+      if (dotRef.current) gsap.to(dotRef.current, { scale: 1, duration: 0.3 });
+      if (sunRef.current && !isActiveRef.current) gsap.to(sunRef.current, { scale: 1, duration: 0.2 });
       gsap.to(cursorRef.current, { scale: 1, duration: 0.2 });
     };
 
@@ -211,18 +217,28 @@ const TargetCursor = ({
       if (activeTarget) {
         cleanupTarget(activeTarget);
       }
-      if (resumeTimeout) {
-        clearTimeout(resumeTimeout);
-        resumeTimeout = null;
-      }
 
       activeTarget = target;
       const corners = Array.from(cornersRef.current);
       corners.forEach(corner => gsap.killTweensOf(corner, 'x,y'));
 
-      gsap.killTweensOf(cursorRef.current, 'rotation');
-      spinTl.current?.pause();
       gsap.set(cursorRef.current, { rotation: 0 });
+
+      // MORFING: słoneczko „zwija się" i znika, w jego miejsce wyłania się celownik
+      if (sunRef.current) {
+        gsap.to(sunRef.current, {
+          opacity: 0,
+          scale: 0.35,
+          rotation: '+=120',
+          duration: 0.3,
+          ease: 'power2.inOut',
+          overwrite: 'auto'
+        });
+      }
+      gsap.to(corners, { opacity: 1, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+      if (dotRef.current) {
+        gsap.to(dotRef.current, { opacity: 1, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+      }
 
       if (cursorColorOnTarget) {
         gsap.to(corners, {
@@ -278,6 +294,29 @@ const TargetCursor = ({
         gsap.set(activeStrengthRef, { current: 0, overwrite: true });
         activeTarget = null;
 
+        // MORFING (powrót): celownik znika, słoneczko „rozkwita" z powrotem
+        if (sunRef.current) {
+          gsap.to(sunRef.current, {
+            opacity: 1,
+            scale: 1,
+            rotation: '+=120',
+            duration: 0.4,
+            ease: 'power3.out',
+            overwrite: 'auto'
+          });
+        }
+        if (cornersRef.current) {
+          gsap.to(Array.from(cornersRef.current), {
+            opacity: 0,
+            duration: 0.25,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        }
+        if (dotRef.current) {
+          gsap.to(dotRef.current, { opacity: 0, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
+        }
+
         if (cursorColorOnTarget && cornersRef.current) {
           gsap.to(Array.from(cornersRef.current), {
             borderColor: cursorColor,
@@ -318,26 +357,6 @@ const TargetCursor = ({
           });
         }
 
-        resumeTimeout = setTimeout(() => {
-          if (!activeTarget && cursorRef.current && spinTl.current) {
-            const currentRotation = gsap.getProperty(cursorRef.current, 'rotation');
-            const normalizedRotation = currentRotation % 360;
-            spinTl.current.kill();
-            spinTl.current = gsap
-              .timeline({ repeat: -1 })
-              .to(cursorRef.current, { rotation: '+=360', duration: spinDuration, ease: 'none' });
-            gsap.to(cursorRef.current, {
-              rotation: normalizedRotation + 360,
-              duration: spinDuration * (1 - normalizedRotation / 360),
-              ease: 'none',
-              onComplete: () => {
-                spinTl.current?.restart();
-              }
-            });
-          }
-          resumeTimeout = null;
-        }, 50);
-
         cleanupTarget(target);
       };
 
@@ -356,6 +375,10 @@ const TargetCursor = ({
       if (tickerFnRef.current) {
         gsap.ticker.remove(tickerFnRef.current);
       }
+      if (spinTweenRef.current) {
+        spinTweenRef.current.kill();
+        spinTweenRef.current = null;
+      }
 
       window.removeEventListener('mousemove', moveHandler);
       window.removeEventListener('mouseover', enterHandler);
@@ -368,7 +391,6 @@ const TargetCursor = ({
         cleanupTarget(activeTarget);
       }
 
-      spinTl.current?.kill();
       document.body.style.cursor = originalCursor;
 
       isActiveRef.current = false;
@@ -388,22 +410,45 @@ const TargetCursor = ({
     cursorColorOnTarget
   ]);
 
-  useEffect(() => {
-    if (isMobile || !cursorRef.current || !spinTl.current) return;
-    if (spinTl.current.isActive()) {
-      spinTl.current.kill();
-      spinTl.current = gsap
-        .timeline({ repeat: -1 })
-        .to(cursorRef.current, { rotation: '+=360', duration: spinDuration, ease: 'none' });
-    }
-  }, [spinDuration, isMobile]);
-
   if (isMobile) {
     return null;
   }
 
   return (
     <div ref={cursorRef} className="target-cursor-wrapper">
+      {/* Słoneczko — stan spoczynkowy kursora (marka Sun Run) */}
+      <div ref={sunRef} className="target-cursor-sun">
+        <svg viewBox="0 0 34 34" width="34" height="34">
+          <defs>
+            <radialGradient id="sunCoreGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#FFF6D0" />
+              <stop offset="55%" stopColor="#FFEC8E" />
+              <stop offset="100%" stopColor="#EB8714" />
+            </radialGradient>
+          </defs>
+          {/* promienie */}
+          <g stroke="#FFC24B" strokeWidth="2.4" strokeLinecap="round">
+            {Array.from({ length: 8 }).map((_, i) => {
+              const a = (i * Math.PI) / 4;
+              const cx = 17;
+              const cy = 17;
+              const r1 = 9.5;
+              const r2 = 14.5;
+              return (
+                <line
+                  key={i}
+                  x1={cx + Math.cos(a) * r1}
+                  y1={cy + Math.sin(a) * r1}
+                  x2={cx + Math.cos(a) * r2}
+                  y2={cy + Math.sin(a) * r2}
+                />
+              );
+            })}
+          </g>
+          {/* rdzeń słońca */}
+          <circle cx="17" cy="17" r="6.5" fill="url(#sunCoreGrad)" />
+        </svg>
+      </div>
       <div ref={dotRef} className="target-cursor-dot" style={{ backgroundColor: cursorColor }} />
       <div className="target-cursor-corner corner-tl" style={{ borderColor: cursorColor }} />
       <div className="target-cursor-corner corner-tr" style={{ borderColor: cursorColor }} />
