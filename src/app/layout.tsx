@@ -60,7 +60,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pl" className="h-full antialiased bg-[#F5F1E8]">
-      <head>
+      <body className="min-h-full flex flex-col bg-[#F5F1E8]">
+        {children}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
@@ -70,11 +71,10 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${GA_ID}', { page_path: window.location.pathname });
+            gtag('config', '${GA_ID}');
           `}
         </Script>
-      </head>
-      <body className="min-h-full flex flex-col bg-[#F5F1E8]">{children}</body>
+      </body>
     </html>
   );
 }
