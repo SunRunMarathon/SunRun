@@ -62,7 +62,7 @@ void main() {
   vec3 col = mix(uColor2, uColor1, clamp(field * 0.45, 0.0, 1.0));
   float alpha = clamp(body + glow, 0.0, 1.0) * uOpacity;
 
-  // Miękka maska krawędzi — pole wygasza się przy brzegach canvasu,
+  // Miękka maska krawędzi - pole wygasza się przy brzegach canvasu,
   // dzięki czemu kule rozpływają się w tło zamiast być twardo ucinane "ścianą".
   // Strefa zaniku jest JEDNAKOWA i szeroka w każdą stronę (0.34), żeby każda kula
   // w całości mieściła się w polu i płynnie znikała ze wszystkich krawędzi.
@@ -127,8 +127,11 @@ export default function MetaBalls({
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
+    // Start poza polem widzenia (zamaskowane przez edge-fade) — kulka myszy
+    // pojawia się dopiero, gdy kursor wejdzie nad kontener.
     const mouseTarget = [10, 10];
     const mouseCurrent = [10, 10];
+    let hasMouse = false;
     const onMouseMove = e => {
       const rect = container.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -138,12 +141,19 @@ export default function MetaBalls({
       // ta sama przestrzeń współrzędnych co w shaderze (środek = 0, y w górę)
       mouseTarget[0] = (x * 2 - rect.width) / minDim;
       mouseTarget[1] = ((rect.height - y) * 2 - rect.height) / minDim;
+      // Pierwsze wejście kursora: kulka pojawia się OD RAZU w pozycji kursora
+      // (snap), zamiast przylatywać z rogu [10,10] przez ~50 klatek lerpa.
+      if (!hasMouse) {
+        mouseCurrent[0] = mouseTarget[0];
+        mouseCurrent[1] = mouseTarget[1];
+        hasMouse = true;
+      }
     };
     if (enableMouseInteraction) window.addEventListener('mousemove', onMouseMove, { passive: true });
 
     let rafId;
     const start = performance.now();
-    // Cap 60 FPS — na 60 Hz renderuje co klatkę, na 120 Hz+ co drugą.
+    // Cap 60 FPS - na 60 Hz renderuje co klatkę, na 120 Hz+ co drugą.
     let lastRender = 0;
     const frameInterval = 1000 / 60 - 2; // -2 ms tolerancji na jitter rAF (60 Hz bez gubienia klatek)
     const loop = now => {
