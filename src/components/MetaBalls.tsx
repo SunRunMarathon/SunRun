@@ -92,7 +92,7 @@ export default function MetaBalls({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: true, dpr: Math.min(window.devicePixelRatio, 2) });
+    const renderer = new Renderer({ alpha: true, premultipliedAlpha: true, dpr: 1 });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     container.appendChild(gl.canvas);
@@ -143,8 +143,13 @@ export default function MetaBalls({
 
     let rafId;
     const start = performance.now();
+    // Cap 30 FPS — odciąża główny wątek (płynność scrolla na Firefoksie).
+    let lastRender = 0;
+    const frameInterval = 1000 / 30;
     const loop = now => {
       rafId = requestAnimationFrame(loop);
+      if (now - lastRender < frameInterval) return;
+      lastRender = now;
       mouseCurrent[0] += (mouseTarget[0] - mouseCurrent[0]) * 0.08;
       mouseCurrent[1] += (mouseTarget[1] - mouseCurrent[1]) * 0.08;
       program.uniforms.uMouse.value = mouseCurrent;

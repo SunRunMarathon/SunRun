@@ -271,7 +271,9 @@ const ScrollStack = ({
       if (i < cards.length - 1) {
         card.style.marginBottom = `${itemDistance}px`;
       }
-      card.style.willChange = 'transform, filter';
+      // Tylko 'transform' — 'filter' promuje kosztowną warstwę filtrów na Firefoksie,
+      // a blur i tak nie jest tu używany (blurAmount=0).
+      card.style.willChange = 'transform';
       card.style.transformOrigin = 'top center';
       card.style.backfaceVisibility = 'hidden';
       card.style.transform = 'translateZ(0)';

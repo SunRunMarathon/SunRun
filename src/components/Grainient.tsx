@@ -139,7 +139,10 @@ const Grainient = ({
       webgl: 2,
       alpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      // DPR ograniczony do 1 — pełnoekranowy shader przy DPR 2 to ~4x więcej pracy
+      // fragmentów; grainowe/rozmyte tło jest praktycznie nieodróżnialne przy DPR 1,
+      // a to znacząco odciąża główny wątek (kluczowe dla płynności scrolla na Firefoksie).
+      dpr: 1
     });
 
     const gl = renderer.gl;
@@ -203,10 +206,17 @@ const Grainient = ({
     let isPageVisible = !document.hidden;
     const t0 = performance.now();
 
+    // Cap 30 FPS — miękkie, animowane tło nie potrzebuje 60/120 fps. iTime nadal
+    // liczony z realnego czasu, więc prędkość animacji się nie zmienia.
+    let lastRender = 0;
+    const frameInterval = 1000 / 30;
+
     const loop = t => {
+      raf = requestAnimationFrame(loop);
+      if (t - lastRender < frameInterval) return;
+      lastRender = t;
       program.uniforms.iTime.value = (t - t0) * 0.001;
       renderer.render({ scene: mesh });
-      raf = requestAnimationFrame(loop);
     };
 
     const tryStart = () => {
