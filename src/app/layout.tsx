@@ -1,54 +1,83 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { StructuredData } from "@/components/StructuredData";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrunlublin.pl";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 const GA_ID = "G-13PE0DJ8V6";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Sun Run Lublin — Bieg Charytatywny 2026",
+    default: "Sun Run Lublin 2026 — Bieg Charytatywny | 5 km, Park Ludowy",
     template: "%s | Sun Run Lublin",
   },
   description:
-    "Bieg charytatywny w 100% organizowany przez lubelską młodzież. Wspieramy Hospicjum Dobrego Samarytanina w Lublinie. Dołącz do II edycji Sun Run 2026!",
+    "Sun Run to charytatywny bieg w Lublinie (5 km, Park Ludowy) w 100% organizowany przez lubelską młodzież na rzecz Hospicjum Dobrego Samarytanina. Bieganie, sport i pomoc — dołącz do II edycji 2026 lub zostań wolontariuszem albo partnerem.",
   keywords: [
-    "bieg charytatywny Lublin",
-    "Sun Run Lublin",
-    "hospicjum bieg",
-    "bieg 5km Lublin",
-    "Park Ludowy bieg",
-    "wolontariat Lublin",
+    // marka
+    "Sun Run", "Sun Run Lublin", "Sun Run 2026",
+    // bieganie / sport w Lublinie
+    "bieg Lublin", "bieganie Lublin", "biegi Lublin", "zawody biegowe Lublin",
+    "maraton Lublin", "półmaraton Lublin", "bieg 5 km Lublin", "sport Lublin",
+    "wydarzenia sportowe Lublin", "wydarzenia biegowe Lublin", "impreza biegowa Lublin",
+    "bieg Park Ludowy", "bieg al. Piłsudskiego Lublin", "Nordic Walking Lublin",
+    // bieg charytatywny
+    "bieg charytatywny", "bieg charytatywny Lublin", "bieg dla hospicjum",
+    "charytatywny bieg Lublin", "cel charytatywny bieg", "bieg z pomocą",
+    // hospicjum
+    "Hospicjum Dobrego Samarytanina", "hospicjum Lublin", "wsparcie hospicjum Lublin",
+    "pomoc hospicjum", "hospicjum Bernardyńska Lublin",
+    // wolontariat / partnerzy
+    "wolontariat Lublin", "wolontariat bieg", "sponsor biegu Lublin", "partnerzy biegu",
   ],
   authors: [{ name: "Sun Run Lublin" }],
   creator: "Sun Run Lublin",
+  publisher: "Sun Run Lublin",
+  category: "Sport",
+  applicationName: "Sun Run Lublin",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "pl_PL",
     url: SITE_URL,
     siteName: "Sun Run Lublin",
-    title: "Sun Run Lublin — Bieg Charytatywny 2026",
+    title: "Sun Run Lublin 2026 — Bieg Charytatywny | 5 km, Park Ludowy",
     description:
-      "II edycja biegu charytatywnego dla Hospicjum Dobrego Samarytanina w Lublinie. 5 km · Park Ludowy · 350+ uczestników w 2025.",
+      "Charytatywny bieg w Lublinie na rzecz Hospicjum Dobrego Samarytanina. 5 km · Park Ludowy · bieg i Nordic Walking · 350+ uczestników w 2025. Dołącz do II edycji 2026!",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Sun Run Lublin 2026",
+        alt: "Sun Run Lublin 2026 — bieg charytatywny w Parku Ludowym",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sun Run Lublin — Bieg Charytatywny 2026",
-    description: "II edycja biegu charytatywnego dla Hospicjum w Lublinie.",
+    title: "Sun Run Lublin 2026 — Bieg Charytatywny",
+    description:
+      "Charytatywny bieg 5 km w Parku Ludowym w Lublinie na rzecz Hospicjum Dobrego Samarytanina. Dołącz do II edycji!",
     images: ["/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: { index: true, follow: true },
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  other: {
+    "geo.region": "PL-LU",
+    "geo.placename": "Lublin",
+    "geo.position": "51.2478;22.5508",
+    ICBM: "51.2478, 22.5508",
   },
 };
 
@@ -60,6 +89,8 @@ export default function RootLayout({
   return (
     <html lang="pl" className="h-full antialiased bg-[#F5F1E8]" suppressHydrationWarning>
       <head>
+        {/* Dane strukturalne schema.org (Organization, WebSite, SportsEvent) */}
+        <StructuredData />
         {/* Google Analytics 4 */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
         <script
