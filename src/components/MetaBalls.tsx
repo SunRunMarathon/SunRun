@@ -143,9 +143,9 @@ export default function MetaBalls({
 
     let rafId;
     const start = performance.now();
-    // Cap 30 FPS — odciąża główny wątek (płynność scrolla na Firefoksie).
+    // Cap 60 FPS — na 60 Hz renderuje co klatkę, na 120 Hz+ co drugą.
     let lastRender = 0;
-    const frameInterval = 1000 / 30;
+    const frameInterval = 1000 / 60 - 2; // -2 ms tolerancji na jitter rAF (60 Hz bez gubienia klatek)
     const loop = now => {
       rafId = requestAnimationFrame(loop);
       if (now - lastRender < frameInterval) return;

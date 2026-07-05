@@ -206,10 +206,10 @@ const Grainient = ({
     let isPageVisible = !document.hidden;
     const t0 = performance.now();
 
-    // Cap 30 FPS — miękkie, animowane tło nie potrzebuje 60/120 fps. iTime nadal
-    // liczony z realnego czasu, więc prędkość animacji się nie zmienia.
+    // Cap 60 FPS — na 60 Hz renderuje co klatkę (gładko), na 120 Hz+ co drugą.
+    // iTime liczony z realnego czasu, więc prędkość animacji się nie zmienia.
     let lastRender = 0;
-    const frameInterval = 1000 / 30;
+    const frameInterval = 1000 / 60 - 2; // -2 ms tolerancji na jitter rAF (60 Hz bez gubienia klatek)
 
     const loop = t => {
       raf = requestAnimationFrame(loop);
