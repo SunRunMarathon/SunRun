@@ -16,9 +16,9 @@ const MetaBalls = dynamic(() => import("@/components/MetaBalls"), { ssr: false }
 // Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja "Wspomnienia").
 // Zastąp docelowymi fotografiami z biegu w /public/photos.
 const STACK_CARDS = [
-  { id: 1, img: "/sun_run_runners.png", alt: "Biegacze Sun Run 2025" },
+  { id: 1, img: "/sun_run_runners.webp", alt: "Biegacze Sun Run 2025" },
   { id: 2, img: "/photos/ekipa.webp", alt: "Ekipa Sun Run 2025" },
-  { id: 3, img: "/photos/sztab.jpg", alt: "Sztab i wolontariusze" },
+  { id: 3, img: "/photos/sztab.webp", alt: "Sztab i wolontariusze" },
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
@@ -195,13 +195,13 @@ export default function Home() {
       >
         <div className="relative bg-[#FCFBF7]/90 backdrop-blur-md border-t border-[#E2DBCC] py-3 px-6 sm:px-12 flex justify-center items-center gap-5 shadow-2xl">
           <span className="text-sm text-[#6B6357] hidden sm:block tracking-wide">
-            Zapisz się na <span className="text-brand-orange font-bold">II edycję Sun Run 2026!</span>
+            Zapisz się na <span className="text-brand-orange-ink font-bold">II edycję Sun Run 2026!</span>
           </span>
           <a
             href="https://frslublin.pl"
             target="_blank"
             rel="noopener noreferrer"
-            className="cursor-target inline-flex items-center justify-center px-8 py-2.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-brand-orange/30"
+            className="cursor-target inline-flex items-center justify-center px-8 py-2.5 bg-brand-orange-ink hover:bg-brand-orange-ink/90 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-brand-orange/30"
           >
             Zapisz się →
           </a>
@@ -209,13 +209,14 @@ export default function Home() {
             type="button"
             onClick={() => setCtaDismissed(true)}
             aria-label="Zamknij pasek zapisów"
-            className="cursor-target absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full text-[#9A9080] hover:text-[#1A1712] hover:bg-black/5 transition-colors text-xl leading-none"
+            className="cursor-target absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full text-[#6B6357] hover:text-[#1A1712] hover:bg-black/5 transition-colors text-xl leading-none"
           >
             ×
           </button>
         </div>
       </div>
 
+      <main>
       {/* ═══════════════════════════════════════════
           1. HERO SECTION
       ═══════════════════════════════════════════ */}
@@ -308,7 +309,7 @@ export default function Home() {
               Bieg charytatywny organizowany w 100% przez lubelską młodzież.
               Razem wspieramy{" "}
               <a href="https://hospicjum.lublin.pl" target="_blank" rel="noopener noreferrer"
-                className="cursor-target text-brand-orange underline underline-offset-2 decoration-brand-orange/50 hover:decoration-brand-orange transition-all font-semibold">
+                className="cursor-target text-brand-orange-ink underline underline-offset-2 decoration-brand-orange/50 hover:decoration-brand-orange transition-all font-semibold">
                 Hospicjum Dobrego Samarytanina
               </a>{" "}
               — każdy pakiet startowy to realna pomoc dla ~800 rodzin terminalnie chorych rocznie.
@@ -317,7 +318,7 @@ export default function Home() {
 
           <div className={`flex flex-col sm:flex-row gap-4 pt-2 pointer-events-auto transition-all duration-500 ${scrolled ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
             <a href="https://frslublin.pl" target="_blank" rel="noopener noreferrer"
-              className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+              className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-brand-orange-ink hover:bg-brand-orange-ink/90 text-white font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
               Zapisz się
             </a>
             <button onClick={() => document.getElementById("stats")?.scrollIntoView({ behavior: "smooth" })}
@@ -337,7 +338,7 @@ export default function Home() {
         className="relative z-10 w-full min-h-screen flex items-center py-16 px-6 sm:px-12"
       >
         <div className="max-w-[88rem] mx-auto w-full">
-          <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange mb-8">
+          <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange-ink mb-8">
             Szczegóły biegu
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
@@ -353,7 +354,7 @@ export default function Home() {
             <div className="lg:col-span-2 flex flex-col gap-5">
               {/* Karta: Ważne Dane */}
               <div className="flex-1 rounded-3xl bg-white/75 border border-[#E2DBCC] backdrop-blur-sm p-6 shadow-lg">
-                <span className="text-xs font-bold uppercase tracking-widest text-brand-orange mb-4 block">
+                <span className="text-xs font-bold uppercase tracking-widest text-brand-orange-ink mb-4 block">
                   Ważne dane
                 </span>
                 <div className="space-y-3">
@@ -376,7 +377,7 @@ export default function Home() {
 
               {/* Karta: Licznik zapisanych */}
               <div className="rounded-3xl bg-white/75 border border-brand-orange/25 backdrop-blur-sm p-6 shadow-lg">
-                <span className="text-xs font-bold uppercase tracking-widest text-brand-orange mb-3 block">
+                <span className="text-xs font-bold uppercase tracking-widest text-brand-orange-ink mb-3 block">
                   Zapisanych uczestników
                 </span>
                 <div className="flex items-end gap-3">
@@ -385,7 +386,7 @@ export default function Home() {
                   </span>
                   <span className="text-[#6B6357] text-sm pb-2">i rośnie!</span>
                 </div>
-                <p className="text-xs text-[#9A9080] mt-3">
+                <p className="text-xs text-[#6B6357] mt-3">
                   Dane orientacyjne · aktualizacja wkrótce
                 </p>
               </div>
@@ -412,7 +413,7 @@ export default function Home() {
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <div>
-                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-red mb-2 block">Cel Charytatywny</span>
+                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-red-ink mb-2 block">Cel Charytatywny</span>
                     <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-orange">
                       Hospicjum Dobrego Samarytanina
                     </h2>
@@ -436,7 +437,7 @@ export default function Home() {
                   href="https://hospicjum.lublin.pl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-brand-red/40 hover:border-brand-red text-brand-red hover:text-brand-red font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"
+                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-brand-red/40 hover:border-brand-red text-brand-red-ink hover:text-brand-red-ink font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"
                 >
                   Odwiedź stronę hospicjum →
                 </a>
@@ -461,7 +462,7 @@ export default function Home() {
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <div>
-                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-orange mb-2 block">Dołącz do ekipy</span>
+                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-orange-ink mb-2 block">Dołącz do ekipy</span>
                     <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-red">
                       Zostań Wolontariuszem
                     </h2>
@@ -482,7 +483,7 @@ export default function Home() {
                 </div>
                 <a
                   href="mailto:sunrunlublin@gmail.com?subject=Wolontariat%20Sun%20Run%202026"
-                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange/10 border border-brand-orange/30 hover:border-brand-orange text-brand-orange font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"
+                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange/10 border border-brand-orange/30 hover:border-brand-orange text-brand-orange-ink font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"
                 >
                   Zgłoś się jako wolontariusz →
                 </a>
@@ -490,7 +491,7 @@ export default function Home() {
               {/* Zdjęcie: sztab / ekipa wolontariuszy */}
               <div className="hidden md:block rounded-2xl overflow-hidden border border-[#E2DBCC] min-h-[300px] self-stretch flex-1">
                 <img
-                  src="/photos/sztab.jpg"
+                  src="/photos/sztab.webp"
                   alt="Sztab i wolontariusze Sun Run"
                   className="w-full h-full object-cover"
                   loading="eager"
@@ -507,7 +508,7 @@ export default function Home() {
               <div className="space-y-5">
                 <div className="flex items-start gap-4">
                   <div>
-                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-orange mb-2 block">Współpraca</span>
+                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-brand-orange-ink mb-2 block">Współpraca</span>
                     <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-red">
                       Zostań Partnerem
                     </h2>
@@ -520,7 +521,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {["Widoczność logo", "Stoisko w miasteczku", "Materiały eventowe", "Media coverage"].map(b => (
-                    <span key={b} className="px-3 py-1 bg-brand-orange/10 border border-brand-orange/25 rounded-full text-xs text-brand-orange font-medium">
+                    <span key={b} className="px-3 py-1 bg-brand-orange/10 border border-brand-orange/25 rounded-full text-xs text-brand-orange-ink font-medium">
                       {b}
                     </span>
                   ))}
@@ -528,7 +529,7 @@ export default function Home() {
                 <div className="flex gap-3 flex-wrap">
                   <Link
                     href="/partnerzy"
-                    className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange/10 border border-brand-orange/30 hover:border-brand-orange text-brand-orange font-semibold rounded-full text-sm tracking-wide transition-all duration-200"
+                    className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-brand-orange/10 border border-brand-orange/30 hover:border-brand-orange text-brand-orange-ink font-semibold rounded-full text-sm tracking-wide transition-all duration-200"
                   >
                     Oferta dla partnerów →
                   </Link>
@@ -555,7 +556,7 @@ export default function Home() {
       <section className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16 space-y-4">
-            <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange">Wsparcie</span>
+            <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange-ink">Wsparcie</span>
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase text-[#1A1712]">
               Partnerzy i Sponsorzy
             </h2>
@@ -579,7 +580,7 @@ export default function Home() {
                 <span className="text-sm sm:text-base font-bold text-[#3A342B] group-hover:text-[#1A1712] transition-colors">
                   {p.name}
                 </span>
-                <span className="text-xs text-[#9A9080] leading-snug">{p.desc}</span>
+                <span className="text-xs text-[#6B6357] leading-snug">{p.desc}</span>
               </Link>
             ))}
           </div>
@@ -593,7 +594,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-20 items-center">
           {/* Tekst + CTA */}
           <div className="space-y-6">
-            <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange block">
+            <span className="text-sm font-bold uppercase tracking-[0.3em] text-brand-orange-ink block">
               Archiwum · I Edycja 2025
             </span>
             <h2 className="text-6xl sm:text-7xl lg:text-8xl font-black uppercase text-[#1A1712] leading-none">
@@ -605,7 +606,7 @@ export default function Home() {
             </p>
             <Link
               href="/archiwum"
-              className="cursor-target inline-flex items-center gap-2 px-9 py-4 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-full text-base tracking-widest uppercase transition-all duration-300 shadow-lg hover:-translate-y-0.5"
+              className="cursor-target inline-flex items-center gap-2 px-9 py-4 bg-brand-orange-ink hover:bg-brand-orange-ink/90 text-white font-black rounded-full text-base tracking-widest uppercase transition-all duration-300 shadow-lg hover:-translate-y-0.5"
             >
               Odwiedź Archiwum →
             </Link>
@@ -623,6 +624,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* ═══════════════════════════════════════════
           6. FOOTER
@@ -655,7 +657,7 @@ export default function Home() {
                   href={l.href}
                   target={l.href.startsWith("http") ? "_blank" : undefined}
                   rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="block text-sm text-[#6B6357] hover:text-brand-orange transition-colors"
+                  className="block text-sm text-[#6B6357] hover:text-brand-orange-ink transition-colors"
                 >
                   {l.label}
                 </a>
@@ -667,11 +669,11 @@ export default function Home() {
               <h4 className="text-xs font-bold uppercase tracking-widest text-[#4A4438]">Kontakt</h4>
               <a
                 href="mailto:sunrunlublin@gmail.com"
-                className="block text-sm text-[#6B6357] hover:text-brand-orange transition-colors"
+                className="block text-sm text-[#6B6357] hover:text-brand-orange-ink transition-colors"
               >
                 sunrunlublin@gmail.com
               </a>
-              <p className="text-xs text-[#9A9080]">
+              <p className="text-xs text-[#6B6357]">
                 W sprawie partnerstw skontaktuj się z nami mailowo lub przez formularz w zakładce Dla Partnerów.
               </p>
             </div>
@@ -690,7 +692,7 @@ export default function Home() {
                     href={s.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-[#6B6357] hover:text-brand-orange transition-colors group"
+                    className="flex items-center gap-3 text-sm text-[#6B6357] hover:text-brand-orange-ink transition-colors group"
                   >
                     <span className="w-7 h-7 rounded-lg bg-[#F3ECDD] border border-[#E2DBCC] group-hover:border-brand-orange/40 flex items-center justify-center text-[10px] font-black transition-colors">
                       {s.icon}
@@ -706,7 +708,7 @@ export default function Home() {
             <p className="text-xs text-[#6B6357]">
               © 2026 Sun Run Lublin · Wszelkie prawa zastrzeżone
             </p>
-            <p className="text-xs text-[#9A9080]">
+            <p className="text-xs text-[#6B6357]">
               Hospicjum Dobrego Samarytanina · KRS 0000318602
             </p>
           </div>

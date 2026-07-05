@@ -109,7 +109,7 @@ export default function RouteMap() {
       attributionControl={false}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
         subdomains="abcd"
         maxZoom={20}
       />
@@ -123,7 +123,18 @@ export default function RouteMap() {
           lineJoin: 'round',
         }}
       />
-      <Marker position={ROUTE[0]} icon={startIcon}>
+      <Marker
+        position={ROUTE[0]}
+        icon={startIcon}
+        title="Start i Meta — Park Ludowy, al. Piłsudskiego"
+        alt="Start i Meta biegu — Park Ludowy, al. Piłsudskiego"
+        eventHandlers={{
+          add: (e) => {
+            const el = e.target.getElement();
+            if (el) el.setAttribute('aria-label', 'Start i Meta biegu — Park Ludowy, al. Piłsudskiego');
+          },
+        }}
+      >
         <Popup className="route-popup">
           <strong>Start / Meta</strong><br />Park Ludowy, al. Piłsudskiego
         </Popup>

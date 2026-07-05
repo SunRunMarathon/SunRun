@@ -58,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl" className="h-full antialiased bg-[#F5F1E8]">
+    <html lang="pl" className="h-full antialiased bg-[#F5F1E8]" suppressHydrationWarning>
       <head>
         {/* Google Analytics 4 */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
@@ -68,7 +68,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F5F1E8]">{children}</body>
+      <body className="min-h-full flex flex-col bg-[#F5F1E8]" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

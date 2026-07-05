@@ -125,7 +125,7 @@ export default function ONasPage() {
         <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <div className="bg-white/70 border border-[#E2DBCC] backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-4">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-4">
                 Nasza misja
               </span>
               <h2 className="text-3xl sm:text-4xl font-black uppercase text-[#1A1712] mb-6">
@@ -140,7 +140,7 @@ export default function ONasPage() {
                     href="https://hospicjum.lublin.pl"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-brand-orange font-semibold hover:underline"
+                    className="text-brand-orange-ink font-semibold hover:underline"
                   >
                     Hospicjum Dobrego Samarytanina
                   </a>{" "}
@@ -160,7 +160,7 @@ export default function ONasPage() {
         {/* Struktura organizacyjna */}
         <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-3">
               Struktura
             </span>
             <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-10">
@@ -191,7 +191,7 @@ export default function ONasPage() {
         {/* Zespół */}
         <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red-ink block mb-3">
               Kluczowe osoby
             </span>
             <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-10">
@@ -214,7 +214,7 @@ export default function ONasPage() {
                       {t.role}
                     </p>
                     <p className="font-black text-[#1A1712]">{t.name}</p>
-                    <p className="text-xs text-[#9A9080] mt-1">{t.org}</p>
+                    <p className="text-xs text-[#6B6357] mt-1">{t.org}</p>
                   </div>
                 </div>
               ))}
@@ -230,7 +230,7 @@ export default function ONasPage() {
         <section className="py-12 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <div className="bg-white/70 border border-[#E2DBCC] backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-4">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-4">
                 Komunikacja
               </span>
               <h2 className="text-2xl font-black uppercase text-[#1A1712] mb-6">
@@ -247,7 +247,7 @@ export default function ONasPage() {
                   { label: "Jakub Delega (Lider)", color: "#0B4282" },
                 ].map((item, i) =>
                   item.label === "→" ? (
-                    <span key={i} className="text-[#9A9080] font-bold text-lg">
+                    <span key={i} className="text-[#6B6357] font-bold text-lg">
                       →
                     </span>
                   ) : (
@@ -276,7 +276,7 @@ export default function ONasPage() {
             </p>
             <a
               href="mailto:sunrunlublin@gmail.com"
-              className="cursor-target inline-flex items-center justify-center px-8 py-3.5 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
+              className="cursor-target inline-flex items-center justify-center px-8 py-3.5 bg-brand-orange-ink hover:bg-brand-orange-ink/90 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
             >
               Skontaktuj się →
             </a>

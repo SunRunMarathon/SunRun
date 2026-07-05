@@ -43,7 +43,7 @@ const STATS_2025 = [
 
 // Placeholder zdjęcia — zastąpić prawdziwymi
 const GALLERY_IMAGES = [
-  "/sun_run_runners.png",
+  "/sun_run_runners.webp",
   "https://picsum.photos/id/1015/600/400",
   "https://picsum.photos/id/1018/600/400",
   "https://picsum.photos/id/1039/600/400",
@@ -91,7 +91,7 @@ export default function ArchiwumPage() {
         {/* Hero */}
         <section className="min-h-screen flex flex-col justify-center px-8 sm:px-16 md:px-28 pt-24 pb-16">
           <div className="max-w-3xl space-y-6">
-            <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-brand-red px-3 py-1.5 bg-brand-red/10 rounded-full border border-brand-red/30">
+            <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-brand-red-ink px-3 py-1.5 bg-brand-red/10 rounded-full border border-brand-red/30">
               I edycja · 6 września 2025
             </span>
             <h1 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-brand-red via-brand-orange to-brand-orange leading-none">
@@ -107,7 +107,7 @@ export default function ArchiwumPage() {
         {/* Statystyki 2025 */}
         <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block mb-8">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red-ink block mb-8">
               I edycja w liczbach
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
@@ -129,7 +129,7 @@ export default function ArchiwumPage() {
         {/* Inicjatywy towarzyszące */}
         <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-3">
               Wokół biegu
             </span>
             <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-8">
@@ -174,7 +174,7 @@ export default function ArchiwumPage() {
         {/* Wyniki */}
         <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-3">
               Sport
             </span>
             <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-8">
@@ -183,7 +183,7 @@ export default function ArchiwumPage() {
             <div className="bg-white/70 border border-[#E2DBCC] backdrop-blur-sm rounded-2xl p-8 shadow-sm">
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-brand-orange mb-4">
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-brand-orange-ink mb-4">
                     Kategorie
                   </h3>
                   <ul className="space-y-2 text-sm text-[#3A342B]">
@@ -206,7 +206,7 @@ export default function ArchiwumPage() {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-brand-orange mb-4">
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-brand-orange-ink mb-4">
                     Szczegóły pomiaru
                   </h3>
                   <ul className="space-y-2 text-sm text-[#3A342B]">
@@ -222,7 +222,7 @@ export default function ArchiwumPage() {
                   href="https://datasport.pl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-[#D8CFBD] hover:border-brand-orange text-[#3A342B] hover:text-brand-orange rounded-full text-sm transition-all"
+                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-[#D8CFBD] hover:border-brand-orange text-[#3A342B] hover:text-brand-orange-ink rounded-full text-sm transition-all"
                 >
                   Pełne wyniki na datasport.pl →
                 </a>
@@ -234,7 +234,7 @@ export default function ArchiwumPage() {
         {/* Artykuły */}
         <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red-ink block mb-3">
               Media
             </span>
             <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-8">
@@ -258,20 +258,20 @@ export default function ArchiwumPage() {
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: a.color }}>
                         {a.source}
                       </span>
-                      <span className="text-xs text-[#9A9080]">{a.date}</span>
+                      <span className="text-xs text-[#6B6357]">{a.date}</span>
                     </div>
-                    <h3 className="font-black text-[#1A1712] group-hover:text-brand-orange transition-colors mb-1">
+                    <h3 className="font-black text-[#1A1712] group-hover:text-brand-orange-ink transition-colors mb-1">
                       {a.title}
                     </h3>
                     <p className="text-sm text-[#6B6357]">{a.excerpt}</p>
                   </div>
-                  <span className="text-[#9A9080] group-hover:text-brand-orange transition-colors flex-shrink-0">
+                  <span className="text-[#6B6357] group-hover:text-brand-orange-ink transition-colors flex-shrink-0">
                     →
                   </span>
                 </a>
               ))}
             </div>
-            <p className="text-xs text-[#9A9080] mt-6">
+            <p className="text-xs text-[#6B6357] mt-6">
               * Linki do artykułów zostaną dodane po zebraniu wszystkich publikacji.
             </p>
           </div>
@@ -280,7 +280,7 @@ export default function ArchiwumPage() {
         {/* Galeria zdjęć */}
         <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-6xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-3">
               Fotografie
             </span>
             <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-3">
@@ -311,7 +311,7 @@ export default function ArchiwumPage() {
         {/* CTA do II edycji */}
         <section className="py-16 px-8 text-center">
           <div className="max-w-xl mx-auto space-y-6">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block">
               Co dalej?
             </span>
             <h2 className="text-4xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-red">
@@ -324,7 +324,7 @@ export default function ArchiwumPage() {
               href="https://frslublin.pl"
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-target inline-flex items-center justify-center px-10 py-4 bg-brand-orange hover:bg-brand-orange/90 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all shadow-xl"
+              className="cursor-target inline-flex items-center justify-center px-10 py-4 bg-brand-orange-ink hover:bg-brand-orange-ink/90 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all shadow-xl"
             >
               Zapisz się na 2026 →
             </a>

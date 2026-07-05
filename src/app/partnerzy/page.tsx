@@ -169,7 +169,7 @@ export default function PartnerzyPage() {
               <p className="text-lg sm:text-2xl text-[#3A342B] leading-relaxed max-w-xl font-semibold">
                 Zjedź niżej. Mamy Ci coś do pokazania.
               </p>
-              <div className="pt-4 text-brand-orange animate-bounce text-5xl select-none">↓</div>
+              <div className="pt-4 text-brand-orange-ink animate-bounce text-5xl select-none">↓</div>
             </div>
 
             {/* Zdjęcie partnera — Uniwersytet Jazdy */}
@@ -224,7 +224,7 @@ export default function PartnerzyPage() {
               ref={rotatingTextRef}
               texts={rotatingWords}
               auto={false}
-              mainClassName="px-4 sm:px-6 py-1 sm:py-2 bg-brand-orange text-white rounded-2xl overflow-hidden justify-center"
+              mainClassName="px-4 sm:px-6 py-1 sm:py-2 bg-brand-orange-ink text-white rounded-2xl overflow-hidden justify-center"
               staggerFrom="last"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
@@ -247,7 +247,7 @@ export default function PartnerzyPage() {
             style={{ position: "relative" }}
             className="w-full mx-auto text-center space-y-10"
           >
-            <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-brand-orange block">
+            <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-brand-orange-ink block">
               Liczby nie kłamią
             </span>
             <div className={`${robotoFlex.className} space-y-6 sm:space-y-8 text-3xl sm:text-5xl md:text-7xl leading-tight text-[#1A1712]`}>
@@ -282,7 +282,7 @@ export default function PartnerzyPage() {
             scrollEnd="+=700"
             stagger={0.06}
             containerClassName="text-center"
-            textClassName="text-5xl sm:text-7xl md:text-8xl font-black uppercase text-brand-orange"
+            textClassName="text-5xl sm:text-7xl md:text-8xl font-black uppercase text-brand-orange-ink"
           >
             Wybierz Sun Run
           </ScrollFloat>
@@ -295,7 +295,7 @@ export default function PartnerzyPage() {
           <div className="max-w-2xl mx-auto space-y-16">
             {/* Pakiety — minimalistycznie */}
             <div className="space-y-5">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block">
                 Pakiety partnerskie
               </span>
               {PACKAGES.map((pkg) => (
@@ -315,14 +315,14 @@ export default function PartnerzyPage() {
                   </div>
                 </div>
               ))}
-              <p className="text-xs text-[#9A9080]">
+              <p className="text-xs text-[#6B6357]">
                 Wycena indywidualna — każdy pakiet negocjowalny.
               </p>
             </div>
 
             {/* Partnerzy I edycji — minimalna lista z kotwicami */}
             <div className="space-y-5">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red block">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red-ink block">
                 Zaufali nam w 2025
               </span>
               <div className="flex flex-wrap gap-3">
@@ -334,7 +334,7 @@ export default function PartnerzyPage() {
                   >
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
                     <span className="text-sm font-bold text-[#3A342B]">{p.name}</span>
-                    <span className="text-xs text-[#9A9080] hidden sm:inline">· {p.impact}</span>
+                    <span className="text-xs text-[#6B6357] hidden sm:inline">· {p.impact}</span>
                   </div>
                 ))}
               </div>
@@ -342,7 +342,7 @@ export default function PartnerzyPage() {
 
             {/* Formularz */}
             <div>
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange block mb-3">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-3">
                 Kontakt
               </span>
               <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-3">
@@ -354,11 +354,11 @@ export default function PartnerzyPage() {
 
               {contactSent ? (
                 <div className="bg-brand-orange/10 border border-brand-orange/30 rounded-2xl p-8 text-center">
-                  <p className="text-brand-orange font-bold text-lg">Dziękujemy!</p>
+                  <p className="text-brand-orange-ink font-bold text-lg">Dziękujemy!</p>
                   <p className="text-sm text-[#6B6357] mt-2">
                     Twoje zgłoszenie zostało zapisane — odezwiemy się najszybciej jak to możliwe.
                     W pilnych sprawach napisz bezpośrednio na{" "}
-                    <a href="mailto:sunrunlublin@gmail.com" className="text-brand-orange underline">
+                    <a href="mailto:sunrunlublin@gmail.com" className="text-brand-orange-ink underline">
                       sunrunlublin@gmail.com
                     </a>
                   </p>
@@ -378,7 +378,7 @@ export default function PartnerzyPage() {
                         type={f.type}
                         name={f.name}
                         required={f.required}
-                        className="w-full bg-white/80 border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] placeholder-[#9A9080] outline-none transition-colors"
+                        className="w-full bg-white/80 border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] placeholder-[#6B6357] outline-none transition-colors"
                       />
                     </div>
                   ))}
@@ -391,14 +391,14 @@ export default function PartnerzyPage() {
                       rows={4}
                       required
                       placeholder="Opisz swoje oczekiwania, rodzaj działalności i pakiet, który Cię interesuje..."
-                      className="w-full bg-white/80 border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] placeholder-[#9A9080] outline-none transition-colors resize-none"
+                      className="w-full bg-white/80 border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] placeholder-[#6B6357] outline-none transition-colors resize-none"
                     />
                   </div>
-                  {sendError && <p className="text-sm text-brand-red">{sendError}</p>}
+                  {sendError && <p className="text-sm text-brand-red-ink">{sendError}</p>}
                   <button
                     type="submit"
                     disabled={sending}
-                    className="cursor-target w-full py-3.5 bg-brand-orange hover:bg-brand-orange/90 disabled:opacity-60 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
+                    className="cursor-target w-full py-3.5 bg-brand-orange-ink hover:bg-brand-orange-ink/90 disabled:opacity-60 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
                   >
                     {sending ? "Wysyłanie..." : "Wyślij zapytanie →"}
                   </button>
@@ -409,7 +409,7 @@ export default function PartnerzyPage() {
                 <p className="text-xs text-[#6B6357] uppercase tracking-widest mb-1">Email bezpośredni</p>
                 <a
                   href="mailto:sunrunlublin@gmail.com"
-                  className="text-brand-orange hover:underline text-sm font-bold"
+                  className="text-brand-orange-ink hover:underline text-sm font-bold"
                 >
                   sunrunlublin@gmail.com
                 </a>

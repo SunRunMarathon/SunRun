@@ -72,7 +72,7 @@ export default function AdminPage() {
           className="w-full max-w-sm bg-white border border-[#E2DBCC] rounded-3xl p-8 space-y-5 shadow-lg"
         >
           <div>
-            <h1 className="text-2xl font-black uppercase text-brand-orange">Panel Admina</h1>
+            <h1 className="text-2xl font-black uppercase text-brand-orange-ink">Panel Admina</h1>
             <p className="text-xs text-[#6B6357] mt-1">Sun Run · zgłoszenia z formularza</p>
           </div>
           <div>
@@ -87,11 +87,11 @@ export default function AdminPage() {
               className="w-full bg-[#F5F1E8] border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] outline-none transition-colors"
             />
           </div>
-          {error && <p className="text-sm text-brand-red">{error}</p>}
+          {error && <p className="text-sm text-brand-red-ink">{error}</p>}
           <button
             type="submit"
             disabled={loading || !password}
-            className="w-full py-3 bg-brand-orange hover:bg-brand-orange/90 disabled:opacity-50 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
+            className="w-full py-3 bg-brand-orange-ink hover:bg-brand-orange-ink/90 disabled:opacity-50 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
           >
             {loading ? "Logowanie..." : "Zaloguj"}
           </button>
@@ -105,7 +105,7 @@ export default function AdminPage() {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-black uppercase text-brand-orange">Zgłoszenia partnerów</h1>
+            <h1 className="text-3xl font-black uppercase text-brand-orange-ink">Zgłoszenia partnerów</h1>
             <p className="text-xs text-[#6B6357] mt-1">
               Formularz kontaktowy · {submissions.length}{" "}
               {submissions.length === 1 ? "zgłoszenie" : "zgłoszeń"}
@@ -121,7 +121,7 @@ export default function AdminPage() {
             </button>
             <button
               onClick={handleLogout}
-              className="px-5 py-2 border border-[#E2DBCC] hover:border-brand-red/50 text-[#6B6357] hover:text-brand-red rounded-full text-xs font-bold uppercase tracking-widest transition-colors"
+              className="px-5 py-2 border border-[#E2DBCC] hover:border-brand-red/50 text-[#6B6357] hover:text-brand-red-ink rounded-full text-xs font-bold uppercase tracking-widest transition-colors"
             >
               Wyloguj
             </button>
@@ -144,13 +144,13 @@ export default function AdminPage() {
                     <span className="font-black text-[#1A1712]">{s.company}</span>
                     <span className="text-[#6B6357] text-sm"> · {s.name}</span>
                   </div>
-                  <span className="text-xs text-[#9A9080]">
+                  <span className="text-xs text-[#6B6357]">
                     {new Date(s.date).toLocaleString("pl-PL")}
                   </span>
                 </div>
                 {s.phone && (
                   <p className="text-sm text-[#6B6357]">
-                    <span className="text-[#9A9080] uppercase text-xs tracking-widest mr-2">Tel:</span>
+                    <span className="text-[#6B6357] uppercase text-xs tracking-widest mr-2">Tel:</span>
                     {s.phone}
                   </p>
                 )}
