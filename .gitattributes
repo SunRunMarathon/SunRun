@@ -1,0 +1,16 @@
+# Pliki graficzne traktujemy jako binarne — bez konwersji koncow linii.
+# Wazne dla EPS: to format tekstowy (PostScript), wiec git bez tego wpisu
+# zamienialby LF na CRLF i modyfikowal zawartosc plikow zrodlowych logo.
+*.eps binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.avif binary
+*.pdf binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.heic binary

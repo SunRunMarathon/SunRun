@@ -42,3 +42,6 @@ next-env.d.ts
 
 # zgloszenia z formularza (panel /admin)
 /data
+
+# wewnetrzne materialy sztabu — nie trafiaja do publicznego repo
+/Omówienie Głównych Zadania.md
