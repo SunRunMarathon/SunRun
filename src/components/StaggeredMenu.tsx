@@ -16,6 +16,7 @@ export const StaggeredMenu = ({
   className,
   logoUrl,
   logoNode,
+  logoStyle,
   menuButtonColor = '#1A1712',
   openMenuButtonColor = '#1A1712',
   accentColor = '#EB8714',
@@ -374,7 +375,7 @@ export const StaggeredMenu = ({
         })()}
       </div>
       <header className="staggered-menu-header" aria-label="Main navigation header">
-        <a href="/" className="sm-logo" aria-label="Sun Run — strona główna">
+        <a href="/" className="sm-logo" aria-label="Sun Run — strona główna" style={logoStyle}>
           {logoNode ? (
             logoNode
           ) : (

@@ -30,19 +30,6 @@ const PARTNERS = [
   { name: "UP Lublin", desc: "Patronat honorowy", anchor: "up-lublin", color: "#EB8714" },
 ];
 
-const SketchUnderline = ({ color = "#EB8714", width = 200 }) => (
-  <svg viewBox={`0 0 ${width} 10`} width={width} height={10} style={{ display: "block", overflow: "visible" }}>
-    <path
-      d={`M4,7 Q${width * 0.25},2 ${width * 0.5},6 Q${width * 0.75},9 ${width - 4},4`}
-      fill="none"
-      stroke={color}
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      opacity="0.8"
-    />
-  </svg>
-);
-
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [ctaDismissed, setCtaDismissed] = useState(false);
@@ -174,7 +161,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-[#F5F1E8]/52" />
       </div>
 
-      <Navbar />
+      {/* Na stronie głównej małe logo w rogu pojawia się dopiero, gdy duże
+          logo hero zniknie z ekranu. Podstrony używają <Navbar /> bez tej flagi,
+          więc mają logo widoczne od razu. */}
+      <Navbar revealOnScroll />
 
       <TargetCursor
         spinDuration={3}
@@ -287,15 +277,22 @@ export default function Home() {
         </div>
 
         <div className="max-w-4xl space-y-6 pt-24 pb-16">
-          <div>
-            <h1 className="text-8xl sm:text-[11rem] font-black tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-br from-brand-orange via-brand-orange to-brand-red leading-none"
-              style={{ filter: "drop-shadow(0 2px 10px rgba(235,135,20,0.25))" }}>
-              SUN<br />RUN
-            </h1>
-            <div className="mt-1 ml-1">
-              <SketchUnderline color="#EB8714" width={336} />
-            </div>
-          </div>
+          {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
+              przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
+              okna, żeby przyciski CTA zostały widoczne bez scrollowania.
+              id="hero-logo" — Navbar obserwuje ten element, by wiedzieć, kiedy
+              pokazać małe logo w rogu. */}
+          <h1 id="hero-logo" className="m-0">
+            <img
+              src="/logo/sunrun-pelne.svg"
+              alt="Sun Run — Spotkajmy się dla Hospicjum"
+              width={870}
+              height={634}
+              className="h-auto"
+              style={{ width: "min(720px, 88vw, 62vh)" }}
+              draggable={false}
+            />
+          </h1>
 
           <div className="flex items-center gap-4 pt-1">
             <div className="h-px w-10 bg-brand-orange/60" />

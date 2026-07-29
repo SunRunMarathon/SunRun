@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import StaggeredMenu from "./StaggeredMenu";
 
 const items = [
@@ -22,7 +22,76 @@ const socialItems = [
   { label: "TikTok", link: "https://tiktok.com/@sunrunlublin" },
 ];
 
-export function Navbar() {
+// Proporcje logo skróconego, zmierzone z wektora (870.228 × 518.490).
+// 52px daje obszar kliknięcia 87×52 — obie krawędzie powyżej zalecanego
+// minimum 44px dla celu dotykowego. Przy 36px było 60×36, czyli za mało.
+const LOGO_H = 52;
+const LOGO_W = Math.round((LOGO_H * 870.228) / 518.49); // 87px
+
+// Ile pikseli scrolla zajmuje narastanie logo w rogu, licząc od momentu, w którym
+// duże logo hero całkowicie zniknie z ekranu. Zwiększ, żeby pojawiało się wolniej
+// i później; zmniejsz, żeby szybciej.
+const FADE_DISTANCE = 160;
+
+/**
+ * Nagłówek z logo w lewym górnym rogu (pozycja nr 1).
+ *
+ * Pole ochronne wg księgi znaku: z każdej strony tyle, ile wynosi wysokość litery
+ * "U" w napisie SUN RUN. Zmierzone z wektora: 146 / 870.228 = 16.8% szerokości logo
+ * (zgadza się z przykładem z księgi: 8.4mm dla logo o szerokości 50mm).
+ * Przy LOGO_H = 52px daje to 87px × 0.168 ≈ 15px odstępu.
+ * Nagłówek ma padding 1.5em (24px) na telefonie i 2em (32px) na desktopie, czyli
+ * powyżej wymaganych 15px — pole ochronne od krawędzi ekranu jest zachowane.
+ * Zmieniając LOGO_H sprawdź, czy 0.168 × LOGO_W nadal mieści się w paddingu
+ * nagłówka (.staggered-menu-header w StaggeredMenu.css). Przy LOGO_H powyżej
+ * ~80px pole ochronne przekroczy 24px paddingu na telefonie i trzeba będzie
+ * zwiększyć padding nagłówka.
+ *
+ * @param revealOnScroll — gdy true (strona główna), logo jest ukryte tak długo, jak
+ *   choć fragment dużego logo hero (#hero-logo) jest widoczny na ekranie. Dopiero
+ *   gdy hero zniknie całkowicie, małe logo narasta płynnie na przestrzeni
+ *   FADE_DISTANCE pikseli scrolla. Na podstronach zostaw false — logo widoczne od razu.
+ */
+export function Navbar({ revealOnScroll = false }) {
+  const [logoOpacity, setLogoOpacity] = useState(revealOnScroll ? 0 : 1);
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    if (!revealOnScroll) {
+      setLogoOpacity(1);
+      return;
+    }
+
+    const hero = document.getElementById("hero-logo");
+    if (!hero) {
+      // Brak dużego logo na tej stronie — pokazujemy małe od razu.
+      setLogoOpacity(1);
+      return;
+    }
+
+    const measure = () => {
+      rafRef.current = 0;
+      // Odległość, o jaką dolna krawędź dużego logo zjechała ponad górę ekranu.
+      // <= 0 → część dużego logo jest jeszcze widoczna, małe ma być niewidoczne.
+      const past = -hero.getBoundingClientRect().bottom;
+      setLogoOpacity(Math.max(0, Math.min(1, past / FADE_DISTANCE)));
+    };
+
+    const onScroll = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [revealOnScroll]);
+
   return (
     <StaggeredMenu
       position="right"
@@ -36,10 +105,23 @@ export function Navbar() {
       menuButtonColor="#1A1712"
       openMenuButtonColor="#1A1712"
       changeMenuColorOnOpen={false}
+      // Gdy logo jest niewidoczne, wyłączamy też klikalność — inaczej w rogu strony
+      // głównej zostawałby niewidoczny odnośnik przechwytujący kliknięcia.
+      logoStyle={{
+        opacity: logoOpacity,
+        pointerEvents: logoOpacity < 0.05 ? "none" : "auto",
+      }}
       logoNode={
-        <span className="font-black text-[#1A1712] tracking-widest text-base sm:text-lg">
-          SUN RUN
-        </span>
+        // <img> w <a> daje prostokątny obszar klikalny, więc kliknięcie
+        // w przezroczyste miejsca między literami też prowadzi na stronę główną.
+        <img
+          src="/logo/sunrun-skrocone.svg"
+          alt="Sun Run"
+          width={LOGO_W}
+          height={LOGO_H}
+          style={{ height: LOGO_H, width: "auto", display: "block" }}
+          draggable={false}
+        />
       }
     />
   );
