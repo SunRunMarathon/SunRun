@@ -37,6 +37,34 @@ function CardRotate({ children, onSendToBack, sensitivity }) {
   );
 }
 
+/**
+ * Kąt przechylenia karty wyliczony z jej identyfikatora — zawsze ten sam dla tego
+ * samego id, w zakresie −5°…+5°.
+ *
+ * Wcześniej był tu `Math.random()` wywoływany wprost w renderze. Strona renderuje
+ * się dwa razy — na serwerze do HTML-a i ponownie w przeglądarce przy hydratacji —
+ * a losowanie dawało za każdym razem inny kąt. React porównywał oba wyniki i
+ * zgłaszał: "A tree hydrated but some attributes of the server rendered HTML
+ * didn't match the client properties".
+ *
+ * Skutkiem ubocznym była też drobna wada wizualna: kąty losowały się od nowa przy
+ * każdym przerenderowaniu, więc karty drgały np. po odłożeniu jednej na spód.
+ * Teraz każda karta ma swój stały kąt.
+ */
+function rotationFromId(id) {
+  const s = String(id);
+  let h = 2166136261; // FNV-1a
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  // wymieszanie bitów, żeby sąsiednie id (1, 2, 3…) dawały różne kąty
+  h ^= h >>> 13;
+  h = Math.imul(h, 0x5bd1e995);
+  h ^= h >>> 15;
+  return (((h >>> 0) % 1000) / 1000) * 10 - 5;
+}
+
 export default function Stack({
   randomRotation = false,
   sensitivity = 200,
@@ -67,7 +95,7 @@ export default function Stack({
       }}
     >
       {cards.map((card, index) => {
-        const randomRotate = randomRotation ? Math.random() * 10 - 5 : 0;
+        const randomRotate = randomRotation ? rotationFromId(card.id) : 0;
 
         return (
           <CardRotate
