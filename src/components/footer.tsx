@@ -1,4 +1,5 @@
 import React from "react";
+import SocialIcon from "./social-icon";
 
 /**
  * Wspólna stopka serwisu.
@@ -23,9 +24,9 @@ const STRONY = [
 ];
 
 const MEDIA = [
-  { name: "Instagram", url: "https://instagram.com/sunrunlublin", icon: "IG" },
-  { name: "Facebook", url: "https://facebook.com/sunrunlublin", icon: "FB" },
-  { name: "TikTok", url: "https://tiktok.com/@sunrunlublin", icon: "TT" },
+  { name: "Instagram", url: "https://instagram.com/sunrunlublin", icon: "instagram" },
+  { name: "Facebook", url: "https://facebook.com/sunrunlublin", icon: "facebook" },
+  { name: "TikTok", url: "https://tiktok.com/@sunrunlublin", icon: "tiktok" },
 ];
 
 export function Footer() {
@@ -92,8 +93,11 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-3 text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
                 >
-                  <span className="w-7 h-7 rounded-lg bg-sr-sand/10 border border-sr-sand/25 group-hover:border-sr-orange/60 flex items-center justify-center text-[10px] font-black transition-colors">
-                    {s.icon}
+                  {/* Ramka zostaje — daje równy rytm i większy cel kliknięcia.
+                      Znak w wersji BIAŁEJ, bo tło stopki jest ciemne. Meta
+                      i TikTok dopuszczają tylko biel albo czerń. */}
+                  <span className="w-7 h-7 rounded-lg bg-sr-sand/10 border border-sr-sand/25 group-hover:border-sr-orange/60 flex items-center justify-center transition-colors">
+                    <SocialIcon name={s.icon} size={16} tone="white" />
                   </span>
                   {s.name}
                 </a>

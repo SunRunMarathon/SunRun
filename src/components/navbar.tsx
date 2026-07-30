@@ -30,9 +30,9 @@ const items = [
 ];
 
 const socialItems = [
-  { label: "Instagram", link: "https://instagram.com/sunrunlublin" },
-  { label: "Facebook", link: "https://facebook.com/sunrunlublin" },
-  { label: "TikTok", link: "https://tiktok.com/@sunrunlublin" },
+  { label: "Instagram", link: "https://instagram.com/sunrunlublin", icon: "instagram" },
+  { label: "Facebook", link: "https://facebook.com/sunrunlublin", icon: "facebook" },
+  { label: "TikTok", link: "https://tiktok.com/@sunrunlublin", icon: "tiktok" },
 ];
 
 // Proporcje logo skróconego, zmierzone z wektora (870.228 × 518.490).

@@ -3,6 +3,7 @@
 
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import SocialIcon from "./social-icon";
 import './StaggeredMenu.css';
 
 export const StaggeredMenu = ({
@@ -427,13 +428,13 @@ export const StaggeredMenu = ({
                     data-index={idx + 1}
                     target={it.external ? '_blank' : undefined}
                     rel={it.external ? 'noopener noreferrer' : undefined}
-                  >
                     // Odnośniki do sekcji na tej samej stronie (np. "/#stats") nie
                     // powodują przeładowania, więc menu zostałoby otwarte i zasłaniało
                     // sekcję, do której właśnie przewinęliśmy. Zamykamy je ręcznie.
                     onClick={() => {
                       if (!it.external && openRef.current) toggleMenu();
                     }}
+                  >
                     <span className="sm-panel-itemLabel">{it.label}</span>
                   </a>
                 </li>
@@ -452,8 +453,17 @@ export const StaggeredMenu = ({
               <ul className="sm-socials-list" role="list">
                 {socialItems.map((s, i) => (
                   <li key={s.label + i} className="sm-socials-item">
-                    <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link">
-                      {s.label}
+                    {/* Gdy pozycja ma `icon`, pokazujemy sam znak zamiast napisu
+                        (punkt 11 listy sztabu). Nazwa zostaje w aria-label, żeby
+                        odnośnik pozostal czytelny dla czytnikow ekranu. */}
+                    <a
+                      href={s.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={'sm-socials-link' + (s.icon ? ' sm-socials-link--icon' : '')}
+                      aria-label={s.icon ? s.label : undefined}
+                    >
+                      {s.icon ? <SocialIcon name={s.icon} size={40} tone="black" /> : s.label}
                     </a>
                   </li>
                 ))}

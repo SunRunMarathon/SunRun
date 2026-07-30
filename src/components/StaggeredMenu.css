@@ -251,6 +251,16 @@
   opacity: 1;
 }
 
+/* Odnośnik ze znakiem zamiast napisu. Padding powiększa obszar kliknięcia
+   ponad sam znak — przy 40px znaku daje 56px celu, powyżej zalecanego
+   minimum 44px dla palca. */
+.sm-socials-list .sm-socials-link--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
 .sm-socials-link:focus-visible {
   outline: 2px solid var(--sm-accent, #FE8004);
   outline-offset: 3px;
@@ -349,13 +359,14 @@
 
 @media (max-width: 1024px) {
   .staggered-menu-panel {
-    width: 100%;
+    width: calc(100% - 2 * var(--sm-stripe));
+    /* Panel zostaje przyklejony do prawej — paski maja wystawac po LEWEJ. */
     left: auto;
     right: 0;
   }
 
   .sm-prelayers {
-    width: calc(100% - 2 * var(--sm-stripe));
+    width: 100%;
     left: auto;
     right: 0;
   }
@@ -364,7 +375,6 @@
 @media (max-width: 640px) {
   .staggered-menu-panel {
     width: calc(100% - 2 * var(--sm-stripe));
-    /* Panel zostaje przyklejony do prawej — paski maja wystawac po LEWEJ. */
     left: auto;
     right: 0;
     padding: 5.5em 1.5em 1.75em 1.5em;
