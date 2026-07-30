@@ -289,7 +289,7 @@ export default function Home() {
               className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
               Zapisz się
             </a>
-            <button onClick={() => document.getElementById("stats")?.scrollIntoView({ behavior: "smooth" })}
+            <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
               className="cursor-target inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-bold rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
               Dowiedz się więcej ↓
             </button>
@@ -297,12 +297,19 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TYMCZASOWE zakotwiczenie dla pozycji "O Festiwalu" z menu bocznego.
+          Sekcja o Festiwalu jeszcze nie istnieje — czekamy na materiały od sztabu.
+          Do tego czasu odnośnik przewija tutaj, czyli na koniec sekcji startowej,
+          gdzie ta sekcja logicznie stanie. Po jej dodaniu przenieś id="o-festiwalu"
+          na właściwą sekcję i usuń ten znacznik. */}
+      <div id="o-festiwalu" aria-hidden="true" />
+
       {/* ═══════════════════════════════════════════
           2. STATS DASHBOARD — Mapa + Dane + Licznik
           (wszystkie widoczne naraz na ekranie)
       ═══════════════════════════════════════════ */}
       <section
-        id="stats"
+        id="o-biegu"
         className="relative z-10 w-full min-h-screen flex items-center py-16 px-6 sm:px-12"
       >
         <div className="max-w-[88rem] mx-auto w-full">
@@ -521,7 +528,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           4. PARTNERZY
       ═══════════════════════════════════════════ */}
-      <section className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
+      <section id="partnerzy" className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16 space-y-4">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>

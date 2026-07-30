@@ -4,16 +4,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import StaggeredMenu from "./StaggeredMenu";
 
+/**
+ * Pozycje menu bocznego.
+ *
+ * Trzy z nich prowadzą do sekcji na stronie głównej (przewinięcie), a nie do
+ * podstron — stąd zapis "/#kotwica". Działa też z podstron: przenosi na stronę
+ * główną i przewija do właściwego miejsca.
+ *
+ * "Strona główna" celowo dubluje funkcję logo w lewym górnym rogu. Nie każdy
+ * użytkownik wie, że w logo kryje się odnośnik, a powrót na stronę główną ma być
+ * oczywisty.
+ *
+ * UWAGA: pozycja ZAPISZ SIĘ została stąd usunięta zgodnie z ustalonym składem.
+ * Punkt 10 listy sztabu przewiduje ją jako element oddzielony graficznie od
+ * odnośników — do zrobienia osobno. Do tego czasu zapisy są dostępne przez
+ * przycisk w hero i dolny pasek.
+ */
 const items = [
-  { label: "o nas", link: "/o-nas", ariaLabel: "O nas – organizatorzy Sun Run" },
-  { label: "partnerzy", link: "/partnerzy", ariaLabel: "Dla partnerów i sponsorów" },
-  { label: "archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
-  {
-    label: "zapisz się",
-    link: "https://frslublin.pl",
-    ariaLabel: "Zapisz się na bieg — system FRS",
-    external: true,
-  },
+  { label: "Strona główna", link: "/", ariaLabel: "Przejdź na stronę główną" },
+  { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026" },
+  { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu — dystans, trasa, limit czasu" },
+  { label: "Archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
+  { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu" },
+  { label: "O nas", link: "/o-nas", ariaLabel: "O nas — organizatorzy Sun Run" },
 ];
 
 const socialItems = [
@@ -99,8 +112,8 @@ export function Navbar({ revealOnScroll = false }) {
       items={items}
       socialItems={socialItems}
       displaySocials
-      displayItemNumbering
-      colors={["#FE8004", "#183153"]}
+      displayItemNumbering={false}
+      colors={["#F94C1F", "#183153"]}
       accentColor="#FE8004"
       menuButtonColor="#183153"
       openMenuButtonColor="#183153"

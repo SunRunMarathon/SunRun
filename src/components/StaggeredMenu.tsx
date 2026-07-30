@@ -428,6 +428,12 @@ export const StaggeredMenu = ({
                     target={it.external ? '_blank' : undefined}
                     rel={it.external ? 'noopener noreferrer' : undefined}
                   >
+                    // Odnośniki do sekcji na tej samej stronie (np. "/#stats") nie
+                    // powodują przeładowania, więc menu zostałoby otwarte i zasłaniało
+                    // sekcję, do której właśnie przewinęliśmy. Zamykamy je ręcznie.
+                    onClick={() => {
+                      if (!it.external && openRef.current) toggleMenu();
+                    }}
                     <span className="sm-panel-itemLabel">{it.label}</span>
                   </a>
                 </li>

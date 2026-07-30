@@ -4,6 +4,18 @@
   height: 100%;
   z-index: 99;
   pointer-events: none;
+
+  /* Szerokość białego panelu menu. 1,5x wartości pierwotnej
+     (clamp(280px, 40vw, 440px)). */
+  --sm-panel-w: clamp(420px, 60vw, 660px);
+
+  /* Szerokość jednego kolorowego paska wystającego po lewej stronie panelu.
+     Paski to te same warstwy, które przy rozwijaniu menu przesuwają się jako
+     pierwsze (.sm-prelayer) — wcześniej panel przykrywał je w całości. Teraz
+     kontener warstw jest szerszy od panelu o dwa paski, a każda warstwa ma
+     inną szerokość, więc po animacji zostają widoczne dwa pionowe pasy.
+     Dzięki temu rozwinięte menu nie zlewa się z białymi kartami strony. */
+  --sm-stripe: 14px;
 }
 
 .staggered-menu-wrapper.fixed-wrapper {
@@ -142,7 +154,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: clamp(280px, 40vw, 440px);
+  width: var(--sm-panel-w);
   height: 100%;
   background: #FFFFFF;
   backdrop-filter: blur(12px);
@@ -167,7 +179,8 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: clamp(280px, 40vw, 440px);
+  /* Szerszy od panelu o dwa paski — nadwyżka wystaje po jego lewej stronie. */
+  width: calc(var(--sm-panel-w) + 2 * var(--sm-stripe));
   pointer-events: none;
   z-index: 5;
   opacity: 0;
@@ -188,6 +201,13 @@
   opacity: 0;
 }
 
+/* Pierwsza warstwa wystaje o dwa paski (jest skrajnie lewa), druga o jeden.
+   Kolejność kolorów wynika z propsa `colors` w navbar.tsx: warstwa nr 1 bierze
+   pierwszy kolor z tablicy. Widok od lewej: kolor 1, kolor 2, biały panel. */
+.sm-prelayer:nth-child(2) {
+  width: calc(100% - var(--sm-stripe));
+}
+
 .sm-panel-inner {
   flex: 1;
   display: flex;
@@ -196,11 +216,15 @@
 }
 
 .sm-socials {
+  /* margin-top: auto dociska blok do dołu panelu; margin-bottom odsuwa go
+     znad dolnej krawędzi. 0.5rem to 3rem pomniejszone o wysokość jednego
+     znaku (40px) — blok zjeżdża o dokładnie tyle w dół. */
   margin-top: auto;
+  margin-bottom: 0.5rem;
   padding-top: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .sm-socials-title {
@@ -267,8 +291,8 @@
   font-family: var(--font-lemonmilk), system-ui, sans-serif;
   font-size: 3rem;
   cursor: pointer;
-  line-height: 1;
-  letter-spacing: -2px;
+  line-height: 1.05;
+  letter-spacing: 0;
   text-transform: uppercase;
   transition:
     background 0.25s,
@@ -326,28 +350,29 @@
 @media (max-width: 1024px) {
   .staggered-menu-panel {
     width: 100%;
-    left: 0;
+    left: auto;
     right: 0;
   }
 
   .sm-prelayers {
-    width: 100%;
-    left: 0;
+    width: calc(100% - 2 * var(--sm-stripe));
+    left: auto;
     right: 0;
   }
 }
 
 @media (max-width: 640px) {
   .staggered-menu-panel {
-    width: 100%;
-    left: 0;
+    width: calc(100% - 2 * var(--sm-stripe));
+    /* Panel zostaje przyklejony do prawej — paski maja wystawac po LEWEJ. */
+    left: auto;
     right: 0;
     padding: 5.5em 1.5em 1.75em 1.5em;
   }
 
   .sm-prelayers {
     width: 100%;
-    left: 0;
+    left: auto;
     right: 0;
   }
 
