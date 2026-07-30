@@ -18,14 +18,45 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-brand-red: #ED3939;
-  --color-brand-orange: #EB8714;
-  /* Warianty "ink" — przyciemnione dla tekstu i przycisków CTA, spełniają WCAG AA (>=4.5:1) na jasnym tle. */
-  --color-brand-orange-ink: #A24E00;
-  --color-brand-red-ink: #C81E1E;
-  --color-brand-yellow: #FFEC8E;
-  --color-brand-white: #E8EBF7;
-  --color-brand-blue: #0B4282;
+  /* ══════════════════════════════════════════════════════════════════
+     PALETA MARKI SUN RUN
+     11 kolorów: 10 z księgi znaku (szata graficzna sunrun.pdf, lipiec 2026,
+     autorstwa Darii Zlot i Adama Sokołowskiego) + biel dodana przez sztab.
+     Nie dodawaj tu nowych barw — jeśli czegoś brakuje, użyj krycia (patrz
+     --color-sr-line poniżej) albo zapytaj sztab graficzny.
+     ══════════════════════════════════════════════════════════════════ */
+  --color-sr-navy: #183153;        /* tekst podstawowy, barwa dopełniająca */
+  --color-sr-navy-dark: #042451;   /* mocniejszy akcent, najwyższy kontrast */
+  --color-sr-slate: #3D4D65;       /* tekst drugorzędny */
+  --color-sr-orange: #FE8004;      /* główny akcent ciepły */
+  --color-sr-orange-warm: #F6941D;
+  --color-sr-apricot: #FBBA76;
+  --color-sr-yellow: #FED46D;
+  --color-sr-sand: #F4D8A2;        /* tło strony */
+  --color-sr-brick: #F94C1F;
+  --color-sr-red: #CE2F25;         /* akcent tekstowy na białych kartach */
+  --color-sr-white: #FFFFFF;       /* powierzchnie kart */
+
+  /* Obramowania i linie. W palecie nie ma koloru nadającego się na delikatną
+     kreskę na piasku (morela ma na nim kontrast 1,23:1 — jest niewidoczna),
+     więc używamy granatu marki ze zmniejszonym kryciem. To nie nowa barwa,
+     tylko #183153 o mniejszej sile. */
+  --color-sr-line: rgb(24 49 83 / 0.14);
+  --color-sr-line-strong: rgb(24 49 83 / 0.28);
+
+  /* ── Dozwolone zestawienia (kontrast wg WCAG) ──────────────────────
+     NA PIASKU #F4D8A2 : navy 9,5 · navy-dark 11,0 · slate 6,2 (wszystkie AA+)
+                         red 3,7 — TYLKO duży tekst
+                         pomarańcz 1,8 i biel 1,4 — NIGDY jako tekst
+     NA BIELI #FFFFFF  : navy 13,1 · slate 8,6 · red 5,2 (wszystkie AA+)
+                         pomarańcz 2,5 — NIGDY jako tekst
+     NA POMARAŃCZU     : navy 5,2 · navy-dark 6,0 (AA)
+                         biel 2,5 — NIGDY
+     NA GRANACIE       : biel 13,1 · piasek 9,5 · żółty 9,3 · morela 7,7 ·
+                         pomarańcz 5,2 (wszystkie AA+)
+     Wniosek praktyczny: pomarańcz działa jako TŁO pod granatowym tekstem
+     albo jako tekst NA granacie — nigdy jako tekst na jasnym tle.
+     ─────────────────────────────────────────────────────────────────── */
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -71,25 +102,26 @@
 }
 
 :root {
-  /* Jasny motyw Sun Run — ciepłe kremowe tło #F5F1E8, tekst #1A1712 */
-  --background: #F5F1E8;
-  --foreground: #1A1712;
-  --card: #FCFBF7;
-  --card-foreground: #1A1712;
-  --popover: #FCFBF7;
-  --popover-foreground: #1A1712;
-  --primary: #EB8714;
-  --primary-foreground: #FFF9EC;
-  --secondary: #EDE7DA;
-  --secondary-foreground: #1A1712;
-  --muted: #EDE7DA;
-  --muted-foreground: #6B6357;
-  --accent: #F3ECDD;
-  --accent-foreground: #1A1712;
-  --destructive: #ED3939;
-  --border: #E2DBCC;
-  --input: #E2DBCC;
-  --ring: #EB8714;
+  /* Motyw Sun Run — jednolite piaskowe tło #F4D8A2, tekst granatowy #183153.
+     Wartości pochodzą wyłącznie z palety marki zdefiniowanej w @theme wyżej. */
+  --background: #F4D8A2;            /* piasek */
+  --foreground: #183153;            /* granat — 9,5:1 na piasku */
+  --card: #FFFFFF;                  /* karty na białym tle */
+  --card-foreground: #183153;       /* 13,1:1 na bieli */
+  --popover: #FFFFFF;
+  --popover-foreground: #183153;
+  --primary: #FE8004;               /* pomarańcz jako TŁO */
+  --primary-foreground: #183153;    /* granat na pomarańczu — 5,2:1 */
+  --secondary: #FED46D;             /* żółty */
+  --secondary-foreground: #183153;
+  --muted: rgb(24 49 83 / 0.06);    /* subtelne przyciemnienie tła */
+  --muted-foreground: #3D4D65;      /* szaroniebieski — 6,2:1 na piasku */
+  --accent: #FBBA76;                /* morela */
+  --accent-foreground: #183153;
+  --destructive: #CE2F25;           /* czerwień */
+  --border: rgb(24 49 83 / 0.14);
+  --input: rgb(24 49 83 / 0.14);
+  --ring: #FE8004;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

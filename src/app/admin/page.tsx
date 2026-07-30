@@ -66,17 +66,17 @@ export default function AdminPage() {
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-[#F5F1E8] text-[#1A1712] flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[#F4D8A2] text-[#183153] flex items-center justify-center px-6">
         <form
           onSubmit={handleLogin}
-          className="w-full max-w-sm bg-white border border-[#E2DBCC] rounded-3xl p-8 space-y-5 shadow-lg"
+          className="w-full max-w-sm bg-white border border-sr-line rounded-3xl p-8 space-y-5 shadow-lg"
         >
           <div>
-            <h1 className="text-2xl font-black uppercase text-brand-orange-ink">Panel Admina</h1>
-            <p className="text-xs text-[#6B6357] mt-1">Sun Run · zgłoszenia z formularza</p>
+            <h1 className="text-2xl font-black uppercase text-sr-red">Panel Admina</h1>
+            <p className="text-xs text-[#3D4D65] mt-1">Sun Run · zgłoszenia z formularza</p>
           </div>
           <div>
-            <label className="block text-xs text-[#6B6357] uppercase tracking-widest mb-1.5">
+            <label className="block text-xs text-[#3D4D65] uppercase tracking-widest mb-1.5">
               Hasło
             </label>
             <input
@@ -84,14 +84,14 @@ export default function AdminPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoFocus
-              className="w-full bg-[#F5F1E8] border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] outline-none transition-colors"
+              className="w-full bg-[#F4D8A2] border border-sr-line focus:border-sr-orange rounded-xl px-4 py-3 text-sm text-[#183153] outline-none transition-colors"
             />
           </div>
-          {error && <p className="text-sm text-brand-red-ink">{error}</p>}
+          {error && <p className="text-sm text-sr-red">{error}</p>}
           <button
             type="submit"
             disabled={loading || !password}
-            className="w-full py-3 bg-brand-orange-ink hover:bg-brand-orange-ink/90 disabled:opacity-50 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
+            className="w-full py-3 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-50 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
           >
             {loading ? "Logowanie..." : "Zaloguj"}
           </button>
@@ -101,12 +101,12 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F1E8] text-[#1A1712] px-6 sm:px-12 py-12">
+    <div className="min-h-screen bg-[#F4D8A2] text-[#183153] px-6 sm:px-12 py-12">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-black uppercase text-brand-orange-ink">Zgłoszenia partnerów</h1>
-            <p className="text-xs text-[#6B6357] mt-1">
+            <h1 className="text-3xl font-black uppercase text-sr-red">Zgłoszenia partnerów</h1>
+            <p className="text-xs text-[#3D4D65] mt-1">
               Formularz kontaktowy · {submissions.length}{" "}
               {submissions.length === 1 ? "zgłoszenie" : "zgłoszeń"}
             </p>
@@ -115,13 +115,13 @@ export default function AdminPage() {
             <button
               onClick={() => fetchSubmissions(password)}
               disabled={loading}
-              className="px-5 py-2 border border-[#D8CFBD] hover:border-brand-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
+              className="px-5 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
             >
               Odśwież
             </button>
             <button
               onClick={handleLogout}
-              className="px-5 py-2 border border-[#E2DBCC] hover:border-brand-red/50 text-[#6B6357] hover:text-brand-red-ink rounded-full text-xs font-bold uppercase tracking-widest transition-colors"
+              className="px-5 py-2 border border-sr-line hover:border-sr-red/50 text-[#3D4D65] hover:text-sr-red rounded-full text-xs font-bold uppercase tracking-widest transition-colors"
             >
               Wyloguj
             </button>
@@ -129,7 +129,7 @@ export default function AdminPage() {
         </div>
 
         {submissions.length === 0 ? (
-          <div className="bg-white border border-[#E2DBCC] rounded-3xl p-12 text-center text-[#6B6357] text-sm shadow-sm">
+          <div className="bg-white border border-sr-line rounded-3xl p-12 text-center text-[#3D4D65] text-sm shadow-sm">
             Brak zgłoszeń — gdy ktoś wypełni formularz na stronie „Dla Partnerów”, pojawi się tutaj.
           </div>
         ) : (
@@ -137,24 +137,24 @@ export default function AdminPage() {
             {submissions.map((s) => (
               <div
                 key={s.id}
-                className="bg-white border border-[#E2DBCC] rounded-2xl p-6 space-y-3 shadow-sm"
+                className="bg-white border border-sr-line rounded-2xl p-6 space-y-3 shadow-sm"
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div>
-                    <span className="font-black text-[#1A1712]">{s.company}</span>
-                    <span className="text-[#6B6357] text-sm"> · {s.name}</span>
+                    <span className="font-black text-[#183153]">{s.company}</span>
+                    <span className="text-[#3D4D65] text-sm"> · {s.name}</span>
                   </div>
-                  <span className="text-xs text-[#6B6357]">
+                  <span className="text-xs text-[#3D4D65]">
                     {new Date(s.date).toLocaleString("pl-PL")}
                   </span>
                 </div>
                 {s.phone && (
-                  <p className="text-sm text-[#6B6357]">
-                    <span className="text-[#6B6357] uppercase text-xs tracking-widest mr-2">Tel:</span>
+                  <p className="text-sm text-[#3D4D65]">
+                    <span className="text-[#3D4D65] uppercase text-xs tracking-widest mr-2">Tel:</span>
                     {s.phone}
                   </p>
                 )}
-                <p className="text-sm text-[#3A342B] leading-relaxed whitespace-pre-wrap border-t border-[#E5DFD2] pt-3">
+                <p className="text-sm text-[#183153] leading-relaxed whitespace-pre-wrap border-t border-[rgb(24 49 83 / 0.14)] pt-3">
                   {s.message}
                 </p>
               </div>

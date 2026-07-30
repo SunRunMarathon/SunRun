@@ -63,7 +63,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #1a1712;
+  color: #183153;
   font-weight: 700;
   font-size: 1rem;
   letter-spacing: 0.02em;
@@ -74,7 +74,7 @@
 }
 
 .sm-toggle:focus-visible {
-  outline: 2px solid #eb8714;
+  outline: 2px solid #FE8004;
   outline-offset: 4px;
   border-radius: 4px;
 }
@@ -144,7 +144,7 @@
   right: 0;
   width: clamp(280px, 40vw, 440px);
   height: 100%;
-  background: #f7efdf;
+  background: #FFFFFF;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
@@ -209,7 +209,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: var(--sm-accent, #eb8714);
+  color: var(--sm-accent, #FE8004);
 }
 
 .sm-socials-list {
@@ -228,14 +228,14 @@
 }
 
 .sm-socials-link:focus-visible {
-  outline: 2px solid var(--sm-accent, #eb8714);
+  outline: 2px solid var(--sm-accent, #FE8004);
   outline-offset: 3px;
 }
 
 .sm-socials-link {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #1a1712;
+  color: #183153;
   text-decoration: none;
   position: relative;
   padding: 2px 0;
@@ -246,7 +246,7 @@
 }
 
 .sm-socials-link:hover {
-  color: var(--sm-accent, #eb8714);
+  color: var(--sm-accent, #FE8004);
 }
 
 .sm-panel-list {
@@ -260,7 +260,7 @@
 
 .sm-panel-item {
   position: relative;
-  color: #1a1712;
+  color: #183153;
   font-weight: 800;
   font-size: 3.25rem;
   cursor: pointer;
@@ -286,7 +286,7 @@
   }
 
   .sm-panel-item:hover {
-    color: var(--sm-accent, #eb8714);
+    color: var(--sm-accent, #FE8004);
   }
 }
 
@@ -313,7 +313,7 @@
   right: 2.8em;
   font-size: 18px;
   font-weight: 400;
-  color: var(--sm-accent, #eb8714);
+  color: var(--sm-accent, #FE8004);
   letter-spacing: 0;
   pointer-events: none;
   user-select: none;

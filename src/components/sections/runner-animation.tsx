@@ -21,7 +21,7 @@ export default function RunnerAnimation() {
 
   return (
     // Ten kontener ma wysokość 300vh, co oznacza, że scrollowanie przez niego zajmie 3 wysokości ekranu.
-    <section ref={containerRef} className="relative h-[300vh] bg-[#faf9f5]">
+    <section ref={containerRef} className="relative h-[300vh] bg-[#FFFFFF]">
       {/* 
         Sticky kontener zatrzymuje się w miejscu, dopóki główny kontener się scrolluje.
         To tutaj dzieje się cała "magia" – tło stoi w miejscu, a postać biegnie.

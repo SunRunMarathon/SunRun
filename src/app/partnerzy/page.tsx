@@ -12,7 +12,6 @@ import RotatingText from "@/components/RotatingText";
 import VariableProximity from "@/components/VariableProximity";
 import ScrollFloat from "@/components/ScrollFloat";
 
-const Grainient = dynamic(() => import("@/components/Grainient"), { ssr: false });
 const FallingText = dynamic(() => import("@/components/FallingText"), { ssr: false });
 
 // Czcionka variable dla efektu VariableProximity — oś wagi (wght) jest
@@ -46,17 +45,17 @@ const PROXIMITY_LINES = [
 
 // Zachowane kotwice (#dkms itd.) — linki z kafelków na stronie głównej
 const PARTNERS = [
-  { id: "dkms", name: "DKMS", category: "Partner Strategiczny", impact: "Rejestracja dawców szpiku", color: "#ED3939" },
-  { id: "vivo", name: "VIVO! Lublin", category: "Partner Medialny", impact: "Promocja w centrum handlowym", color: "#0B4282" },
-  { id: "as-babuni", name: "AS Babuni", category: "Partner Gastronomiczny", impact: "Catering i strefa food", color: "#EB8714" },
-  { id: "datasport", name: "Datasport", category: "Partner Techniczny", impact: "Elektroniczny pomiar czasu", color: "#0B4282" },
-  { id: "up-lublin", name: "UP Lublin", category: "Patronat Honorowy", impact: "Patronat honorowy", color: "#EB8714" },
+  { id: "dkms", name: "DKMS", category: "Partner Strategiczny", impact: "Rejestracja dawców szpiku", color: "#CE2F25" },
+  { id: "vivo", name: "VIVO! Lublin", category: "Partner Medialny", impact: "Promocja w centrum handlowym", color: "#183153" },
+  { id: "as-babuni", name: "AS Babuni", category: "Partner Gastronomiczny", impact: "Catering i strefa food", color: "#FE8004" },
+  { id: "datasport", name: "Datasport", category: "Partner Techniczny", impact: "Elektroniczny pomiar czasu", color: "#183153" },
+  { id: "up-lublin", name: "UP Lublin", category: "Patronat Honorowy", impact: "Patronat honorowy", color: "#FE8004" },
 ];
 
 const PACKAGES = [
-  { name: "Złoty", color: "#E0B34A", perks: "Logo na koszulkach · stoisko 6×3m · baner start/meta · dedykowany post · 5 pakietów startowych" },
-  { name: "Srebrny", color: "#9AA3AE", perks: "Logo na stronie · stoisko 3×3m · komunikaty prasowe · 3 pakiety startowe" },
-  { name: "Brązowy", color: "#EB8714", perks: "Logo na stronie · materiały reklamowe · 1 pakiet startowy" },
+  { name: "Złoty", color: "#FED46D", perks: "Logo na koszulkach · stoisko 6×3m · baner start/meta · dedykowany post · 5 pakietów startowych" },
+  { name: "Srebrny", color: "#3D4D65", perks: "Logo na stronie · stoisko 3×3m · komunikaty prasowe · 3 pakiety startowe" },
+  { name: "Brązowy", color: "#F94C1F", perks: "Logo na stronie · materiały reklamowe · 1 pakiet startowy" },
 ];
 
 export default function PartnerzyPage() {
@@ -128,31 +127,15 @@ export default function PartnerzyPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#F5F1E8] text-[#1A1712] overflow-x-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <Grainient
-          color1="#F7DFA8"
-          color2="#F1E7D6"
-          color3="#EAD6B0"
-          timeSpeed={0.35}
-          warpStrength={0.7}
-          warpFrequency={4.5}
-          contrast={1.1}
-          gamma={1.0}
-          saturation={0.7}
-          grainAmount={0.07}
-          zoom={0.9}
-        />
-        <div className="absolute inset-0 bg-[#F5F1E8]/55" />
-      </div>
+    <div className="relative min-h-screen bg-sr-sand text-sr-navy overflow-x-hidden">
 
       <Navbar />
       <TargetCursor
         spinDuration={3}
         hideDefaultCursor={true}
         parallaxOn={true}
-        cursorColor="#1A1712"
-        cursorColorOnTarget="#EB8714"
+        cursorColor="#183153"
+        cursorColorOnTarget="#FE8004"
         targetSelector=".cursor-target"
       />
 
@@ -163,17 +146,17 @@ export default function PartnerzyPage() {
         <section className="min-h-screen flex items-center px-8 sm:px-16 md:px-28 pt-24 pb-16">
           <div className="w-full grid lg:grid-cols-2 gap-10 xl:gap-16 items-center">
             <div className="max-w-2xl space-y-8">
-              <h1 className="text-7xl sm:text-8xl md:text-9xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-brand-orange via-brand-orange to-brand-red leading-none">
+              <h1 className="text-7xl sm:text-8xl md:text-9xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-sr-navy via-sr-navy to-sr-red leading-none">
                 Dla<br />Partnerów
               </h1>
-              <p className="text-lg sm:text-2xl text-[#3A342B] leading-relaxed max-w-xl font-semibold">
+              <p className="text-lg sm:text-2xl text-[#183153] leading-relaxed max-w-xl font-semibold">
                 Zjedź niżej. Mamy Ci coś do pokazania.
               </p>
-              <div className="pt-4 text-brand-orange-ink animate-bounce text-5xl select-none">↓</div>
+              <div className="pt-4 text-sr-red animate-bounce text-5xl select-none">↓</div>
             </div>
 
             {/* Zdjęcie partnera — Uniwersytet Jazdy */}
-            <div className="hidden lg:block relative w-full max-w-xl mx-auto aspect-[4/5] rounded-3xl overflow-hidden border border-[#E2DBCC] shadow-2xl">
+            <div className="hidden lg:block relative w-full max-w-xl mx-auto aspect-[4/5] rounded-3xl overflow-hidden border border-sr-line shadow-2xl">
               <img
                 src="/photos/uniwersytet-jazdy.webp"
                 alt="Ekipa Uniwersytetu Jazdy — partner Sun Run"
@@ -189,11 +172,11 @@ export default function PartnerzyPage() {
         ═══════════════════════════════════════ */}
         <section className="min-h-screen flex flex-col justify-center px-6 sm:px-12">
           <div className="max-w-4xl mx-auto w-full text-center mb-6">
-            <span className="text-2xl sm:text-4xl font-black uppercase tracking-[0.15em] text-[#3A342B]">
+            <span className="text-2xl sm:text-4xl font-black uppercase tracking-[0.15em] text-[#183153]">
               Niektórzy mówią...
             </span>
           </div>
-          <div className="max-w-4xl mx-auto w-full h-[60vh] font-bold text-[#3A342B]">
+          <div className="max-w-4xl mx-auto w-full h-[60vh] font-bold text-[#183153]">
             <FallingText
               text="Przecież bieganie to nuda. Nikt nie przyjdzie. Bieg charytatywny? Strata czasu i pieniędzy. To się nie uda. Nikogo to nie obchodzi. Bez sensu. Szkoda zachodu. Kompletna porażka."
               highlightWords={["nuda.", "Nikt", "Strata", "nie", "Nikogo", "Bez", "sensu.", "porażka."]}
@@ -204,7 +187,7 @@ export default function PartnerzyPage() {
               mouseConstraintStiffness={0.55}
             />
           </div>
-          <p className="text-center text-base sm:text-xl font-bold text-[#6B6357] uppercase tracking-widest mt-2 select-none">
+          <p className="text-center text-base sm:text-xl font-bold text-[#3D4D65] uppercase tracking-widest mt-2 select-none">
             ...i cały ten hejt właśnie się rozsypał
           </p>
         </section>
@@ -218,13 +201,13 @@ export default function PartnerzyPage() {
           className="h-screen flex items-center justify-center px-6 sm:px-12"
         >
           <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 text-4xl sm:text-6xl font-black uppercase">
-            <span className="text-[#1A1712]">Bo bieganie to</span>
+            <span className="text-[#183153]">Bo bieganie to</span>
             {rotatingWords.length > 0 && (
             <RotatingText
               ref={rotatingTextRef}
               texts={rotatingWords}
               auto={false}
-              mainClassName="px-4 sm:px-6 py-1 sm:py-2 bg-brand-orange-ink text-white rounded-2xl overflow-hidden justify-center"
+              mainClassName="px-4 sm:px-6 py-1 sm:py-2 bg-sr-orange text-sr-navy rounded-2xl overflow-hidden justify-center"
               staggerFrom="last"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
@@ -247,10 +230,10 @@ export default function PartnerzyPage() {
             style={{ position: "relative" }}
             className="w-full mx-auto text-center space-y-10"
           >
-            <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-brand-orange-ink block">
+            <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-sr-red block">
               Liczby nie kłamią
             </span>
-            <div className={`${robotoFlex.className} space-y-6 sm:space-y-8 text-3xl sm:text-5xl md:text-7xl leading-tight text-[#1A1712]`}>
+            <div className={`${robotoFlex.className} space-y-6 sm:space-y-8 text-3xl sm:text-5xl md:text-7xl leading-tight text-[#183153]`}>
               {PROXIMITY_LINES.map((line) => (
                 <p key={line} className="whitespace-nowrap">
                   <VariableProximity
@@ -282,7 +265,7 @@ export default function PartnerzyPage() {
             scrollEnd="+=700"
             stagger={0.06}
             containerClassName="text-center"
-            textClassName="text-5xl sm:text-7xl md:text-8xl font-black uppercase text-brand-orange-ink"
+            textClassName="text-5xl sm:text-7xl md:text-8xl font-black uppercase text-sr-red"
           >
             Wybierz Sun Run
           </ScrollFloat>
@@ -295,34 +278,34 @@ export default function PartnerzyPage() {
           <div className="max-w-2xl mx-auto space-y-16">
             {/* Pakiety — minimalistycznie */}
             <div className="space-y-5">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block">
                 Pakiety partnerskie
               </span>
               {PACKAGES.map((pkg) => (
                 <div
                   key={pkg.name}
-                  className="group flex items-start gap-4 border-b border-[#E2DBCC] pb-5"
+                  className="group flex items-start gap-4 border-b border-sr-line pb-5"
                 >
                   <span
                     className="w-2.5 h-2.5 rounded-full mt-2 flex-shrink-0"
                     style={{ backgroundColor: pkg.color }}
                   />
                   <div>
-                    <p className="font-black text-lg text-[#1A1712] uppercase tracking-wide">
+                    <p className="font-black text-lg text-[#183153] uppercase tracking-wide">
                       Partner {pkg.name}
                     </p>
-                    <p className="text-sm text-[#6B6357] mt-1 leading-relaxed">{pkg.perks}</p>
+                    <p className="text-sm text-[#3D4D65] mt-1 leading-relaxed">{pkg.perks}</p>
                   </div>
                 </div>
               ))}
-              <p className="text-xs text-[#6B6357]">
+              <p className="text-xs text-[#3D4D65]">
                 Wycena indywidualna — każdy pakiet negocjowalny.
               </p>
             </div>
 
             {/* Partnerzy I edycji — minimalna lista z kotwicami */}
             <div className="space-y-5">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-red-ink block">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block">
                 Zaufali nam w 2025
               </span>
               <div className="flex flex-wrap gap-3">
@@ -330,11 +313,11 @@ export default function PartnerzyPage() {
                   <div
                     key={p.id}
                     id={p.id}
-                    className="flex items-center gap-2.5 px-4 py-2 bg-white/70 border border-[#E2DBCC] rounded-full scroll-mt-32"
+                    className="flex items-center gap-2.5 px-4 py-2 bg-white/70 border border-sr-line rounded-full scroll-mt-32"
                   >
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-                    <span className="text-sm font-bold text-[#3A342B]">{p.name}</span>
-                    <span className="text-xs text-[#6B6357] hidden sm:inline">· {p.impact}</span>
+                    <span className="text-sm font-bold text-[#183153]">{p.name}</span>
+                    <span className="text-xs text-[#3D4D65] hidden sm:inline">· {p.impact}</span>
                   </div>
                 ))}
               </div>
@@ -342,23 +325,23 @@ export default function PartnerzyPage() {
 
             {/* Formularz */}
             <div>
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-brand-orange-ink block mb-3">
+              <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-3">
                 Kontakt
               </span>
-              <h2 className="text-3xl font-black uppercase text-[#1A1712] mb-3">
+              <h2 className="text-3xl font-black uppercase text-[#183153] mb-3">
                 Porozmawiajmy
               </h2>
-              <p className="text-sm text-[#6B6357] mb-8">
+              <p className="text-sm text-[#3D4D65] mb-8">
                 Wypełnij formularz — odezwiemy się najszybciej jak to możliwe.
               </p>
 
               {contactSent ? (
-                <div className="bg-brand-orange/10 border border-brand-orange/30 rounded-2xl p-8 text-center">
-                  <p className="text-brand-orange-ink font-bold text-lg">Dziękujemy!</p>
-                  <p className="text-sm text-[#6B6357] mt-2">
+                <div className="bg-sr-orange/10 border border-sr-orange/30 rounded-2xl p-8 text-center">
+                  <p className="text-sr-red font-bold text-lg">Dziękujemy!</p>
+                  <p className="text-sm text-[#3D4D65] mt-2">
                     Twoje zgłoszenie zostało zapisane — odezwiemy się najszybciej jak to możliwe.
                     W pilnych sprawach napisz bezpośrednio na{" "}
-                    <a href="mailto:sunrunlublin@gmail.com" className="text-brand-orange-ink underline">
+                    <a href="mailto:sunrunlublin@gmail.com" className="text-sr-red underline">
                       sunrunlublin@gmail.com
                     </a>
                   </p>
@@ -371,19 +354,19 @@ export default function PartnerzyPage() {
                     { name: "phone", label: "Telefon (opcjonalnie)", type: "tel", required: false },
                   ].map((f) => (
                     <div key={f.name}>
-                      <label className="block text-xs text-[#6B6357] uppercase tracking-widest mb-1.5">
+                      <label className="block text-xs text-[#3D4D65] uppercase tracking-widest mb-1.5">
                         {f.label}
                       </label>
                       <input
                         type={f.type}
                         name={f.name}
                         required={f.required}
-                        className="w-full bg-white/80 border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] placeholder-[#6B6357] outline-none transition-colors"
+                        className="w-full bg-white/80 border border-sr-line focus:border-sr-orange rounded-xl px-4 py-3 text-sm text-[#183153] placeholder-[#3D4D65] outline-none transition-colors"
                       />
                     </div>
                   ))}
                   <div>
-                    <label className="block text-xs text-[#6B6357] uppercase tracking-widest mb-1.5">
+                    <label className="block text-xs text-[#3D4D65] uppercase tracking-widest mb-1.5">
                       Wiadomość
                     </label>
                     <textarea
@@ -391,25 +374,25 @@ export default function PartnerzyPage() {
                       rows={4}
                       required
                       placeholder="Opisz swoje oczekiwania, rodzaj działalności i pakiet, który Cię interesuje..."
-                      className="w-full bg-white/80 border border-[#E2DBCC] focus:border-brand-orange rounded-xl px-4 py-3 text-sm text-[#1A1712] placeholder-[#6B6357] outline-none transition-colors resize-none"
+                      className="w-full bg-white/80 border border-sr-line focus:border-sr-orange rounded-xl px-4 py-3 text-sm text-[#183153] placeholder-[#3D4D65] outline-none transition-colors resize-none"
                     />
                   </div>
-                  {sendError && <p className="text-sm text-brand-red-ink">{sendError}</p>}
+                  {sendError && <p className="text-sm text-sr-red">{sendError}</p>}
                   <button
                     type="submit"
                     disabled={sending}
-                    className="cursor-target w-full py-3.5 bg-brand-orange-ink hover:bg-brand-orange-ink/90 disabled:opacity-60 text-white font-black rounded-full text-sm tracking-widest uppercase transition-all"
+                    className="cursor-target w-full py-3.5 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-60 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
                   >
                     {sending ? "Wysyłanie..." : "Wyślij zapytanie →"}
                   </button>
                 </form>
               )}
 
-              <div className="mt-8 pt-8 border-t border-[#E2DBCC]">
-                <p className="text-xs text-[#6B6357] uppercase tracking-widest mb-1">Email bezpośredni</p>
+              <div className="mt-8 pt-8 border-t border-sr-line">
+                <p className="text-xs text-[#3D4D65] uppercase tracking-widest mb-1">Email bezpośredni</p>
                 <a
                   href="mailto:sunrunlublin@gmail.com"
-                  className="text-brand-orange-ink hover:underline text-sm font-bold"
+                  className="text-sr-red hover:underline text-sm font-bold"
                 >
                   sunrunlublin@gmail.com
                 </a>

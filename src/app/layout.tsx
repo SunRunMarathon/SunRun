@@ -87,7 +87,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl" className="h-full antialiased bg-[#F5F1E8]" suppressHydrationWarning>
+    <html lang="pl" className="h-full antialiased bg-[#F4D8A2]" suppressHydrationWarning>
       <head>
         {/* Dane strukturalne schema.org (Organization, WebSite, SportsEvent) */}
         <StructuredData />
@@ -99,7 +99,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F5F1E8]" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full flex flex-col bg-[#F4D8A2]" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

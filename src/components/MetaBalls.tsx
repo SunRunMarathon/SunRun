@@ -78,8 +78,8 @@ void main() {
 `;
 
 export default function MetaBalls({
-  color1 = '#FFEC8E',
-  color2 = '#EB8714',
+  color1 = '#FED46D',
+  color2 = '#FE8004',
   speed = 0.5,
   opacity = 0.35,
   enableMouseInteraction = true,

@@ -100,10 +100,10 @@ export function Navbar({ revealOnScroll = false }) {
       socialItems={socialItems}
       displaySocials
       displayItemNumbering
-      colors={["#EB8714", "#0B4282"]}
-      accentColor="#EB8714"
-      menuButtonColor="#1A1712"
-      openMenuButtonColor="#1A1712"
+      colors={["#FE8004", "#183153"]}
+      accentColor="#FE8004"
+      menuButtonColor="#183153"
+      openMenuButtonColor="#183153"
       changeMenuColorOnOpen={false}
       // Gdy logo jest niewidoczne, wyłączamy też klikalność — inaczej w rogu strony
       // głównej zostawałby niewidoczny odnośnik przechwytujący kliknięcia.

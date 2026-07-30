@@ -421,13 +421,13 @@ const TargetCursor = ({
         <svg viewBox="0 0 34 34" width="34" height="34">
           <defs>
             <radialGradient id="sunCoreGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#FFF6D0" />
-              <stop offset="55%" stopColor="#FFEC8E" />
-              <stop offset="100%" stopColor="#EB8714" />
+              <stop offset="0%" stopColor="#FED46D" />
+              <stop offset="55%" stopColor="#FED46D" />
+              <stop offset="100%" stopColor="#FE8004" />
             </radialGradient>
           </defs>
           {/* promienie */}
-          <g stroke="#FFC24B" strokeWidth="2.4" strokeLinecap="round">
+          <g stroke="#FE8004" strokeWidth="2.4" strokeLinecap="round">
             {Array.from({ length: 8 }).map((_, i) => {
               const a = (i * Math.PI) / 4;
               const cx = 17;

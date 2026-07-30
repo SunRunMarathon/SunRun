@@ -7,7 +7,7 @@ import './StaggeredMenu.css';
 
 export const StaggeredMenu = ({
   position = 'right',
-  colors = ['#EB8714', '#0B4282'],
+  colors = ['#FE8004', '#183153'],
   items = [],
   socialItems = [],
   socialsTitle = 'Znajdź nas',
@@ -17,9 +17,9 @@ export const StaggeredMenu = ({
   logoUrl,
   logoNode,
   logoStyle,
-  menuButtonColor = '#1A1712',
-  openMenuButtonColor = '#1A1712',
-  accentColor = '#EB8714',
+  menuButtonColor = '#183153',
+  openMenuButtonColor = '#183153',
+  accentColor = '#FE8004',
   changeMenuColorOnOpen = true,
   isFixed = false,
   closeOnClickAway = true,

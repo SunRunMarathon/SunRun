@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#faf9f5] pt-16">
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#FFFFFF] pt-16">
 
       {/* Desktop fading high-quality runners image on the right */}
       <div className="absolute inset-y-0 right-0 z-0 hidden w-1/2 lg:block animate-in fade-in duration-1000">
@@ -113,7 +113,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom shadow fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#faf9f5] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FFFFFF] to-transparent pointer-events-none" />
     </section>
   );
 }
