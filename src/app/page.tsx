@@ -276,7 +276,7 @@ export default function Home() {
             <p className="text-base sm:text-lg text-[#183153] leading-relaxed">
               Bieg charytatywny organizowany w 100% przez lubelską młodzież.
               Razem wspieramy{" "}
-              <a href="https://hospicjum.lublin.pl" target="_blank" rel="noopener noreferrer"
+              <a href="https://hospicjum-samarytanin.pl" target="_blank" rel="noopener noreferrer"
                 className="cursor-target text-sr-red underline underline-offset-2 decoration-sr-orange/50 hover:decoration-sr-orange transition-all font-semibold">
                 Hospicjum Dobrego Samarytanina
               </a>{" "}
@@ -409,7 +409,7 @@ export default function Home() {
                   </div>
                 </div>
                 <a
-                  href="https://hospicjum.lublin.pl"
+                  href="https://hospicjum-samarytanin.pl"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-sr-red/40 hover:border-sr-red text-sr-red hover:text-sr-red font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"

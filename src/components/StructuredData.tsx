@@ -31,7 +31,7 @@ const organization = {
   url: SITE_URL,
   logo: `${SITE_URL}/og-image.png`,
   image: `${SITE_URL}/og-image.png`,
-  email: "kontakt@sunrun.pl",
+  email: "hospicjum.samarytanin.bieg@gmail.com",
   foundingDate: "2025",
   description:
     "Bieg charytatywny w 100% organizowany przez lubelską młodzież na rzecz Hospicjum Dobrego Samarytanina w Lublinie. Bieganie, sport i pomoc w jednym.",
@@ -48,9 +48,9 @@ const organization = {
     "Hospicjum Dobrego Samarytanina",
   ],
   sameAs: [
-    "https://instagram.com/sunrunlublin",
-    "https://facebook.com/sunrunlublin",
-    "https://tiktok.com/@sunrunlublin",
+    "https://www.instagram.com/sunrun.lublin/",
+    "https://www.facebook.com/sun.run.charytatywny/",
+    "https://www.tiktok.com/@sun.run_",
   ],
 };
 

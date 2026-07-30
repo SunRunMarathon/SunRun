@@ -120,7 +120,7 @@ export default function ONasPage() {
                   a wspólny wysiłek może dawać realną pomoc tym, którzy jej potrzebują.
                   Każda złotówka zebrana podczas biegu trafia bezpośrednio do{" "}
                   <a
-                    href="https://hospicjum.lublin.pl"
+                    href="https://hospicjum-samarytanin.pl"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sr-red font-semibold hover:underline"

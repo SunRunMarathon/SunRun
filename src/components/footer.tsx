@@ -24,9 +24,9 @@ const STRONY = [
 ];
 
 const MEDIA = [
-  { name: "Instagram", url: "https://instagram.com/sunrunlublin", icon: "instagram" },
-  { name: "Facebook", url: "https://facebook.com/sunrunlublin", icon: "facebook" },
-  { name: "TikTok", url: "https://tiktok.com/@sunrunlublin", icon: "tiktok" },
+  { name: "Instagram", url: "https://www.instagram.com/sunrun.lublin/", icon: "instagram" },
+  { name: "Facebook", url: "https://www.facebook.com/sun.run.charytatywny/", icon: "facebook" },
+  { name: "TikTok", url: "https://www.tiktok.com/@sun.run_", icon: "tiktok" },
 ];
 
 export function Footer() {
@@ -70,10 +70,10 @@ export function Footer() {
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-widest">Kontakt</h4>
             <a
-              href="mailto:sunrunlublin@gmail.com"
-              className="block text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
+              href="mailto:hospicjum.samarytanin.bieg@gmail.com"
+              className="block text-sm text-sr-sand/80 hover:text-sr-orange transition-colors break-words"
             >
-              sunrunlublin@gmail.com
+              hospicjum.samarytanin.bieg@gmail.com
             </a>
             <p className="text-xs text-sr-sand/80">
               W sprawie partnerstw skontaktuj się z nami mailowo lub przez formularz
