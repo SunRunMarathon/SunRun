@@ -1,6 +1,26 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import { StructuredData } from "@/components/StructuredData";
+
+/**
+ * LEMON MILK BOLD — font nagłówkowy wg księgi znaku.
+ *
+ * Plik pochodzi z oryginalnej dystrybucji autora (Muhammad Ariq Syauqi),
+ * przekonwertowany do woff2. Ma pełne pokrycie polskich znaków, w tym „Ś",
+ * którego brakowało w pierwszej pobranej kopii. Księga stwierdza, że font
+ * wolno używać bezpłatnie w celach osobistych i charytatywnych.
+ *
+ * Udostępniany jako zmienna CSS --font-lemonmilk, żeby dało się go włączać
+ * wybiórczo (na razie: pozycje menu bocznego), a nie globalnie.
+ */
+const lemonMilk = localFont({
+  src: "../fonts/LemonMilk-Bold.woff2",
+  weight: "700",
+  style: "normal",
+  display: "swap",
+  variable: "--font-lemonmilk",
+});
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 const GA_ID = "G-13PE0DJ8V6";
@@ -87,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl" className="h-full antialiased bg-[#F4D8A2]" suppressHydrationWarning>
+    <html lang="pl" className={`h-full antialiased bg-[#F4D8A2] ${lemonMilk.variable}`} suppressHydrationWarning>
       <head>
         {/* Dane strukturalne schema.org (Organization, WebSite, SportsEvent) */}
         <StructuredData />
