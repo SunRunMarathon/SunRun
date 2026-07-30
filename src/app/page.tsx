@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 import ScrollStack, { ScrollStackItem } from "@/components/ScrollStack";
 import Stack from "@/components/Stack";
@@ -596,91 +597,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           6. FOOTER
       ═══════════════════════════════════════════ */}
-      <footer className="relative z-10 w-full bg-[#EFE9DC]/95 border-t border-[#E2DBCC] backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-8 py-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {/* Brand */}
-            <div className="space-y-4">
-              <h3 className="text-2xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-red">
-                SUN RUN
-              </h3>
-              <p className="text-xs text-[#6B6357] leading-relaxed">
-                Bieg charytatywny dla Hospicjum Dobrego Samarytanina w Lublinie.
-                Inicjatywa lubelskiej młodzieży.
-              </p>
-            </div>
-
-            {/* Nawigacja */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#4A4438]">Strony</h4>
-              {[
-                { label: "O nas", href: "/o-nas" },
-                { label: "Dla partnerów", href: "/partnerzy" },
-                { label: "Archiwum I edycji", href: "/archiwum" },
-                { label: "Zapisz się", href: "https://frslublin.pl" },
-              ].map((l) => (
-                <a
-                  key={l.label}
-                  href={l.href}
-                  target={l.href.startsWith("http") ? "_blank" : undefined}
-                  rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="block text-sm text-[#6B6357] hover:text-brand-orange-ink transition-colors"
-                >
-                  {l.label}
-                </a>
-              ))}
-            </div>
-
-            {/* Kontakt */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#4A4438]">Kontakt</h4>
-              <a
-                href="mailto:sunrunlublin@gmail.com"
-                className="block text-sm text-[#6B6357] hover:text-brand-orange-ink transition-colors"
-              >
-                sunrunlublin@gmail.com
-              </a>
-              <p className="text-xs text-[#6B6357]">
-                W sprawie partnerstw skontaktuj się z nami mailowo lub przez formularz w zakładce Dla Partnerów.
-              </p>
-            </div>
-
-            {/* Social media */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#4A4438]">Media</h4>
-              <div className="flex flex-col gap-2">
-                {[
-                  { name: "Instagram", url: "https://instagram.com/sunrunlublin", icon: "IG" },
-                  { name: "Facebook", url: "https://facebook.com/sunrunlublin", icon: "FB" },
-                  { name: "TikTok", url: "https://tiktok.com/@sunrunlublin", icon: "TT" },
-                ].map((s) => (
-                  <a
-                    key={s.name}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-[#6B6357] hover:text-brand-orange-ink transition-colors group"
-                  >
-                    <span className="w-7 h-7 rounded-lg bg-[#F3ECDD] border border-[#E2DBCC] group-hover:border-brand-orange/40 flex items-center justify-center text-[10px] font-black transition-colors">
-                      {s.icon}
-                    </span>
-                    {s.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-[#E2DBCC] flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-[#6B6357]">
-              © 2026 Sun Run Lublin · Wszelkie prawa zastrzeżone
-            </p>
-            <p className="text-xs text-[#6B6357]">
-              Hospicjum Dobrego Samarytanina · KRS 0000318602
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

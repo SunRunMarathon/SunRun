@@ -3,6 +3,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 
 
@@ -314,6 +315,8 @@ export default function ArchiwumPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

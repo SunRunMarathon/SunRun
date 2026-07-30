@@ -7,6 +7,7 @@ import { Roboto_Flex } from "next/font/google";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 import RotatingText from "@/components/RotatingText";
 import VariableProximity from "@/components/VariableProximity";
@@ -401,6 +402,8 @@ export default function PartnerzyPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 
 
@@ -265,6 +266,8 @@ export default function ONasPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }
