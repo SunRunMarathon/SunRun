@@ -156,7 +156,7 @@ export default function Home() {
       >
         <div className="relative bg-sr-white border-t border-sr-line py-3 px-6 sm:px-12 flex justify-center items-center gap-5 shadow-2xl">
           <span className="text-sm text-[#3D4D65] hidden sm:block tracking-wide">
-            Zapisz się na <span className="text-sr-red font-bold">II edycję Sun Run 2026!</span>
+            Zapisz się na <span className="text-sr-red font-extrabold">II edycję Sun Run 2026!</span>
           </span>
           <a
             href="https://frslublin.pl"
@@ -290,7 +290,7 @@ export default function Home() {
               Zapisz się
             </a>
             <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-              className="cursor-target inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-bold rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+              className="cursor-target inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
               Dowiedz się więcej ↓
             </button>
           </div>
@@ -496,7 +496,7 @@ export default function Home() {
                 </p>
                 <div className="flex flex-wrap gap-3">
                   {["Widoczność logo", "Stoisko w miasteczku", "Materiały eventowe", "Media coverage"].map(b => (
-                    <span key={b} className="px-3 py-1 bg-sr-orange/10 border border-sr-orange/25 rounded-full text-xs text-sr-red font-medium">
+                    <span key={b} className="px-3 py-1 bg-sr-orange/10 border border-sr-orange/25 rounded-full text-xs text-sr-red font-semibold">
                       {b}
                     </span>
                   ))}

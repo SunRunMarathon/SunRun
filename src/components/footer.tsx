@@ -33,7 +33,12 @@ export function Footer() {
   return (
     <footer className="relative z-10 w-full bg-sr-navy text-sr-sand">
       <div className="max-w-6xl mx-auto px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        {/* Kolumny nie są równe: KONTAKT dostaje więcej miejsca, bo adres
+            e-mail ma 36 znaków i w równym podziale na cztery nie mieścił się
+            w swojej kolumnie — wylewał się na znak Instagrama w kolumnie MEDIA.
+            Ujawniło się to dopiero po zmianie czcionki na Montserrat, szerszą
+            od wcześniejszej zastępczej. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_0.8fr_1.45fr_0.85fr] gap-10">
           {/* Znak i opis */}
           <div className="space-y-4">
             <img

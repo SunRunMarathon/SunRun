@@ -1,7 +1,26 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { StructuredData } from "@/components/StructuredData";
+
+/**
+ * Montserrat — font tekstowy wg księgi znaku (SemiBold, Bold, ExtraBold, Black
+ * wraz z odmianami pochyłymi).
+ *
+ * `latin-ext` jest tu KONIECZNY. Bez tego podzbioru font nie zawiera polskich
+ * znaków diakrytycznych i litery ą, ć, ę, ł, ń, ó, ś, ź, ż spadałyby na czcionkę
+ * zastępczą — w środku wyrazu, co widać od razu.
+ *
+ * Montserrat na Google Fonts jest fontem zmiennym, więc jedno wczytanie pokrywa
+ * wszystkie grubości z księgi i nie trzeba wyliczać ich osobno.
+ */
+const montserrat = Montserrat({
+  subsets: ["latin", "latin-ext"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-montserrat",
+});
 
 /**
  * LEMON MILK BOLD — font nagłówkowy wg księgi znaku.
@@ -107,7 +126,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl" className={`h-full antialiased bg-[#F4D8A2] ${lemonMilk.variable}`} suppressHydrationWarning>
+    <html lang="pl" className={`h-full antialiased bg-[#F4D8A2] ${lemonMilk.variable} ${montserrat.variable}`} suppressHydrationWarning>
       <head>
         {/* Dane strukturalne schema.org (Organization, WebSite, SportsEvent) */}
         <StructuredData />

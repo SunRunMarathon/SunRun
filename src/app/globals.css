@@ -60,9 +60,16 @@
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Neue Haas Grotesk Display Pro", "Neue Haas Grotesk Text Pro", "Neue Haas Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* ══════════════════════════════════════════════════════════════════
+     TYPOGRAFIA WG KSIĘGI ZNAKU
+     Tekst: Montserrat. Nagłówki: LEMON MILK BOLD.
+     Wcześniej stało tu "Neue Haas Grotesk Pro", którego strona w ogóle nie
+     wczytywała — całość renderowała się w zastępczym Helvetica/Arial.
+     Oba fonty wczytuje next/font w layout.tsx i udostępnia jako zmienne.
+     ══════════════════════════════════════════════════════════════════ */
+  --font-sans: var(--font-montserrat), system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-mono: var(--font-geist-mono);
-  --font-heading: "Neue Haas Grotesk Display Pro", "Neue Haas Grotesk Text Pro", "Neue Haas Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-heading: var(--font-lemonmilk), var(--font-montserrat), system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -178,9 +185,34 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* SemiBold (600) jako domyślna grubość tekstu.
+       Księga znaku wymienia wyłącznie SemiBold, Bold, ExtraBold i Black —
+       Regular (400) ani Medium (500) nie należą do zestawu marki. Bez tej
+       reguły przeglądarka używała 400, czyli odmiany spoza księgi. */
+    font-weight: 600;
   }
   html {
     @apply font-sans;
+  }
+  /* Pogrubienia w tekście: ExtraBold (800).
+     Wpisane wprost, bo Tailwind nadaje znacznikom <strong> i <b> wartość
+     `bolder`, która nie jest stałą wagą, tylko krokiem względem rodzica —
+     przy tekście 600 przeskakiwała od razu na 900, czyli tyle co nagłówki
+     i główne przyciski. Stała wartość daje czytelną hierarchię
+     600 treść → 800 pogrubienie → 900 nagłówki i nie zmieni się sama,
+     gdyby kiedyś ruszyć domyślną wagę tekstu. */
+  strong, b {
+    font-weight: 800;
+  }
+
+  /* Nagłówki w LEMON MILK BOLD wg księgi znaku.
+     `font-synthesis-weight: none` jest tu istotne: LEMON MILK ma tylko jedną
+     grubość, a wiele nagłówków nosi klasy typu font-black (900). Bez tej
+     reguły przeglądarka domalowywałaby sztuczne pogrubienie, przez co litery
+     robiłyby się rozmazane i grubsze niż zaprojektowano. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-synthesis-weight: none;
   }
 }
 /* Drganie strzałki "kliknij tutaj" gdy wysila się, by dosięgnąć hamburgera.
