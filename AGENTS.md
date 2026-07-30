@@ -43,7 +43,7 @@ Developer (Miłosz) $\rightarrow$ Wiktor $\rightarrow$ Tosia Polkowska $\rightar
 
 The core charitable mission of Sun Run is to support the **Good Samaritan Hospice** in Lublin:
 * **Address**: ul. Bernardyńska 11A, Lublin
-* **KRS**: 0000 318 602
+* **KRS**: 0000 026 380 — zweryfikowany 2026-07-29 w oficjalnym rejestrze Ministerstwa Sprawiedliwości (`api-krs.ms.gov.pl`): „LUBELSKIE TOWARZYSTWO PRZYJACIÓŁ CHORYCH »HOSPICJUM DOBREGO SAMARYTANINA«”, Lublin. **Nie mylić z 0000318602** — ten numer należy do Fundacji DKMS z Warszawy i przez pomyłkę widniał wcześniej w tym pliku oraz na stronie.
 * **Impact**: The hospice supports approximately 800 families of terminal cancer patients annually.
 * **Requirement**: The website must highlight the Hospice as the main beneficiary. Prepare a dedicated "Our Goal for 2026" section that can be updated with the specific medical equipment or facility needs defined by the hospice for this year.
 

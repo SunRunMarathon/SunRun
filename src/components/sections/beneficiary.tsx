@@ -58,7 +58,7 @@ export default function Beneficiary() {
                 variant="outline"
                 className="border-zinc-700 bg-zinc-800/50 px-3 py-1.5 text-zinc-300"
               >
-                KRS: 0000 318 602
+                KRS: 0000 026 380
               </Badge>
             </div>
           </div>

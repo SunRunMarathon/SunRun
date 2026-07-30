@@ -394,8 +394,8 @@ export default function Home() {
                   oraz doskonalenie warunków opieki.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <div className="px-3 py-1.5 bg-[#F3ECDD] border border-[#E2DBCC] rounded-lg text-xs text-[#6B6357]">
-                    KRS: 0000 318 602
+                  <div className="px-3 py-1.5 bg-[#FFFFFF] border border-sr-line rounded-lg text-xs text-[#3D4D65]">
+                    KRS: 0000 026 380
                   </div>
                   <div className="px-3 py-1.5 bg-[#FFFFFF] border border-sr-line rounded-lg text-xs text-[#3D4D65]">
                     ul. Bernardyńska 11A, Lublin
