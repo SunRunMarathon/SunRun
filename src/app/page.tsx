@@ -242,33 +242,41 @@ export default function Home() {
             />
           </h1>
 
-          <div className="flex items-center gap-4 pt-1">
+          {/* Data odsunięta od logo — wcześniej pt-1, przez co przyklejała się
+              do dolnej krawędzi znaku. */}
+          <div className="flex items-center gap-4 pt-6">
             <div className="h-px w-10 bg-sr-orange/60" />
             <p className="text-2xl sm:text-3xl font-extrabold tracking-widest text-[#183153] uppercase">
               12 września 2026
             </p>
           </div>
 
-          <div className="bg-sr-white rounded-2xl px-6 py-5 border border-sr-line max-w-2xl shadow-sm">
-            <p className="text-base sm:text-lg text-[#183153] leading-relaxed">
-              Bieg charytatywny organizowany w 100% przez lubelską młodzież.
-              Razem wspieramy{" "}
-              <a href="https://hospicjum-samarytanin.pl" target="_blank" rel="noopener noreferrer"
-                className="cursor-target text-sr-red underline underline-offset-2 decoration-sr-orange/50 hover:decoration-sr-orange transition-all font-semibold">
-                Hospicjum Dobrego Samarytanina
-              </a>{" "}
-              — każdy pakiet startowy to realna pomoc dla ~800 rodzin terminalnie chorych rocznie.
-            </p>
-          </div>
+          {/* Przyciski. Zewnętrzny kontener ma szerokość dopasowaną do treści
+              (w-fit), więc trzeci przycisk rozciągnięty na w-full ma dokładnie
+              taką samą szerokość jak para nad nim — od lewej krawędzi
+              „Zapisz się" do prawej „Dowiedz się więcej". */}
+          <div data-hero-cta className={`flex flex-col gap-4 pt-2 w-fit pointer-events-auto transition-all duration-500 ${scrolled ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a href="https://frslublin.pl" target="_blank" rel="noopener noreferrer"
+                className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                Zapisz się
+              </a>
+              <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
+                className="cursor-target inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+                Dowiedz się więcej ↓
+              </button>
+            </div>
 
-          <div className={`flex flex-col sm:flex-row gap-4 pt-2 pointer-events-auto transition-all duration-500 ${scrolled ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
-            <a href="https://frslublin.pl" target="_blank" rel="noopener noreferrer"
-              className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
-              Zapisz się
-            </a>
-            <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-              className="cursor-target inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
-              Dowiedz się więcej ↓
+            {/* Ankieta „Skąd o nas usłyszałeś?" — na razie przycisk nic nie robi.
+                Docelowo otworzy okienko z ankietą, gdy ją przygotujemy.
+                Granat #183153 z pomarańczowym tekstem #FE8004 daje 5,2:1, czyli
+                spełnia AA — to jedno z niewielu zestawień, w których pomarańcz
+                wolno użyć jako koloru tekstu (patrz tabela w globals.css). */}
+            <button
+              type="button"
+              className="cursor-target inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+            >
+              Ankieta — skąd o nas usłyszałeś?
             </button>
           </div>
         </div>
