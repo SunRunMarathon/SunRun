@@ -60,19 +60,45 @@ export default function ONasPage() {
 
         {/* Misja */}
         <section className="py-12 px-8 sm:px-16 md:px-28">
-          <div className="max-w-5xl mx-auto">
-            <div className="bg-white/70 border border-sr-line backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-4">
+          <div className="relative max-w-5xl mx-auto">
+            {/* Słonecznik wystający zza górnej krawędzi ramki.
+                Stoi w NORMALNYM PRZEPŁYWIE, tuż nad ramką, a nie na pozycji
+                bezwzględnej. Dzięki temu dwie rzeczy załatwiają się same:
+                spód grafiki styka się z górną krawędzią ramki co do piksela
+                (block usuwa odstęp bazowy, marginesów brak), a kwiat zajmuje
+                własne miejsce w sekcji, więc nie trzeba pod niego rezerwować
+                górnego paddingu. Przy pozycjonowaniu bezwzględnym padding
+                musiałby rosnąć razem z szerokością ramki, bo wysokość kwiatu
+                jest jej ułamkiem — jedna wartość nie pokryłaby całego zakresu
+                i na części szerokości kwiat wchodziłby w sekcję powyżej.
+
+                Szerokość 70% ramki — liczona od niej, nie od okna, więc kwiat
+                skaluje się razem z nią bez progów. */}
+            <img
+              src="/slonecznik.png"
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none select-none block w-[70%] h-auto mx-auto"
+            />
+            <div className="relative bg-white/70 border border-sr-line backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
+              {/* w-fit mx-auto zamiast samego text-center — i to nie jest
+                  kosmetyka. bg-clip-text przycina do liter TŁO ELEMENTU, a nie
+                  sam napis. Nagłówek jako blok zajmował całą szerokość ramki
+                  (~930px), podczas gdy tekst ma ~270px i stoi pośrodku — więc
+                  litery pokazywały tylko środkowe ~30% gradientu. Kolory
+                  krańcowe lądowały daleko poza napisem i przejście wyglądało
+                  na blade. Przy w-fit pudełko ma szerokość napisu, więc
+                  #CE2F25 jest naprawdę na jego lewej krawędzi, a #F6941D
+                  na prawej. */}
+              <h2 className="w-fit mx-auto text-3xl sm:text-4xl font-black uppercase text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[#CE2F25] to-[#F6941D]">
                 Nasza misja
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black uppercase text-[#183153] mb-6">
-                Sport w służbie dobrego celu
               </h2>
-              <div className="grid sm:grid-cols-2 gap-8 text-sm text-[#183153] leading-relaxed">
+              {/* Akapity jeden pod drugim, nie w dwóch kolumnach jak wcześniej:
+                  poprzednia treść miała dwa podobnej długości fragmenty, a te są
+                  wyraźnie nierówne i w kolumnach zostawiałyby dziurę po prawej. */}
+              <div className="space-y-4 text-base text-[#183153] leading-relaxed">
                 <p>
-                  Sun Run powstało z prostego przekonania: bieganie łączy ludzi,
-                  a wspólny wysiłek może dawać realną pomoc tym, którzy jej potrzebują.
-                  Każda złotówka zebrana podczas biegu trafia bezpośrednio do{" "}
+                  Naszą misją jest niesienie pomocy potrzebującym oraz wspieranie{" "}
                   <a
                     href="https://hospicjum-samarytanin.pl"
                     target="_blank"
@@ -81,13 +107,13 @@ export default function ONasPage() {
                   >
                     Hospicjum Dobrego Samarytanina
                   </a>{" "}
-                  w Lublinie.
+                  w Lublinie. Chcemy tworzyć wydarzenie, które daje okazję do wspólnego
+                  spędzania czasu, spotkania z przyjaciółmi, poznawania nowych osób
+                  i jednoczesnego pomagania tym, którzy tego potrzebują.
                 </p>
                 <p>
-                  I edycja w 2025 roku zebrała uczestników powyżej 350 osób
-                  i pomogła sfinansować materace przeciwodleżynowe oraz prace
-                  nad całorocznym ogrodem hospicyjnym. II edycja będzie jeszcze
-                  większa — dołącz do nas!
+                  Sun Run powstał z pasji i zaangażowania wielu młodych osób, które
+                  chciały stworzyć inicjatywę łączącą ludzi wokół wspólnego celu.
                 </p>
               </div>
             </div>
