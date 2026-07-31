@@ -65,9 +65,10 @@ const website = {
   publisher: { "@id": `${SITE_URL}/#organization` },
 };
 
-// UWAGA: startDate to PLACEHOLDER (wrzesień 2026) — zaktualizuj po potwierdzeniu daty
-// II edycji. Bez poprawnej daty wydarzenie nie dostanie "rich resulta", ale i tak
-// buduje powiązanie tematyczne z bieganiem/biegiem charytatywnym w Lublinie.
+// Data i godzina potwierdzone przez sztab: 12 września 2026.
+// UWAGA: to obiekt SportsEvent, czyli sam BIEG — startDate musi wskazywać start
+// biegu (18:30), a nie otwarcie festiwalu (16:00). Godzina 16:00 opisuje festiwal
+// jako całość i należy do przyszłej sekcji o Festiwalu.
 const event2026 = {
   "@type": "SportsEvent",
   "@id": `${SITE_URL}/#event-2026`,
@@ -75,7 +76,7 @@ const event2026 = {
   description:
     "II edycja charytatywnego biegu na 5 km (2 pętle) w Parku Ludowym w Lublinie. Bieg i Nordic Walking na rzecz Hospicjum Dobrego Samarytanina. Otwarte dla wszystkich od 14. roku życia.",
   sport: "Bieganie",
-  startDate: "2026-09-05T09:00:00+02:00",
+  startDate: "2026-09-12T18:30:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   image: [`${SITE_URL}/og-image.png`],

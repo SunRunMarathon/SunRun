@@ -268,7 +268,7 @@ export default function Home() {
           <div className="flex items-center gap-4 pt-1">
             <div className="h-px w-10 bg-sr-orange/60" />
             <p className="text-2xl sm:text-3xl font-extrabold tracking-widest text-[#183153] uppercase">
-              [DATA BIEGU 2026]
+              12 września 2026
             </p>
           </div>
 
@@ -334,13 +334,11 @@ export default function Home() {
                 </span>
                 <div className="space-y-3">
                   {[
+                    { label: "Godzina startu", value: "18:30" },
                     { label: "Dystans", value: "5 km (2 pętle)" },
-                    { label: "Limit czasu", value: "60 minut" },
                     { label: "Minimalny wiek", value: "14 lat" },
-                    { label: "Format", value: "Bieg i Nordic Walking" },
-                    { label: "Timing", value: "Datasport" },
-                    { label: "Linia startu", value: "Park Ludowy, Lublin" },
-                    { label: "Start o godz.", value: "[GODZINA]" },
+                    { label: "Limit czasu", value: "80 minut" },
+                    { label: "Atest", value: "PZLA" },
                   ].map((item) => (
                     <div key={item.label} className="flex justify-between items-center border-b border-[rgb(24 49 83 / 0.14)] pb-2 last:border-0 last:pb-0">
                       <span className="text-xs text-[#3D4D65] uppercase tracking-wider">{item.label}</span>

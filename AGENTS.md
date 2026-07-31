@@ -14,6 +14,7 @@ Welcome! This document provides the context, structure, requirements, and histor
 
 * **Current Time**: June 2026.
 * **Goal**: Prepare the website for the upcoming **2nd edition of Sun Run (2026)**.
+* **Date — CONFIRMED**: **12 September 2026**. The event is a festival that opens at **16:00**; the run itself starts at **18:30**. Use the run time (18:30) wherever the context is the race (schema.org `SportsEvent`, the "Ważne dane" card); use 16:00 only when describing the festival as a whole. Do **not** use `[RUN DATE 2026]` placeholders any more — the date is settled.
 * **Hosting**: The website will be hosted on **Railway**.
 * **Visuals & Branding**: The logo and unified design system are currently being updated. Use placeholder assets and layouts that can easily swap in the final branding once approved.
 
@@ -81,7 +82,13 @@ When generating pages, navigation, or copywriting, focus on recruiting participa
    * **Important**: Registration itself is handled externally via the **FRS** system (frslublin.pl). The website should only link to it via a prominent Call to Action (e.g., "Register for 2026").
    * Use the 2025 pricing tiers as a structure template with placeholders for 2026 dates and prices.
 3. **Route & Regulations**:
-   * Map and regulations based on the 2025 layout (5 km in Park Ludowy, 60 min limit, age 14+), with space for updates.
+   * Map and regulations based on the 2025 layout (5 km in Park Ludowy, age 14+), with space for updates.
+   * **CONFIRMED 2026 race data** (differs from 2025 — do not copy the old values):
+     * Start of the run: **18:30** (the festival itself opens at 16:00)
+     * Distance: **5 km (2 loops)**
+     * Minimum age: **14**
+     * Time limit: **80 minutes** — note: the 2025 edition had 60 minutes, and that value is still correct on the `/archiwum` page
+     * Certification: **PZLA** (Polish Athletics Association) — new for 2026
 4. **About Us / Organizers**:
    * Highlight the youth-led nature of the team.
 5. **Become a Volunteer**:
