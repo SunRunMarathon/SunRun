@@ -74,7 +74,18 @@ The first edition was a major success. Use these details for the "History" or "A
 
 ## 5. Website Requirements & Sections (2026 Edition)
 
-When generating pages, navigation, or copywriting, focus on recruiting participants, volunteers, and sponsors for 2026. Use placeholders like `[RUN DATE 2026]` for unconfirmed dates.
+When generating pages, navigation, or copywriting, focus on recruiting participants, volunteers, and sponsors for 2026.
+
+### Current page inventory (as of 2026-07-31)
+
+`/` (home), `/o-nas`, `/archiwum`, plus `/admin`. **There is no `/partnerzy` subpage** — it was deleted. Partners now live only as a section on the home page under the `#partnerzy` anchor, and those tiles are no longer links. Two consequences worth knowing:
+
+* Nothing posts to `/api/contact` any more — the partner form lived on the deleted page. The endpoint and the `/admin` panel that reads it still exist, so past submissions remain viewable.
+* The empty-state text in `/admin` still refers to a "Dla Partnerów" page. Reword it once the staff decides where partner enquiries go.
+
+### Registration link
+
+Sign-ups: `https://frslublin.pl/pl/app/races/sign_up_form/295` — the form for this specific race, not the bare `frslublin.pl` home page.
 
 ### Key Sections:
 1. **General Information**: Overview of the charity event.
@@ -87,13 +98,15 @@ When generating pages, navigation, or copywriting, focus on recruiting participa
      * Start of the run: **18:30** (the festival itself opens at 16:00)
      * Distance: **5 km (2 loops)**
      * Minimum age: **14**
-     * Time limit: **80 minutes** — note: the 2025 edition had 60 minutes, and that value is still correct on the `/archiwum` page
+     * Time limit: **80 minutes** (the 2025 edition had 60 — do not carry the old value over)
      * Certification: **PZLA** (Polish Athletics Association) — new for 2026
 4. **About Us / Organizers**:
    * Highlight the youth-led nature of the team.
 5. **Become a Volunteer**:
    * Recruitment module for the 2026 team.
 6. **Sponsorship & Partners Zone**:
-   * Detail package options for sponsors, media info, and placeholder sections for partners like DKMS.
+   * Currently just a strip of partner tiles on the home page. The dedicated subpage with sponsorship packages and the enquiry form was removed on 2026-07-31; the staff has not yet decided what replaces it.
 7. **Results & Awards Archive**:
-   * Link to "Results 2025" and outline 2026 trophy details.
+   * `/archiwum` covers the 2025 edition: intro text, four figures (363 participants, 5 km, 6.09.2025, ~13 800 PLN raised), press articles and a photo gallery.
+   * The results section (Datasport classifications, age categories, link to full results) **was removed on the staff's instruction** — do not re-add it unless asked.
+   * The 2025 side initiatives (DKMS donor point, "Rekord dla Hospicjum", UP Lublin honorary patronage) are described in section 4 above but **no longer appear anywhere on the site** — they went out with the "Wokół biegu" section.
