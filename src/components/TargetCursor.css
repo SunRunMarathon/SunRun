@@ -9,15 +9,18 @@
   transform: translate(-50%, -50%);
 }
 
-/* Słoneczko — stan spoczynkowy kursora */
+/* Słoneczko — stan spoczynkowy kursora.
+   Rozmiar zmieniaj TYLKO tutaj: SVG w środku ma width/height 100%, więc sam
+   się dopasuje. Margines ujemny musi być połową rozmiaru, inaczej słoneczko
+   przestanie stać na ostrzu kursora. */
 .target-cursor-sun {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 34px;
-  height: 34px;
-  margin-left: -17px;
-  margin-top: -17px;
+  width: 30px;
+  height: 30px;
+  margin-left: -15px;
+  margin-top: -15px;
   will-change: transform, opacity;
   transform-origin: 50% 50%;
   filter: drop-shadow(0 0 6px rgba(255, 180, 40, 0.75));

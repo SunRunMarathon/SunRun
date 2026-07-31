@@ -469,7 +469,7 @@ export default function Home() {
                 Zapisz się
               </a>
               <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-                className="cursor-target inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+                className="cursor-target cursor-pointer inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
                 Dowiedz się więcej ↓
               </button>
             </div>
@@ -481,7 +481,7 @@ export default function Home() {
                 wolno użyć jako koloru tekstu (patrz tabela w globals.css). */}
             <button
               type="button"
-              className="cursor-target inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+              className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
             >
               Ankieta — skąd o nas usłyszałeś?
             </button>

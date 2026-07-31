@@ -51,6 +51,11 @@ const TargetCursor = ({
   const targetCornerPositionsRef = useRef(null);
   const tickerFnRef = useRef(null);
   const activeStrengthRef = useRef(0);
+  // Czy słoneczko jest w tej chwili schowane (przez .cursor-target albo przez
+  // element z własnym kursorem systemowym). Bez tego przy każdym mouseover
+  // odpalalibyśmy animację od nowa i słoneczko drgałoby przy przesuwaniu myszy.
+  const slonceUkryteRef = useRef(false);
+  const ostatniaPozycjaRef = useRef([0, 0]);
 
   const isMobile = useMemo(() => {
     if (typeof window === 'undefined') return false;
@@ -120,15 +125,56 @@ const TargetCursor = ({
     if (sunRef.current) gsap.set(sunRef.current, { opacity: 1, scale: 1 });
     if (dotRef.current) gsap.set(dotRef.current, { opacity: 0 });
 
-    // Delikatny, ciągły obrót słoneczka w spoczynku
-    if (sunRef.current) {
+    // Delikatny, ciągły obrót słoneczka w spoczynku.
+    //
+    // UWAGA — tu siedział błąd, przez który słoneczko po zjechaniu z przycisku
+    // przestawało się kręcić do końca życia strony: animacje morfingu też ruszają
+    // `rotation` i mają overwrite:'auto', więc GSAP ubijał tę nieskończoną pętlę.
+    // Dlatego obrót jest teraz zawsze uruchamiany od nowa po powrocie słoneczka,
+    // a nie tylko raz przy montowaniu.
+    const startSpin = () => {
+      if (!sunRef.current) return;
+      spinTweenRef.current?.kill();
       spinTweenRef.current = gsap.to(sunRef.current, {
         rotation: '+=360',
         duration: spinDuration * 4,
         ease: 'none',
         repeat: -1
       });
-    }
+    };
+
+    // Wspólne animacje znikania i powrotu słoneczka. Używa ich zarówno najazd
+    // na element .cursor-target, jak i najazd na element z własnym kursorem
+    // systemowym (łapka, rączka) — dzięki temu przejście wygląda wszędzie
+    // tak samo.
+    const ukryjSlonce = () => {
+      if (!sunRef.current) return;
+      spinTweenRef.current?.kill();
+      spinTweenRef.current = null;
+      gsap.to(sunRef.current, {
+        opacity: 0,
+        scale: 0.35,
+        rotation: '+=120',
+        duration: 0.3,
+        ease: 'power2.inOut',
+        overwrite: 'auto'
+      });
+    };
+
+    const pokazSlonce = () => {
+      if (!sunRef.current) return;
+      gsap.to(sunRef.current, {
+        opacity: 1,
+        scale: 1,
+        rotation: '+=120',
+        duration: 0.4,
+        ease: 'power3.out',
+        overwrite: 'auto',
+        onComplete: startSpin
+      });
+    };
+
+    startSpin();
 
     const tickerFn = () => {
       if (!targetCornerPositionsRef.current || !cursorRef.current || !cornersRef.current) {
@@ -166,8 +212,36 @@ const TargetCursor = ({
 
     tickerFnRef.current = tickerFn;
 
-    const moveHandler = e => moveCursor(e.clientX, e.clientY);
+    // Element ma „własny kursor systemowy", gdy wyliczony `cursor` to coś innego
+    // niż none. Ponieważ body ma cursor:none, dziedziczą to wszystkie elementy
+    // POZA tymi, które ustawiają kursor same — czyli odnośnikami (pointer
+    // z arkusza przeglądarki), mapą i stosem zdjęć (grab), przyciskami menu.
+    // Dzięki temu nie trzeba oznaczać ich po jednym: reguła sama je wyłapuje.
+    const maWlasnyKursor = el => {
+      if (!el || el.nodeType !== 1) return false;
+      const kursor = getComputedStyle(el).cursor;
+      return !!kursor && kursor !== 'none';
+    };
+
+    const moveHandler = e => {
+      ostatniaPozycjaRef.current = [e.clientX, e.clientY];
+      moveCursor(e.clientX, e.clientY);
+    };
     window.addEventListener('mousemove', moveHandler);
+
+    // Słoneczko chowa się nie tylko nad .cursor-target, ale wszędzie tam, gdzie
+    // przeglądarka pokazuje własny kursor — inaczej rączka albo łapka
+    // wyświetlały się RAZEM ze słoneczkiem, jedno na drugim.
+    const kursorSystemowyHandler = e => {
+      if (isActiveRef.current) return; // nad .cursor-target rządzi enterHandler
+      if (e.target?.closest?.(targetSelector)) return;
+      const wlasny = maWlasnyKursor(e.target);
+      if (wlasny === slonceUkryteRef.current) return; // stan bez zmian
+      slonceUkryteRef.current = wlasny;
+      if (wlasny) ukryjSlonce();
+      else pokazSlonce();
+    };
+    window.addEventListener('mouseover', kursorSystemowyHandler, { passive: true });
 
     const scrollHandler = () => {
       if (!activeTarget || !cursorRef.current) return;
@@ -225,16 +299,8 @@ const TargetCursor = ({
       gsap.set(cursorRef.current, { rotation: 0 });
 
       // MORFING: słoneczko „zwija się" i znika, w jego miejsce wyłania się celownik
-      if (sunRef.current) {
-        gsap.to(sunRef.current, {
-          opacity: 0,
-          scale: 0.35,
-          rotation: '+=120',
-          duration: 0.3,
-          ease: 'power2.inOut',
-          overwrite: 'auto'
-        });
-      }
+      ukryjSlonce();
+      slonceUkryteRef.current = true;
       gsap.to(corners, { opacity: 1, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
       if (dotRef.current) {
         gsap.to(dotRef.current, { opacity: 1, duration: 0.25, ease: 'power2.out', overwrite: 'auto' });
@@ -294,16 +360,18 @@ const TargetCursor = ({
         gsap.set(activeStrengthRef, { current: 0, overwrite: true });
         activeTarget = null;
 
-        // MORFING (powrót): celownik znika, słoneczko „rozkwita" z powrotem
-        if (sunRef.current) {
-          gsap.to(sunRef.current, {
-            opacity: 1,
-            scale: 1,
-            rotation: '+=120',
-            duration: 0.4,
-            ease: 'power3.out',
-            overwrite: 'auto'
-          });
+        // MORFING (powrót): celownik znika, słoneczko „rozkwita" z powrotem.
+        // Nie wracamy z nim, jeśli wskaźnik zjechał wprost na element z własnym
+        // kursorem systemowym — tam słoneczko ma zostać schowane.
+        const podKursorem = document.elementFromPoint(
+          ostatniaPozycjaRef.current[0],
+          ostatniaPozycjaRef.current[1]
+        );
+        if (maWlasnyKursor(podKursorem)) {
+          slonceUkryteRef.current = true; // zostaje schowane, np. zjechaliśmy na mapę
+        } else {
+          pokazSlonce();
+          slonceUkryteRef.current = false;
         }
         if (cornersRef.current) {
           gsap.to(Array.from(cornersRef.current), {
@@ -382,6 +450,7 @@ const TargetCursor = ({
 
       window.removeEventListener('mousemove', moveHandler);
       window.removeEventListener('mouseover', enterHandler);
+      window.removeEventListener('mouseover', kursorSystemowyHandler);
       window.removeEventListener('scroll', scrollHandler);
       window.removeEventListener('resize', resizeHandler);
       window.removeEventListener('mousedown', mouseDownHandler);
@@ -418,7 +487,7 @@ const TargetCursor = ({
     <div ref={cursorRef} className="target-cursor-wrapper">
       {/* Słoneczko — stan spoczynkowy kursora (marka Sun Run) */}
       <div ref={sunRef} className="target-cursor-sun">
-        <svg viewBox="0 0 34 34" width="34" height="34">
+        <svg viewBox="0 0 34 34" width="100%" height="100%">
           <defs>
             <radialGradient id="sunCoreGrad" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="#FED46D" />

@@ -296,10 +296,14 @@ export default function ArchiwumPage() {
               Kadry z I edycji — 6 września 2025, Park Ludowy w Lublinie.
             </p>
             <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
+              {/* Bez cursor-zoom-in: lupa z plusem obiecywała powiększenie,
+                  którego nie ma, i wyświetlała się razem ze słoneczkiem.
+                  Brak własnego kursora = kafelek dziedziczy cursor:none z body,
+                  czyli zostaje samo słoneczko. */}
               {GALLERY_IMAGES.map((src, i) => (
                 <div
                   key={i}
-                  className="break-inside-avoid rounded-xl overflow-hidden border border-sr-line hover:border-sr-line transition-all duration-300 cursor-zoom-in"
+                  className="break-inside-avoid rounded-xl overflow-hidden border border-sr-line hover:border-sr-line transition-all duration-300"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
