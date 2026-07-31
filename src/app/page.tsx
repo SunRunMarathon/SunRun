@@ -152,49 +152,53 @@ export default function Home() {
       <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5">
         O Festiwalu
       </h2>
-      <div className="rounded-3xl bg-sr-white border border-sr-line p-8 shadow-lg">
-        {/* Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
-            patrz AGENTS.md. Sam bieg ma własną godzinę w sekcji „O biegu". */}
-        <div className="flex flex-wrap items-center gap-3 pb-5 mb-5 border-b border-sr-line text-sm sm:text-base font-extrabold uppercase tracking-[0.18em] text-[#183153]">
-          <span>16:00</span>
-          <span aria-hidden="true" className="text-sr-red">|</span>
-          <span>Park Ludowy w Lublinie</span>
-        </div>
+      {/* Nie ma tu już żadnego kontenera — treść leży wprost na tle strony.
+          Prostokąt, który wyznaczała biała karta, istnieje nadal, tylko stał się
+          niewidzialny: to on jest granicą, której tekst może dotknąć, ale jej
+          nie przekroczyć, i to względem niego liczy się, czy sekcja mieści się
+          obok logo. Zniknięcie paddingu p-8 samo zrównało lewą krawędź tekstu
+          z lewą krawędzią nagłówka. */}
+      {/* Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
+          patrz AGENTS.md. Sam bieg ma własną godzinę w sekcji „O biegu". */}
+      <div className="flex flex-wrap items-center gap-3 pb-5 mb-5 border-b border-sr-line text-sm sm:text-base font-extrabold uppercase tracking-[0.18em] text-[#183153]">
+        <span>16:00</span>
+        <span aria-hidden="true" className="text-sr-red">|</span>
+        <span>Park Ludowy w Lublinie</span>
+      </div>
 
-        {/* Łamy. Ramka bywa bardzo szeroka (pod spodem to całe 88rem), a wiersz
-            po 140 znaków źle się czyta. Zadajemy więc SZEROKOŚĆ łamu, nie ich
-            liczbę: przeglądarka sama zmieści tyle kolumn, ile wejdzie. Dzięki
-            temu ta sama klasa działa w obu wariantach — reguła patrzy na
-            szerokość ramki, a nie na szerokość okna. */}
-        <div className="columns-[27rem] gap-10 text-sm sm:text-base text-[#183153] leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:break-inside-avoid">
-          <p>
-            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii.
-            Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie
-            zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie
-            charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego
-            Samarytanina w Lublinie.
-          </p>
-          <p>
-            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla
-            dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego
-            spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi
-            i pomaganie połączą się w jedno niezapomniane wydarzenie.
-          </p>
-          <p>
-            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla
-            każdego — niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz
-            również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na
-            mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
-          </p>
-          <p>
-            Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem
-            słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych
-            — spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
-          </p>
-          <p className="font-extrabold text-sr-red">
-            Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
-          </p>
-        </div>
+      {/* Łamy. Blok bywa bardzo szeroki (pod spodem to całe 88rem), a wiersz
+          po 140 znaków źle się czyta. Zadajemy więc SZEROKOŚĆ łamu, nie ich
+          liczbę: przeglądarka sama zmieści tyle kolumn, ile wejdzie. Dzięki
+          temu ta sama klasa działa w obu wariantach — reguła patrzy na
+          szerokość bloku, a nie na szerokość okna. */}
+      <div className="columns-[27rem] gap-10 text-sm sm:text-base text-[#183153] leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:break-inside-avoid">
+        <p>
+          Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii.
+          Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie
+          zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie
+          charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego
+          Samarytanina w Lublinie.
+        </p>
+        <p>
+          Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla
+          dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego
+          spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi
+          i pomaganie połączą się w jedno niezapomniane wydarzenie.
+        </p>
+        <p>
+          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla
+          każdego — niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz
+          również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na
+          mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+        </p>
+        <p>
+          Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem
+          słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych
+          — spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+        </p>
+        <p className="font-extrabold text-sr-red">
+          Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
+        </p>
       </div>
     </div>
   );
