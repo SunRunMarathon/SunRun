@@ -65,6 +65,138 @@ export default function Home() {
   const wspomnieniaRef = useRef(null);
   const [returnProgress, setReturnProgress] = useState(0);
 
+  // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
+  // Warunek ze sztabu: lewa krawędź ramki ma sięgać środka ekranu. Nie da się
+  // tego rozstrzygnąć samym progiem szerokości, bo logo ma szerokość
+  // min(720px, 88vw, 62vh) — przy niskim oknie jest wąskie i ramka się zmieści,
+  // przy wysokim szerokie i nie. Mierzymy więc realną prawą krawędź kolumny
+  // z logo i przyciskami, i porównujemy ze środkiem okna. Gdy się nie mieści,
+  // cała sekcja z nagłówkiem spada pod spód.
+  const heroTrescRef = useRef(null);
+  const [festiwalObok, setFestiwalObok] = useState(false);
+  const [festiwalPrawy, setFestiwalPrawy] = useState(32);
+
+  useEffect(() => {
+    const ODSTEP = 56; // minimalny prześwit między kolumną logo a ramką
+    const MARGINES = 24; // zapas nad ramką i pod nią
+    const POLE_MENU = 32; // pole ochronne między ramką a linią przycisku Menu
+
+    const zmierz = () => {
+      const el = heroTrescRef.current;
+      if (!el) return;
+
+      // (1) WARUNEK POZIOMY — czy kolumna z logo kończy się przed środkiem okna.
+      // UWAGA: mierzymy konkretne elementy treści, a NIE bezpośrednich potomków
+      // kontenera. Te są blokowe i zawsze mają szerokość całego kontenera
+      // (max-w-4xl = 896px) niezależnie od tego, jak szerokie jest logo — przez
+      // co warunek nigdy by się nie spełnił.
+      const logo = el.querySelector("#hero-logo img");
+      const cta = el.querySelector("[data-hero-cta]");
+      const prawa = Math.max(
+        logo ? logo.getBoundingClientRect().right : 0,
+        cta ? cta.getBoundingClientRect().right : 0
+      );
+      if (!prawa) return;
+      if (prawa + ODSTEP > window.innerWidth / 2) {
+        setFestiwalObok(false);
+        return;
+      }
+
+      // (2) PRAWA KRAWĘDŹ. Ramka nie może wejść pod przycisk Menu — zatrzymuje
+      // się na pionowej linii poprowadzonej od jego LEWEJ krawędzi, minus pole
+      // ochronne. Szerokość przycisku zależy od wyrenderowanego napisu „Menu",
+      // więc bierzemy ją z pomiaru, a nie z zapisanej na sztywno wartości.
+      const menu = document.querySelector(".sm-toggle");
+      const prawyOdstep = menu
+        ? window.innerWidth - menu.getBoundingClientRect().left + POLE_MENU
+        : 32;
+
+      // (3) WARUNEK PIONOWY — ramka ma się zmieścić w oknie, żeby nie wjeżdżała
+      // w kolejną sekcję. Wysokość mierzymy na KOPII poza ekranem, ustawionej na
+      // docelową szerokość: oryginał ma zawsze szerokość tego wariantu, w którym
+      // akurat stoi, więc decyzja zaczęłaby się zapętlać (pod → mieści się →
+      // obok → nie mieści się → pod → …).
+      const zrodlo = document.getElementById("o-festiwalu");
+      if (!zrodlo) return;
+      const kopia = zrodlo.cloneNode(true);
+      kopia.removeAttribute("id");
+      kopia.setAttribute("aria-hidden", "true");
+      kopia.style.cssText =
+        "position:fixed;top:0;left:-99999px;visibility:hidden;pointer-events:none;" +
+        `width:${window.innerWidth / 2 - prawyOdstep}px`;
+      document.body.appendChild(kopia);
+      const wysokosc = kopia.getBoundingClientRect().height;
+      kopia.remove();
+
+      setFestiwalPrawy(prawyOdstep);
+      setFestiwalObok(wysokosc <= window.innerHeight - 2 * MARGINES);
+    };
+
+    zmierz();
+    // ResizeObserver łapie też moment, w którym logo SVG dostanie swoje wymiary
+    // po wczytaniu — sam listener na resize by tego nie wychwycił.
+    const ro = new ResizeObserver(zmierz);
+    if (heroTrescRef.current) ro.observe(heroTrescRef.current);
+    window.addEventListener("resize", zmierz);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", zmierz);
+    };
+  }, []);
+
+  // Wspólna treść sekcji — renderowana w jednym z dwóch miejsc, nigdy w obu.
+  const festiwal = (
+    <div id="o-festiwalu">
+      <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5">
+        O Festiwalu
+      </h2>
+      <div className="rounded-3xl bg-sr-white border border-sr-line p-8 shadow-lg">
+        {/* Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
+            patrz AGENTS.md. Sam bieg ma własną godzinę w sekcji „O biegu". */}
+        <div className="flex flex-wrap items-center gap-3 pb-5 mb-5 border-b border-sr-line text-sm sm:text-base font-extrabold uppercase tracking-[0.18em] text-[#183153]">
+          <span>16:00</span>
+          <span aria-hidden="true" className="text-sr-red">|</span>
+          <span>Park Ludowy w Lublinie</span>
+        </div>
+
+        {/* Łamy. Ramka bywa bardzo szeroka (pod spodem to całe 88rem), a wiersz
+            po 140 znaków źle się czyta. Zadajemy więc SZEROKOŚĆ łamu, nie ich
+            liczbę: przeglądarka sama zmieści tyle kolumn, ile wejdzie. Dzięki
+            temu ta sama klasa działa w obu wariantach — reguła patrzy na
+            szerokość ramki, a nie na szerokość okna. */}
+        <div className="columns-[27rem] gap-10 text-sm sm:text-base text-[#183153] leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:break-inside-avoid">
+          <p>
+            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii.
+            Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie
+            zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie
+            charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego
+            Samarytanina w Lublinie.
+          </p>
+          <p>
+            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla
+            dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego
+            spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi
+            i pomaganie połączą się w jedno niezapomniane wydarzenie.
+          </p>
+          <p>
+            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla
+            każdego — niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz
+            również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na
+            mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+          </p>
+          <p>
+            Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem
+            słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych
+            — spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+          </p>
+          <p className="font-extrabold text-sr-red">
+            Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
   useEffect(() => {
     const onScroll = () => {
       const vh = window.innerHeight;
@@ -223,7 +355,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="max-w-4xl space-y-6 pt-24 pb-16">
+        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24 pb-16">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
               przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
               okna, żeby przyciski CTA zostały widoczne bez scrollowania.
@@ -278,15 +410,29 @@ export default function Home() {
               Ankieta — skąd o nas usłyszałeś?
             </button>
           </div>
+
+          {/* Wariant OBOK: ramka zajmuje prawą połowę ekranu. Pozycjonowana
+              bezwzględnie, bo musi wyjść poza padding sekcji — lewa krawędź
+              w połowie okna, prawa zatrzymana na linii LEWEJ krawędzi przycisku
+              Menu (patrz pomiar wyżej), żeby ramka pod niego nie wchodziła. */}
+          {festiwalObok && (
+            <div
+              className="absolute top-1/2 -translate-y-1/2 z-10"
+              style={{ left: "50%", right: festiwalPrawy }}
+            >
+              {festiwal}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* TYMCZASOWE zakotwiczenie dla pozycji "O Festiwalu" z menu bocznego.
-          Sekcja o Festiwalu jeszcze nie istnieje — czekamy na materiały od sztabu.
-          Do tego czasu odnośnik przewija tutaj, czyli na koniec sekcji startowej,
-          gdzie ta sekcja logicznie stanie. Po jej dodaniu przenieś id="o-festiwalu"
-          na właściwą sekcję i usuń ten znacznik. */}
-      <div id="o-festiwalu" aria-hidden="true" />
+      {/* Wariant POD SPODEM: gdy kolumna z logo jest za szeroka, żeby ramka
+          zmieściła się obok, cała sekcja razem z nagłówkiem spada tutaj. */}
+      {!festiwalObok && (
+        <section className="relative z-10 w-full px-6 sm:px-12 pb-20">
+          <div className="max-w-[88rem] mx-auto">{festiwal}</div>
+        </section>
+      )}
 
       {/* ═══════════════════════════════════════════
           2. STATS DASHBOARD — Mapa + Dane + Licznik
