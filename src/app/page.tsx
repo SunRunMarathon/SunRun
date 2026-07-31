@@ -295,15 +295,24 @@ export default function Home() {
           scrolled && !ctaDismissed ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="relative bg-sr-white border-t border-sr-line py-3 px-6 sm:px-12 flex justify-center items-center gap-5 shadow-2xl">
-          <span className="text-sm text-[#3D4D65] hidden sm:block tracking-wide">
+        {/* Pasek jest o połowę wyższy niż był (65 → 97px). Każdy wymiar, który
+            składa się na tę wysokość, przemnożony przez 1,5 — dlatego wartości
+            są nietypowe (18px zamiast 12, 21px zamiast 14): to nie skala
+            Tailwinda, tylko dokładne 1,5× poprzednich liczb. Przy foncie podanym
+            wprost trzeba też podać interlinię, bo arbitralny rozmiar jej nie
+            ustawia, a to ona współtworzy wysokość przycisku. */}
+        <div className="relative bg-sr-white border-t border-sr-line py-[1.125rem] pl-6 pr-14 sm:px-12 flex justify-center items-center gap-[1.875rem] shadow-2xl">
+          <span className="text-[1.3125rem] text-[#3D4D65] hidden sm:block tracking-wide">
             Zapisz się na <span className="text-sr-red font-extrabold">II edycję Sun Run 2026!</span>
           </span>
+          {/* px-6 poniżej sm: przy pełnym px-12 powiększony przycisk wchodził
+              na krzyżyk zamykania na telefonach węższych niż 390px (przy 320px
+              aż o 30px). Wysokość paska zostaje 1,5×, zwężamy tylko boki. */}
           <a
             href="https://frslublin.pl/pl/app/races/sign_up_form/295"
             target="_blank"
             rel="noopener noreferrer"
-            className="cursor-target inline-flex items-center justify-center px-8 py-2.5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-sr-orange/30"
+            className="cursor-target inline-flex items-center justify-center px-6 sm:px-12 py-[0.9375rem] bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-[1.3125rem]/[1.875rem] tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-sr-orange/30"
           >
             Zapisz się →
           </a>
@@ -311,7 +320,7 @@ export default function Home() {
             type="button"
             onClick={() => setCtaDismissed(true)}
             aria-label="Zamknij pasek zapisów"
-            className="cursor-target absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full text-[#3D4D65] hover:text-[#183153] hover:bg-black/5 transition-colors text-xl leading-none"
+            className="cursor-target absolute right-3 top-1/2 -translate-y-1/2 w-[2.625rem] h-[2.625rem] flex items-center justify-center rounded-full text-[#3D4D65] hover:text-[#183153] hover:bg-black/5 transition-colors text-[1.875rem] leading-none"
           >
             ×
           </button>
