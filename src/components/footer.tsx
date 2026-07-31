@@ -20,7 +20,7 @@ const STRONY = [
   { label: "O nas", href: "/o-nas" },
   { label: "Dla partnerów", href: "/partnerzy" },
   { label: "Archiwum I edycji", href: "/archiwum" },
-  { label: "Zapisz się", href: "https://frslublin.pl" },
+  { label: "Zapisz się", href: "https://frslublin.pl/pl/app/races/sign_up_form/295" },
 ];
 
 const MEDIA = [

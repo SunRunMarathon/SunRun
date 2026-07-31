@@ -305,7 +305,7 @@ export default function ArchiwumPage() {
               II edycja Sun Run 2026 już w drodze. Zapisz się i biegnij z nami!
             </p>
             <a
-              href="https://frslublin.pl"
+              href="https://frslublin.pl/pl/app/races/sign_up_form/295"
               target="_blank"
               rel="noopener noreferrer"
               className="cursor-target inline-flex items-center justify-center px-10 py-4 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all shadow-xl"

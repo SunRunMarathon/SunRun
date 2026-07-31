@@ -289,7 +289,7 @@ export default function Home() {
             Zapisz się na <span className="text-sr-red font-extrabold">II edycję Sun Run 2026!</span>
           </span>
           <a
-            href="https://frslublin.pl"
+            href="https://frslublin.pl/pl/app/races/sign_up_form/295"
             target="_blank"
             rel="noopener noreferrer"
             className="cursor-target inline-flex items-center justify-center px-8 py-2.5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-sr-orange/30"
@@ -388,7 +388,7 @@ export default function Home() {
               „Zapisz się" do prawej „Dowiedz się więcej". */}
           <div data-hero-cta className={`flex flex-col gap-4 pt-2 w-fit pointer-events-auto transition-all duration-500 ${scrolled ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="https://frslublin.pl" target="_blank" rel="noopener noreferrer"
+              <a href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
                 className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
                 Zapisz się
               </a>
