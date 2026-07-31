@@ -28,16 +28,22 @@ export default function ONasPage() {
         <section className="min-h-screen flex items-center px-8 sm:px-16 md:px-28 pt-24 pb-16">
           <div className="w-full grid lg:grid-cols-2 gap-10 xl:gap-16 items-center">
             <div className="max-w-3xl space-y-6">
-              <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-navy px-3 py-1.5 bg-sr-navy/10 rounded-full border border-sr-navy/30">
+              {/* Czerwona plakietka — ten sam wariant co na górze /archiwum */}
+              <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30">
                 Kim jesteśmy
               </span>
-              <h1 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-sr-navy via-sr-navy to-sr-red leading-none">
+              {/* w-fit z tego samego powodu co przy „Nasza misja": bg-clip-text
+                  bierze tło CAŁEGO pudełka. Tu gradient jest pionowy, więc
+                  o krańce dba wysokość, ale bez w-fit nagłówek rozciągałby się
+                  na całą kolumnę i gradient miałby zbędny zapas na boki. */}
+              <h1 className="w-fit text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#183153] to-[#FE8004] leading-none">
                 O Nas
               </h1>
               <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-2xl">
-                Sun Run to całkowicie oddolna inicjatywa lubelskiej młodzieży, stworzona z pasji
-                do sportu i potrzeby serca. Wszystko organizujemy sami — od logistyki,
-                przez promocję, po stronę internetową, którą właśnie oglądasz.
+                Jesteśmy zespołem około 60 młodych osób – uczniów szkół średnich i studentów
+                – których połączyła wspólna idea stworzenia wydarzenia z realnym wpływem
+                na innych. Sun Run powstał z pasji, zaangażowania i przekonania, że nawet
+                niewielkie działania mogą zmieniać czyjeś życie.
               </p>
             </div>
 
