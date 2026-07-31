@@ -76,6 +76,38 @@ export default function Home() {
   const wspomnieniaRef = useRef(null);
   const [returnProgress, setReturnProgress] = useState(0);
 
+  // Rozmiar kart w stosie „Wspomnienia". Stack dostaje szerokość w pikselach,
+  // a sztywne 380px nie mieściło się w kolumnie: na telefonie rozpychało ścieżkę
+  // siatki ponad ekran (przy 320px stos był ucinany o 60px, a razem z nim
+  // wyjeżdżał nagłówek, bo dziedziczył szerokość po tej samej ścieżce),
+  // a przy ~820px, gdzie siatka ma już dwie kolumny, stos wychodził w prawo.
+  const siatkaWspomnienRef = useRef(null);
+  const [rozmiarKarty, setRozmiarKarty] = useState(380);
+
+  useEffect(() => {
+    const dopasuj = () => {
+      const siatka = siatkaWspomnienRef.current;
+      if (!siatka) return;
+      // clientWidth siatki jest bezpieczne: kontener ma w-full + max-width, więc
+      // jego pudełko wyznacza rodzic, nawet gdy ścieżki wewnątrz się rozpychają.
+      // Liczby ścieżek NIE bierzemy z ich rozmiarów (te bywają już rozepchane),
+      // tylko z liczby wartości w gridTemplateColumns.
+      const cs = getComputedStyle(siatka);
+      const ile = cs.gridTemplateColumns.split(/\s+/).filter(Boolean).length || 1;
+      const odstep = parseFloat(cs.columnGap) || 0;
+      const kolumna = (siatka.clientWidth - odstep * (ile - 1)) / ile;
+      setRozmiarKarty(Math.max(220, Math.min(380, Math.floor(kolumna))));
+    };
+    dopasuj();
+    const ro = new ResizeObserver(dopasuj);
+    if (siatkaWspomnienRef.current) ro.observe(siatkaWspomnienRef.current);
+    window.addEventListener("resize", dopasuj);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", dopasuj);
+    };
+  }, []);
+
   // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
   // Warunek ze sztabu: lewa krawędź ramki ma sięgać środka ekranu. Nie da się
   // tego rozstrzygnąć samym progiem szerokości, bo logo ma szerokość
@@ -663,13 +695,20 @@ export default function Home() {
           5. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
       ═══════════════════════════════════════════ */}
       <section ref={wspomnieniaRef} className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
-        <div className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+        <div ref={siatkaWspomnienRef} className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-20 items-center">
           {/* Tekst + CTA */}
-          <div className="space-y-6">
+          <div className="@container space-y-6">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red block">
               Archiwum · I Edycja 2025
             </span>
-            <h2 className="text-6xl sm:text-7xl lg:text-8xl font-black uppercase text-[#183153] leading-none">
+            {/* Wielkość nagłówka liczona od szerokości KOLUMNY (cqw), nie okna.
+                Na progach text-6xl/7xl/8xl „WSPOMNIENIA" nie mieściło się:
+                na telefonie wyjeżdżało poza ekran, a od breakpointu md kolumna
+                jest WĘŻSZA niż na telefonie (siatka dzieli się na dwie),
+                więc napis wchodził na stos zdjęć obok. Próg oparty na
+                szerokości okna nie mógł tego złapać, bo kolumna nie rośnie
+                z oknem monotonicznie. */}
+            <h2 className="text-[clamp(2rem,12cqw,6rem)] font-black uppercase text-[#183153] leading-none">
               Wspomnienia
             </h2>
             <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-md">
@@ -690,7 +729,7 @@ export default function Home() {
               randomRotation
               sensitivity={150}
               sendToBackOnClick
-              cardDimensions={{ width: 380, height: 380 }}
+              cardDimensions={{ width: rozmiarKarty, height: rozmiarKarty }}
               cardsData={STACK_CARDS}
             />
           </div>
