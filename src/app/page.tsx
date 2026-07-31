@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
-import ScrollStack, { ScrollStackItem } from "@/components/ScrollStack";
 import Stack from "@/components/Stack";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
@@ -368,28 +367,47 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          3. SCROLL STACK — głębsze informacje
+          3. CEL CHARYTATYWNY — zwykła ramka
+
+          Wcześniej była to sekcja z trzema kafelkami nasuwającymi się na siebie
+          przy przewijaniu (ScrollStack). Efekt usunięty zgodnie z listą sztabu,
+          a wraz z nim dwa kafelki: „Dołącz do ekipy" i „Współpraca". Został sam
+          cel charytatywny, już jako zwykła ramka bez animacji.
       ═══════════════════════════════════════════ */}
-      <section className="relative z-10 w-full">
-        <div className="max-w-[1200px] mx-auto px-8 sm:px-16 pb-4">
+      {/* Kontener celowo taki sam jak w sekcji „O biegu" powyżej
+          (max-w-[88rem] + px-6 sm:px-12), żeby lewa krawędź ramki pokrywała się
+          z lewą krawędzią mapy, a prawa z prawą krawędzią karty „Zapisanych
+          uczestników". Wcześniej sekcja miała własny, węższy kontener
+          (max-w-[1200px] + px-8 sm:px-16) i ramka była wciśnięta o 136px z każdej
+          strony przy 1440px. */}
+      <section className="relative z-10 w-full px-6 sm:px-12">
+        <div className="max-w-[88rem] mx-auto pb-4">
           <div className="flex items-center gap-3 mb-2">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-[#3D4D65]">Dowiedz się więcej</span>
             <div className="h-px flex-1 bg-sr-line" />
           </div>
         </div>
-        <ScrollStack useWindowScroll={true} itemDistance={80} itemScale={0.015} baseScale={0.96} itemStackDistance={12} stackPosition="12%" scaleEndPosition="8%">
-          {/* Karta 1: O Hospicjum */}
-          <ScrollStackItem itemClassName="bg-[#FFFFFF] border border-sr-line text-[#183153]">
-            <div className="h-full flex flex-col justify-center">
-              <div className="grid md:grid-cols-[1fr,300px] gap-8 items-stretch">
+
+        <div className="max-w-[88rem] mx-auto pb-20">
+          <div className="rounded-3xl bg-[#FFFFFF] border border-sr-line text-[#183153] p-8 sm:p-10 shadow-lg">
+            {/* Dwie równe kolumny: tekst po lewej, zdjęcie po prawej — każda po
+                połowie szerokości ramki.
+
+                Szerokość jest PROPORCJONALNA (grid-cols-2), nie podana w pikselach.
+                Wcześniejsza wersja miała sztywne 720px na kolumnę zdjęcia i przez to
+                wychodziła poza ramkę na wszystkim węższym niż ~1300px. Układ pionowy,
+                który to naprawiał, dawał z kolei ramkę wysoką na ~970px, czyli
+                niemieszczącą się na typowym ekranie. Ten wariant łączy jedno z drugim.
+
+                Poniżej breakpointu md kolumny zwijają się do jednej i zdjęcie ląduje
+                pod tekstem na pełną szerokość. */}
+            <div className="grid md:grid-cols-2 gap-10 items-center">
               <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <div>
-                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-sr-red mb-2 block">Cel Charytatywny</span>
-                    <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-sr-red to-sr-navy">
-                      Hospicjum Dobrego Samarytanina
-                    </h2>
-                  </div>
+                <div>
+                  <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-sr-red mb-2 block">Cel Charytatywny</span>
+                  <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-sr-red to-sr-navy">
+                    Hospicjum Dobrego Samarytanina
+                  </h2>
                 </div>
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
                   Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką paliatywną
@@ -414,112 +432,20 @@ export default function Home() {
                   Odwiedź stronę hospicjum →
                 </a>
               </div>
-              {/* Zdjęcie: Hospicjum Dobrego Samarytanina */}
-              <div className="hidden md:block rounded-2xl overflow-hidden border border-sr-line min-h-[300px] self-stretch flex-1">
+
+              {/* Wysokość zdjęcia wynika z proporcji 3:2, a nie ze sztywnej wartości —
+                  dzięki temu skaluje się razem z kolumną i nie ma jak wystawać. */}
+              <div className="w-full aspect-[3/2] rounded-2xl overflow-hidden border border-sr-line">
                 <img
                   src="/photos/hospicujm.webp"
                   alt="Hospicjum Dobrego Samarytanina w Lublinie"
                   className="w-full h-full object-cover"
-                  loading="eager"
+                  loading="lazy"
                 />
               </div>
-              </div>
             </div>
-          </ScrollStackItem>
-
-          {/* Karta 2: Zostań wolontariuszem */}
-          <ScrollStackItem itemClassName="bg-[#FFFFFF] border border-sr-line text-[#183153]">
-            <div className="h-full flex flex-col justify-center">
-              <div className="grid md:grid-cols-[1fr,300px] gap-8 items-stretch">
-              <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <div>
-                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-sr-red mb-2 block">Dołącz do ekipy</span>
-                    <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-sr-navy to-sr-red">
-                      Zostań Wolontariuszem
-                    </h2>
-                  </div>
-                </div>
-                <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
-                  Sun Run to inicjatywa w 100% prowadzona przez młodzież. Szukamy osób chętnych do pomocy
-                  przy organizacji — od obsługi miasteczka biegowego, przez wsparcie na trasie,
-                  aż po promocję w mediach społecznościowych. Dołącz do naszej ekipy!
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {["Obsługa trasy", "Miasteczko biegowe", "Promocja i media", "Punkt DKMS"].map(r => (
-                    <div key={r} className="flex items-center gap-2 text-sm text-[#183153]">
-                      <span className="w-1.5 h-1.5 bg-sr-orange rounded-full flex-shrink-0" />
-                      {r}
-                    </div>
-                  ))}
-                </div>
-                <a
-                  href="mailto:sunrunlublin@gmail.com?subject=Wolontariat%20Sun%20Run%202026"
-                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-sr-orange/10 border border-sr-orange/30 hover:border-sr-orange text-sr-red font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"
-                >
-                  Zgłoś się jako wolontariusz →
-                </a>
-              </div>
-              {/* Zdjęcie: sztab / ekipa wolontariuszy */}
-              <div className="hidden md:block rounded-2xl overflow-hidden border border-sr-line min-h-[300px] self-stretch flex-1">
-                <img
-                  src="/photos/sztab.webp"
-                  alt="Sztab i wolontariusze Sun Run"
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                />
-              </div>
-              </div>
-            </div>
-          </ScrollStackItem>
-
-          {/* Karta 3: Zostań partnerem */}
-          <ScrollStackItem itemClassName="bg-[#FFFFFF] border border-sr-orange/25 text-[#183153]">
-            <div className="h-full flex flex-col justify-center">
-              <div className="grid md:grid-cols-[1fr,300px] gap-8 items-stretch">
-              <div className="space-y-5">
-                <div className="flex items-start gap-4">
-                  <div>
-                    <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-sr-red mb-2 block">Współpraca</span>
-                    <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-sr-navy to-sr-red">
-                      Zostań Partnerem
-                    </h2>
-                  </div>
-                </div>
-                <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
-                  W I edycji Sun Run wzięło udział ponad <strong className="text-[#183153]">350 uczestników</strong>.
-                  Partnerstwo to widoczność wśród aktywnej społeczności Lublina oraz realne wsparcie
-                  szczytnego celu. Oferujemy pakiety sponsorskie dostosowane do potrzeb Twojej firmy.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  {["Widoczność logo", "Stoisko w miasteczku", "Materiały eventowe", "Media coverage"].map(b => (
-                    <span key={b} className="px-3 py-1 bg-sr-orange/10 border border-sr-orange/25 rounded-full text-xs text-sr-red font-semibold">
-                      {b}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex gap-3 flex-wrap">
-                  <Link
-                    href="/partnerzy"
-                    className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-sr-orange/10 border border-sr-orange/30 hover:border-sr-orange text-sr-red font-semibold rounded-full text-sm tracking-wide transition-all duration-200"
-                  >
-                    Oferta dla partnerów →
-                  </Link>
-                </div>
-              </div>
-              {/* Zdjęcie: partnerzy / współpraca */}
-              <div className="hidden md:block rounded-2xl overflow-hidden border border-sr-line min-h-[300px] self-stretch flex-1">
-                <img
-                  src="/photos/partner.avif"
-                  alt="Partnerzy i współpraca przy Sun Run"
-                  className="w-full h-full object-cover"
-                  loading="eager"
-                />
-              </div>
-              </div>
-            </div>
-          </ScrollStackItem>
-        </ScrollStack>
+          </div>
+        </div>
       </section>
 
       {/* ═══════════════════════════════════════════
