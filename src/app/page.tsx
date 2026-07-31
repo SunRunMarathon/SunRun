@@ -298,24 +298,29 @@ export default function Home() {
         className="relative z-10 w-full min-h-screen flex items-center py-16 px-6 sm:px-12"
       >
         <div className="max-w-[88rem] mx-auto w-full">
-          <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red mb-8">
-            Szczegóły biegu
+          {/* text-[1.75rem] = dokładnie dwukrotność poprzedniego text-sm (14px). */}
+          <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-8">
+            O biegu
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-            {/* MAPA — 3/5 szerokości na desktopie */}
-            <div className="lg:col-span-3 h-96 sm:h-[440px] lg:h-[620px] rounded-3xl overflow-hidden border border-sr-line bg-sr-white shadow-xl relative">
+          {/* Na desktopie mapa zajmuje dokładnie połowę szerokości (wcześniej 3/5),
+              a kolumna z kartami drugą połowę — karty rozszerzyły się ku środkowi,
+              więc odstęp między nimi a mapą został bez zmian. Na telefonie układ
+              pozostaje jednokolumnowy, bo podział wchodzi dopiero od breakpointu lg. */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* MAPA — połowa szerokości na desktopie */}
+            <div className="h-96 sm:h-[440px] lg:h-[620px] rounded-3xl overflow-hidden border border-sr-line bg-sr-white shadow-xl relative">
               <RouteMap />
               <div className="absolute bottom-4 left-4 bg-sr-white border border-sr-line rounded-xl z-[1000] px-4 py-2 text-xs text-[#3D4D65] pointer-events-none">
                 Trasa · Park Ludowy, al. J. Piłsudskiego
               </div>
             </div>
 
-            {/* DANE + LICZNIK — 2/5 szerokości */}
-            <div className="lg:col-span-2 flex flex-col gap-5">
-              {/* Karta: Ważne Dane */}
+            {/* DANE + LICZNIK — druga połowa szerokości */}
+            <div className="flex flex-col gap-5">
+              {/* Karta: Dane */}
               <div className="flex-1 rounded-3xl bg-sr-white border border-sr-line p-6 shadow-lg">
                 <span className="text-xs font-bold uppercase tracking-widest text-sr-red mb-4 block">
-                  Ważne dane
+                  Dane
                 </span>
                 <div className="space-y-3">
                   {[
@@ -331,6 +336,15 @@ export default function Home() {
                     </div>
                   ))}
                 </div>
+
+                {/* Akapit uzupełniający tabelę — w tej samej karcie, oddzielony
+                    linią, żeby było widać, że to osobna część. */}
+                <p className="mt-5 pt-5 border-t border-[rgb(24 49 83 / 0.14)] text-sm text-[#3D4D65] leading-relaxed">
+                  Czas biegu będzie mierzony specjalnymi opaskami. Uczestnicy będą
+                  rywalizować ze sobą w ośmiu kategoriach: generalnej kobiet i mężczyzn
+                  oraz wiekowych kobiet i mężczyzn (14+, 30+, 50+). Biegacze będą mieli
+                  zapewnioną wodę pitną.
+                </p>
               </div>
 
               {/* Karta: Licznik zapisanych */}
@@ -345,7 +359,7 @@ export default function Home() {
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
                 <p className="text-xs text-[#3D4D65] mt-3">
-                  Dane orientacyjne · aktualizacja wkrótce
+                  Aktualizowane codziennie
                 </p>
               </div>
             </div>
