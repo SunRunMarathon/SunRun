@@ -14,7 +14,8 @@ const ARTICLES = [
     date: "6 września 2025",
     excerpt: "Ponad 350 uczestników przebiegło przez Park Ludowy w Lublinie, wspierając Hospicjum Dobrego Samarytanina...",
     url: "#",
-    color: "#D99A00",
+    // color = kolor PLAMY po lewej krawędzi kafelka, nie tekstu
+    color: "#FED46D",
   },
   {
     title: "Młodzież organizuje bieg dla hospicjum",
@@ -22,7 +23,7 @@ const ARTICLES = [
     date: "4 września 2025",
     excerpt: "Inicjatywa lubelskich uczniów z III LO im. Unii Lubelskiej przyciągnęła setki biegaczy i spacerowiczów...",
     url: "#",
-    color: "#FE8004",
+    color: "#F6941D",
   },
   {
     title: "DKMS na Sun Run — relacja",
@@ -30,31 +31,64 @@ const ARTICLES = [
     date: "7 września 2025",
     excerpt: "Podczas II edycji biegu charytatywnego w Lublinie udało się zarejestrować nowych potencjalnych dawców szpiku...",
     url: "#",
-    color: "#CE2F25",
+    color: "#F94C1F",
   },
 ];
 
+// UWAGA: odstęp w „~13800 zł" to TWARDA SPACJA (U+00A0), w edytorze nie do
+// odróżnienia od zwykłej. Trzyma kwotę w jednej linii — przy zwykłej spacji
+// „zł" spadało pod spód i kafelek był o wiersz wyższy od pozostałych.
 const STATS_2025 = [
-  { val: "350+", label: "uczestników" },
+  { val: "363", label: "uczestników" },
   { val: "5 km", label: "dystans" },
   { val: "6.09.2025", label: "data biegu" },
-  { val: "2", label: "pętle w Parku Ludowym" },
+  { val: "~13800 zł", label: "zebrane środki" },
 ];
 
-// Placeholder zdjęcia — zastąpić prawdziwymi
+// Zdjęcia z I edycji, przekazane przez sztab. Oryginały mają po ~6000px
+// i 5–14 MB; tutaj są przeskalowane do 640px i przepuszczone przez WebP,
+// bo kafelek w siatce ma najwyżej ~280px. Nazwy plików odpowiadają
+// oryginałom z aparatów, żeby dało się do nich wrócić.
 const GALLERY_IMAGES = [
-  "/sun_run_runners.webp",
-  "https://picsum.photos/id/1015/600/400",
-  "https://picsum.photos/id/1018/600/400",
-  "https://picsum.photos/id/1039/600/400",
-  "https://picsum.photos/id/1043/600/400",
-  "https://picsum.photos/id/1060/600/400",
-  "https://picsum.photos/id/325/600/400",
-  "https://picsum.photos/id/338/600/400",
-  "https://picsum.photos/id/372/600/400",
-  "https://picsum.photos/id/376/600/400",
-  "https://picsum.photos/id/392/600/400",
-  "https://picsum.photos/id/419/600/400",
+  "/photos/2025/dsc05311.webp",
+  "/photos/2025/dsc05316.webp",
+  "/photos/2025/dsc05350.webp",
+  "/photos/2025/dsc05352.webp",
+  "/photos/2025/dsc05359.webp",
+  "/photos/2025/dsc05371.webp",
+  "/photos/2025/dsc05407.webp",
+  "/photos/2025/dsc05435.webp",
+  "/photos/2025/dsc05442.webp",
+  "/photos/2025/dsc05476.webp",
+  "/photos/2025/dsc05504.webp",
+  "/photos/2025/dsc05531.webp",
+  "/photos/2025/dsc_0588.webp",
+  "/photos/2025/dsc_0593.webp",
+  "/photos/2025/dsc_0602.webp",
+  "/photos/2025/dsc_0605.webp",
+  "/photos/2025/dsc_0607.webp",
+  "/photos/2025/dsc_0639.webp",
+  "/photos/2025/dsc_0677.webp",
+  "/photos/2025/dsc_0758.webp",
+  "/photos/2025/dsc_0863.webp",
+  "/photos/2025/dsc_0922.webp",
+  "/photos/2025/dsc_0956.webp",
+  "/photos/2025/dsc_1132.webp",
+  "/photos/2025/dsc_1181.webp",
+  "/photos/2025/dsc_1226.webp",
+  "/photos/2025/dsc_4508.webp",
+  "/photos/2025/dsc_4655.webp",
+  "/photos/2025/dsc_4728.webp",
+  "/photos/2025/dsc_4738.webp",
+  "/photos/2025/dsc_4764.webp",
+  "/photos/2025/dsc_4804.webp",
+  "/photos/2025/img_7583.webp",
+  "/photos/2025/img_7585.webp",
+  "/photos/2025/img_7607.webp",
+  "/photos/2025/img_7622.webp",
+  "/photos/2025/img_7645.webp",
+  "/photos/2025/img_7666.webp",
+  "/photos/2025/img_7693.webp",
 ];
 
 export default function ArchiwumPage() {
@@ -72,19 +106,91 @@ export default function ArchiwumPage() {
       />
 
       <main className="relative z-10">
-        {/* Hero */}
-        <section className="min-h-screen flex flex-col justify-center px-8 sm:px-16 md:px-28 pt-24 pb-16">
-          <div className="max-w-3xl space-y-6">
-            <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30">
-              I edycja · 6 września 2025
-            </span>
-            <h1 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-sr-red via-sr-navy to-sr-navy leading-none">
-              Archiwum<br />2025
-            </h1>
-            <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-2xl">
-              Pierwsza edycja Sun Run przeszła nasze najśmielsze oczekiwania. Ponad 350 uczestników,
-              znakomita atmosfera i realna pomoc dla Hospicjum Dobrego Samarytanina w Lublinie.
-            </p>
+        {/* Hero. Wcześniej sekcja miała min-h-screen i wyśrodkowanie w pionie,
+            przez co plakietka i tytuł wisiały w połowie ekranu, a nad nimi
+            zostawał pas pustego tła. Teraz treść zaczyna się od góry. */}
+        <section className="px-8 sm:px-16 md:px-28 pt-32 pb-16">
+          <div className="max-w-[88rem] mx-auto">
+            {/* Plakietka i tytuł — wyśrodkowane względem strony */}
+            <div className="text-center space-y-6">
+              <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30">
+                I edycja · 6 września 2025
+              </span>
+              <h1 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-sr-red via-sr-navy to-sr-navy leading-none">
+                Archiwum<br />2025
+              </h1>
+            </div>
+
+            {/* Tekst po lewej, zdjęcie po prawej. Poniżej lg kolumny zwijają się
+                do jednej i zdjęcie ląduje pod tekstem.
+                Bez items-start — kolumny mają się rozciągać do wspólnej
+                wysokości, bo od tego zależy pozycja przycisku (patrz niżej). */}
+            <div className="mt-16 grid lg:grid-cols-2 gap-12">
+              <div className="space-y-4 text-base sm:text-lg text-[#183153] leading-relaxed">
+                <p>
+                  Rok temu, 6 września 2025 roku, odbyła się pierwsza edycja Sun Run –
+                  biegu charytatywnego z elementami festiwalowymi, którego celem było
+                  niesienie pomocy podopiecznym Hospicjum Dobrego Samarytanina w Lublinie.
+                </p>
+                <p>
+                  Wydarzenie zostało zorganizowane przez około 50 młodych osób – uczniów
+                  szkół średnich oraz studentów, którzy wspólnymi siłami stworzyli
+                  inicjatywę łączącą sport, integrację i dobroczynność.
+                </p>
+                <p>
+                  Pierwsza edycja okazała się ogromnym sukcesem. Na Sun Run zapisały się
+                  363 osoby, a dzięki zaangażowaniu uczestników, partnerów i wolontariuszy
+                  udało się zebrać około 13 800 zł, które zostały przekazane na wsparcie
+                  osób potrzebujących z Hospicjum Dobrego Samarytanina.
+                </p>
+                <p>
+                  Hasłem przewodnim pierwszej edycji było: „Biegnij dla tych, którzy już
+                  nie mogą”. To właśnie ono najlepiej oddawało ideę wydarzenia – każdy
+                  przebiegnięty kilometr miał realne znaczenie i był wyrazem solidarności
+                  z tymi, którzy nie mogą już stanąć na starcie.
+                </p>
+                <p>
+                  W tym roku chcemy pójść o krok dalej i przebić liczbę 363 uczestników.
+                  Wierzymy, że razem możemy stworzyć jeszcze większe wydarzenie i wspólnie
+                  zrobić jeszcze więcej dobra.
+                </p>
+              </div>
+
+              {/* Prawa kolumna: zdjęcie, a pod nim przycisk do galerii.
+                  Przycisk ma stać przy DOLE słupka tekstu, ale gdy zdjęcie jest
+                  wysokie i miejsca zabraknie — tuż pod zdjęciem, oddzielony samym
+                  polem ochronnym. Załatwia to rozpórka: rośnie (flex-1), gdy jest
+                  co wypełniać, a nigdy nie schodzi poniżej pola ochronnego
+                  (min-h-10). Gdy kolumna z tekstem jest niższa niż zdjęcie razem
+                  z przyciskiem, to ona rozciąga się do tej wysokości i rozpórka
+                  zostaje na minimum — czyli dokładnie w opisanym wyjątku. */}
+              <div className="flex flex-col items-center">
+                {/* Zdjęcie ma natywnie 3:2 (6000×4000), więc aspect-[3/2]
+                    nie kadruje niczego — object-cover jest tylko zabezpieczeniem
+                    na wypadek podmiany na inną proporcję.
+                    eager + fetchPriority: to grafika w pierwszym ekranie,
+                    leniwe ładowanie tylko opóźniłoby jej pojawienie się. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/photos/2025/start-biegu.webp"
+                  alt="Start I edycji Sun Run 2025 pod bramą w Parku Ludowym w Lublinie"
+                  width={1600}
+                  height={1067}
+                  loading="eager"
+                  fetchPriority="high"
+                  className="w-full aspect-[3/2] object-cover rounded-2xl border border-sr-line"
+                />
+
+                <div className="flex-1 min-h-10" />
+
+                <a
+                  href="#galeria"
+                  className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-[#183153] font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  Galeria
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -98,119 +204,25 @@ export default function ArchiwumPage() {
               {STATS_2025.map((s) => (
                 <div
                   key={s.label}
-                  className="bg-white/70 border border-sr-line backdrop-blur-sm rounded-2xl p-6 text-center shadow-sm"
+                  className="@container bg-white/70 border border-sr-line backdrop-blur-sm rounded-2xl p-6 text-center shadow-sm"
                 >
-                  <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-red to-sr-navy">
+                  {/* Wielkość liczby liczona od szerokości KAFELKA (cqw), nie okna.
+                      Na sztywnym text-4xl dłuższe wartości („6.09.2025",
+                      „~13800 zł") wychodziły poza kafelek na telefonach i przy
+                      ~1024px, gdzie kolumn jest już cztery, ale jeszcze wąskie.
+                      Próg oparty na breakpointach musiałby to zgadywać, bo
+                      szerokość kafelka nie rośnie liniowo z oknem — siatka
+                      przeskakuje z 2 kolumn na 4 przy lg.
+                      17.5cqw dobrane pomiarem tak, by najszersza wartość
+                      („6.09.2025") mieściła się w kafelku od 320 do 1600px.
+                      Górna granica 2.25rem to dawne text-4xl — od ~768px
+                      w górę nic się nie zmienia. */}
+                  <p className="text-[clamp(0.7rem,17.5cqw,2.25rem)] font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-red to-sr-navy">
                     {s.val}
                   </p>
-                  <p className="text-xs text-[#3D4D65] mt-2 uppercase tracking-wider">{s.label}</p>
+                  <p className="text-xs text-[#183153] mt-2 uppercase tracking-wider">{s.label}</p>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Inicjatywy towarzyszące */}
-        <section className="py-10 px-8 sm:px-16 md:px-28">
-          <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-3">
-              Wokół biegu
-            </span>
-            <h2 className="text-3xl font-black uppercase text-[#183153] mb-8">
-              Inicjatywy towarzyszące
-            </h2>
-            <div className="grid sm:grid-cols-3 gap-5">
-              {[
-                {
-                  icon: "🩸",
-                  title: "Punkt DKMS",
-                  desc: "Stoisko rejestracji potencjalnych dawców szpiku kostnego działało przez cały czas trwania wydarzenia.",
-                  color: "#CE2F25",
-                },
-                {
-                  icon: "🎤",
-                  title: '"Nagraj się dla Hospicjum"',
-                  desc: 'Kampania "Rekord dla Hospicjum" — uczestnicy nagrywali wiadomości dla pacjentów. Wsparcie KUL i ambasadorów.',
-                  color: "#FE8004",
-                },
-                {
-                  icon: "🎓",
-                  title: "Patronat UP Lublin",
-                  desc: "Honorowy patronat Uniwersytetu Przyrodniczego w Lublinie.",
-                  color: "#183153",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="bg-white/70 border border-sr-line backdrop-blur-sm rounded-2xl p-6 shadow-sm"
-                >
-                  <span className="text-3xl block mb-3">{item.icon}</span>
-                  <h3 className="font-black text-base mb-2" style={{ color: item.color }}>
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-[#3D4D65] leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Wyniki */}
-        <section className="py-10 px-8 sm:px-16 md:px-28">
-          <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-3">
-              Sport
-            </span>
-            <h2 className="text-3xl font-black uppercase text-[#183153] mb-8">
-              Klasyfikacje i wyniki
-            </h2>
-            <div className="bg-white/70 border border-sr-line backdrop-blur-sm rounded-2xl p-8 shadow-sm">
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-sr-red mb-4">
-                    Kategorie
-                  </h3>
-                  <ul className="space-y-2 text-sm text-[#183153]">
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-sr-orange rounded-full" />
-                      OPEN — czas brutto (każdy wiek)
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-sr-orange rounded-full" />
-                      14+ lat — czas netto
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-sr-red rounded-full" />
-                      30+ lat — czas netto
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-sr-navy rounded-full" />
-                      50+ lat — czas netto
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-sr-red mb-4">
-                    Szczegóły pomiaru
-                  </h3>
-                  <ul className="space-y-2 text-sm text-[#183153]">
-                    <li>System: Datasport (elektroniczny pomiar)</li>
-                    <li>Limit czasu: 60 minut</li>
-                    <li>Dystans: 5 km (2 pętle asfaltowe)</li>
-                    <li>Wiek minimalny: 14 lat</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="mt-6 pt-6 border-t border-sr-line">
-                <a
-                  href="https://datasport.pl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-sr-line hover:border-sr-orange text-[#183153] hover:text-sr-red rounded-full text-sm transition-all"
-                >
-                  Pełne wyniki na datasport.pl →
-                </a>
-              </div>
             </div>
           </div>
         </section>
@@ -239,30 +251,40 @@ export default function ArchiwumPage() {
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: a.color }}>
+                      {/* Nazwa źródła jest jednakowo czerwona we wszystkich
+                          kafelkach. Kolor przewodni kafelka niesie plama po
+                          lewej — jako tekst byłby nieczytelny na jasnej karcie
+                          (żółć #FED46D dawała ok. 1,4:1). */}
+                      <span className="text-xs font-bold uppercase tracking-widest text-sr-red">
                         {a.source}
                       </span>
-                      <span className="text-xs text-[#3D4D65]">{a.date}</span>
+                      <span className="text-xs text-[#183153]">{a.date}</span>
                     </div>
                     <h3 className="font-black text-[#183153] group-hover:text-sr-red transition-colors mb-1">
                       {a.title}
                     </h3>
-                    <p className="text-sm text-[#3D4D65]">{a.excerpt}</p>
+                    <p className="text-sm text-[#183153]">{a.excerpt}</p>
                   </div>
-                  <span className="text-[#3D4D65] group-hover:text-sr-red transition-colors flex-shrink-0">
+                  <span className="text-[#183153] group-hover:text-sr-red transition-colors flex-shrink-0">
                     →
                   </span>
                 </a>
               ))}
             </div>
-            <p className="text-xs text-[#3D4D65] mt-6">
+            <p className="text-xs text-[#183153] mt-6">
               * Linki do artykułów zostaną dodane po zebraniu wszystkich publikacji.
             </p>
           </div>
         </section>
 
-        {/* Galeria zdjęć */}
-        <section className="py-10 px-8 sm:px-16 md:px-28">
+        {/* Galeria zdjęć. id="galeria" — cel przycisku „Galeria" z góry strony.
+            Po skoku sekcja ma stanąć górną krawędzią równo z górą okna, więc bez
+            scroll-mt. Zapas na logo w rogu robi WŁASNY górny padding sekcji
+            (pt-24): dzięki temu nad nagłówkiem „Fotografie" jest puste tło tej
+            sekcji, a nie urwany kawałek sekcji z artykułami — tak by wyszło
+            przy scroll-mt, bo ono odsuwa punkt docelowy w głąb poprzedniej
+            sekcji. Na telefonie logo sięga 76px, nagłówek ląduje na 96px. */}
+        <section id="galeria" className="pt-24 pb-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-6xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-3">
               Fotografie
@@ -270,8 +292,8 @@ export default function ArchiwumPage() {
             <h2 className="text-3xl font-black uppercase text-[#183153] mb-3">
               Galeria zdjęć
             </h2>
-            <p className="text-sm text-[#3D4D65] mb-8">
-              Placeholder — prawdziwe zdjęcia z biegu zostaną dodane wkrótce.
+            <p className="text-sm text-[#183153] mb-8">
+              Kadry z I edycji — 6 września 2025, Park Ludowy w Lublinie.
             </p>
             <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
               {GALLERY_IMAGES.map((src, i) => (
@@ -301,7 +323,7 @@ export default function ArchiwumPage() {
             <h2 className="text-4xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-r from-sr-navy to-sr-red">
               Dołącz do II edycji!
             </h2>
-            <p className="text-sm text-[#3D4D65]">
+            <p className="text-sm text-[#183153]">
               II edycja Sun Run 2026 już w drodze. Zapisz się i biegnij z nami!
             </p>
             <a
