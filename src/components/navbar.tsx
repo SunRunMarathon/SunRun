@@ -15,18 +15,48 @@ import StaggeredMenu from "./StaggeredMenu";
  * użytkownik wie, że w logo kryje się odnośnik, a powrót na stronę główną ma być
  * oczywisty.
  *
- * UWAGA: pozycja ZAPISZ SIĘ została stąd usunięta zgodnie z ustalonym składem.
- * Punkt 10 listy sztabu przewiduje ją jako element oddzielony graficznie od
- * odnośników — do zrobienia osobno. Do tego czasu zapisy są dostępne przez
- * przycisk w hero i dolny pasek.
+ * ZAPISZ SIĘ (punkt 10 listy sztabu) wyróżnia się kolorem #F94C1F zamiast
+ * granatu i prowadzi wprost do formularza FRS w nowej karcie.
  */
+
+/**
+ * „O Festiwalu" prowadzi w dwa różne miejsca, zależnie od tego, gdzie akurat
+ * stoi ta sekcja.
+ *
+ * Na szerokich ekranach jest ona OBOK logo hero, czyli na samej górze strony —
+ * przewijanie do niej przesuwałoby stronę o kilkaset pikseli w dół i lądowało
+ * w pustym miejscu. W tym wariancie zachowujemy się jak „Strona główna"
+ * i wracamy na sam początek.
+ *
+ * Gdy sekcja spadła POD logo, przewijamy do niej normalnie; odstęp spod logo
+ * w rogu daje jej scroll-margin-top (patrz #o-festiwalu w page.tsx).
+ *
+ * Sprawdzamy realny układ DOM, a nie szerokość okna, bo o wariancie decyduje
+ * pomiar zrobiony na stronie głównej — próg zależy też od wysokości okna.
+ */
+const przejdzDoFestiwalu = (e) => {
+  const el = document.getElementById("o-festiwalu");
+  if (!el) return; // inna podstrona — zwykły odnośnik "/#o-festiwalu" załatwi sprawę
+  e.preventDefault();
+  const obokLoga = !!el.closest("section")?.querySelector("#hero-logo");
+  if (obokLoga) window.scrollTo({ top: 0, behavior: "smooth" });
+  else el.scrollIntoView({ behavior: "smooth" });
+};
+
 const items = [
   { label: "Strona główna", link: "/", ariaLabel: "Przejdź na stronę główną" },
-  { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026" },
+  { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026", onSelect: przejdzDoFestiwalu },
   { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu — dystans, trasa, limit czasu" },
   { label: "Archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
   { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu" },
   { label: "O nas", link: "/o-nas", ariaLabel: "O nas — organizatorzy Sun Run" },
+  {
+    label: "Zapisz się",
+    link: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+    ariaLabel: "Zapisz się na Sun Run 2026 — formularz zapisów FRS",
+    external: true,
+    color: "#F94C1F",
+  },
 ];
 
 const socialItems = [

@@ -294,7 +294,10 @@
 
 .sm-panel-item {
   position: relative;
-  color: #183153;
+  /* Domyślnie granat. Pozycja może podać własną barwę przez --sm-item-color
+     (patrz `color` w danych pozycji) — używamy zmiennej, a nie stylu inline,
+     żeby reguła :hover poniżej nadal mogła ją nadpisać. */
+  color: var(--sm-item-color, #183153);
   /* LEMON MILK BOLD — font nagłówkowy wg księgi znaku. Ma tylko jedną grubość,
      więc font-weight nie ma tu nic do roboty. Krój jest szeroki, dlatego
      ujemny letter-spacing z poprzedniej czcionki został zdjęty. */

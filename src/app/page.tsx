@@ -116,6 +116,7 @@ export default function Home() {
   // z logo i przyciskami, i porównujemy ze środkiem okna. Gdy się nie mieści,
   // cała sekcja z nagłówkiem spada pod spód.
   const heroTrescRef = useRef(null);
+  const kotwicaObsluzona = useRef(false);
   const [festiwalObok, setFestiwalObok] = useState(false);
   const [festiwalPrawy, setFestiwalPrawy] = useState(32);
 
@@ -171,8 +172,21 @@ export default function Home() {
       const wysokosc = kopia.getBoundingClientRect().height;
       kopia.remove();
 
+      const miesciSie = wysokosc <= window.innerHeight - 2 * MARGINES;
       setFestiwalPrawy(prawyOdstep);
-      setFestiwalObok(wysokosc <= window.innerHeight - 2 * MARGINES);
+      setFestiwalObok(miesciSie);
+
+      // Wejście z podstrony przez „/#o-festiwalu": przeglądarka sama skoczyła do
+      // kotwicy, ale w wariancie OBOK ta kotwica jest na górze strony, więc skok
+      // tylko zsunął widok o kilkaset pikseli w dół, w puste miejsce. Cofamy to
+      // raz, zaraz po pierwszym pomiarze — tak samo jak robi to pozycja menu
+      // klikana już na stronie głównej.
+      if (!kotwicaObsluzona.current) {
+        kotwicaObsluzona.current = true;
+        if (miesciSie && window.location.hash === "#o-festiwalu") {
+          window.scrollTo({ top: 0 });
+        }
+      }
     };
 
     zmierz();
@@ -189,7 +203,10 @@ export default function Home() {
 
   // Wspólna treść sekcji — renderowana w jednym z dwóch miejsc, nigdy w obu.
   const festiwal = (
-    <div id="o-festiwalu">
+    // scroll-mt-28 działa tylko w wariancie POD SPODEM: odsuwa nagłówek spod
+    // logo w rogu, żeby po skoku z menu logo było nad nim, a nie na nim.
+    // W wariancie OBOK menu w ogóle tu nie przewija — wraca na górę strony.
+    <div id="o-festiwalu" className="scroll-mt-28">
       <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5">
         O Festiwalu
       </h2>

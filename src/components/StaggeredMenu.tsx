@@ -428,10 +428,15 @@ export const StaggeredMenu = ({
                     data-index={idx + 1}
                     target={it.external ? '_blank' : undefined}
                     rel={it.external ? 'noopener noreferrer' : undefined}
+                    // Kolor przez zmienną CSS, a nie przez style inline: inline
+                    // wygrałby z regułą :hover i pozycja nie zmieniałaby barwy
+                    // po najechaniu.
+                    style={it.color ? { ['--sm-item-color']: it.color } : undefined}
                     // Odnośniki do sekcji na tej samej stronie (np. "/#stats") nie
                     // powodują przeładowania, więc menu zostałoby otwarte i zasłaniało
                     // sekcję, do której właśnie przewinęliśmy. Zamykamy je ręcznie.
-                    onClick={() => {
+                    onClick={(e) => {
+                      it.onSelect?.(e);
                       if (!it.external && openRef.current) toggleMenu();
                     }}
                   >
