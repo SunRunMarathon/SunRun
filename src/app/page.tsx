@@ -20,12 +20,14 @@ const STACK_CARDS = [
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
+// Pole `anchor` usunięte razem z podstroną /partnerzy — wskazywało kotwice
+// na niej, a bez niej nie miało już czego adresować.
 const PARTNERS = [
-  { name: "DKMS", desc: "Rejestracja dawców szpiku", anchor: "dkms", color: "#CE2F25" },
-  { name: "VIVO! Lublin", desc: "Partner strategiczny", anchor: "vivo", color: "#183153" },
-  { name: "AS Babuni", desc: "Partner gastronomiczny", anchor: "as-babuni", color: "#CE2F25" },
-  { name: "Datasport", desc: "Pomiar czasu i klasyfikacje", anchor: "datasport", color: "#183153" },
-  { name: "UP Lublin", desc: "Patronat honorowy", anchor: "up-lublin", color: "#CE2F25" },
+  { name: "DKMS", desc: "Rejestracja dawców szpiku", color: "#CE2F25" },
+  { name: "VIVO! Lublin", desc: "Partner strategiczny", color: "#183153" },
+  { name: "AS Babuni", desc: "Partner gastronomiczny", color: "#CE2F25" },
+  { name: "Datasport", desc: "Pomiar czasu i klasyfikacje", color: "#183153" },
+  { name: "UP Lublin", desc: "Patronat honorowy", color: "#CE2F25" },
 ];
 
 export default function Home() {
@@ -604,16 +606,17 @@ export default function Home() {
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase text-[#183153]">
               Partnerzy i Sponsorzy
             </h2>
-            <p className="text-base sm:text-lg text-[#3D4D65] max-w-xl mx-auto">
-              Kliknij na logo, by dowiedzieć się więcej o wkładzie partnera w projekt!
-            </p>
           </div>
+          {/* Kafelki nie są już odnośnikami — prowadziły na podstronę
+              /partnerzy, której nie ma. Zniknęły razem z nimi: zachęta
+              „kliknij na logo", klasa cursor-target i efekty najechania.
+              Wszystkie trzy obiecywały kliknięcie, które nic by nie robiło.
+              Sama zawartość kafelków czeka na decyzję sztabu. */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-6">
             {PARTNERS.map((p) => (
-              <Link
+              <div
                 key={p.name}
-                href={`/partnerzy#${p.anchor}`}
-                className="cursor-target group flex flex-col items-center justify-center gap-3 p-8 bg-white border border-sr-line hover:border-sr-line rounded-3xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl text-center"
+                className="flex flex-col items-center justify-center gap-3 p-8 bg-white border border-sr-line rounded-3xl text-center"
               >
                 <div
                   className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-black text-lg"
@@ -621,11 +624,11 @@ export default function Home() {
                 >
                   {p.name.slice(0, 2).toUpperCase()}
                 </div>
-                <span className="text-sm sm:text-base font-bold text-[#183153] group-hover:text-[#183153] transition-colors">
+                <span className="text-sm sm:text-base font-bold text-[#183153]">
                   {p.name}
                 </span>
                 <span className="text-xs text-[#3D4D65] leading-snug">{p.desc}</span>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

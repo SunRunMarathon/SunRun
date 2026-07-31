@@ -16,8 +16,8 @@ import SocialIcon from "./social-icon";
  * dozwolonych zestawień w globals.css).
  */
 
-// Bez „Dla partnerów" — podstrona /partnerzy idzie do usunięcia, więc nie
-// wysyłamy tam już nikogo ze stopki.
+// Bez „Dla partnerów" — podstrona /partnerzy została usunięta. Sekcja
+// z partnerami żyje dalej na stronie głównej pod kotwicą #partnerzy.
 const STRONY = [
   { label: "O nas", href: "/o-nas" },
   { label: "Archiwum I edycji", href: "/archiwum" },
