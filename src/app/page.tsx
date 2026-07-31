@@ -20,6 +20,11 @@ const STACK_CARDS = [
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
+// Szerokość głównego logo w sekcji startowej. Używa jej też kontener daty pod
+// spodem, żeby napis był wyśrodkowany względem znaku — dlatego wartość stoi
+// w jednym miejscu, a nie w dwóch, gdzie mogłaby się rozjechać.
+const SZEROKOSC_LOGO = "min(720px, 88vw, 62vh)";
+
 // Pole `anchor` usunięte razem z podstroną /partnerzy — wskazywało kotwice
 // na niej, a bez niej nie miało już czego adresować.
 const PARTNERS = [
@@ -374,16 +379,19 @@ export default function Home() {
               width={870}
               height={634}
               className="h-auto"
-              style={{ width: "min(720px, 88vw, 62vh)" }}
+              style={{ width: SZEROKOSC_LOGO }}
               draggable={false}
             />
           </h1>
 
           {/* Data odsunięta od logo — wcześniej pt-1, przez co przyklejała się
-              do dolnej krawędzi znaku. */}
-          <div className="flex items-center gap-4 pt-6">
-            <div className="h-px w-10 bg-sr-orange/60" />
-            <p className="text-2xl sm:text-3xl font-extrabold tracking-widest text-[#183153] uppercase">
+              do dolnej krawędzi znaku.
+              Wyśrodkowana względem SAMEGO LOGA, nie kolumny hero: kontener daty
+              dostaje tę samą szerokość co znak (SZEROKOSC_LOGO), więc środek
+              napisu leży dokładnie pod środkiem logo, niezależnie od tego, którą
+              wartość z min() akurat wybiera przeglądarka. */}
+          <div className="pt-6 max-w-full" style={{ width: SZEROKOSC_LOGO }}>
+            <p className="text-center text-2xl sm:text-3xl font-extrabold tracking-widest text-[#183153] uppercase">
               12 września 2026
             </p>
           </div>
