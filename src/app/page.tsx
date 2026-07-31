@@ -11,7 +11,6 @@ import ScrollStack, { ScrollStackItem } from "@/components/ScrollStack";
 import Stack from "@/components/Stack";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
-const MetaBalls = dynamic(() => import("@/components/MetaBalls"), { ssr: false });
 
 // Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja "Wspomnienia").
 // Zastąp docelowymi fotografiami z biegu w /public/photos.
@@ -182,28 +181,6 @@ export default function Home() {
           1. HERO SECTION
       ═══════════════════════════════════════════ */}
       <section className="relative z-10 w-full min-h-screen flex flex-col justify-center px-8 sm:px-16 md:px-28 text-left select-none">
-        {/* MetaBalls — cała prawa połowa ekranu, od góry do dołu sekcji hero.
-            Brak overflow:hidden — canvas zajmuje duży obszar, kulki naturalnie
-            latają po całej prawej stronie i są widoczne bez ucięcia. */}
-        <div
-          className="absolute pointer-events-none hidden md:block"
-          style={{
-            top: 0,
-            right: 0,
-            width: "55vw",
-            height: "100%",
-            zIndex: 1,
-          }}
-        >
-          <MetaBalls
-            color1="#FE8004"
-            color2="#CE2F25"
-            speed={0.45}
-            opacity={0.4}
-            enableMouseInteraction={true}
-          />
-        </div>
-
         {/* "kliknij tutaj!" — zakrzywiona strzałka, która przy scrollu sięga w stronę
             hamburgera, próbując go "złapać", a pod koniec sekcji startowej poddaje się.
             POZYCJA FIXED — zostaje na ekranie zamiast odjeżdżać z sekcją hero. */}
