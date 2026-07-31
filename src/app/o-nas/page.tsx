@@ -124,16 +124,38 @@ export default function ONasPage() {
         <section className="py-16 px-8 text-center">
           <div className="max-w-xl mx-auto space-y-6">
             <h2 className="text-3xl font-black uppercase text-[#183153]">
-              Dołącz do nas!
+              Dołącz do naszej misji!
             </h2>
-            <p className="text-sm text-[#3D4D65]">
-              Szukamy wolontariuszy do II edycji. Napisz do nas!
+            <p className="text-sm text-[#183153]">
+              Jeśli Sun Run Cię zainteresował i chciałbyś wesprzeć nasze działania jako
+              partner, sponsor, wolontariusz lub po prostu osoba, która chce pomóc,
+              będzie nam bardzo miło Cię poznać!
             </p>
+            <p className="text-sm text-[#183153]">
+              Skontaktuj się z nami pod adresem e-mail:
+            </p>
+            {/* W miejsce dawnego pomarańczowego przycisku wchodzi sam adres.
+                Zostaje odnośnikiem mailto — wygląda jak zwykły tekst, bez
+                podkreślenia, ale kliknięcie otwiera program pocztowy.
+
+                ROZMIAR NIE JEST OZDOBNY. Czerwień #CE2F25 na piaskowym tle daje
+                3,74:1, czyli za mało na zwykły tekst (próg 4,5:1), ale dość na
+                tekst duży (próg 3:1). „Duży" wg WCAG to pogrubiony od 18,66px
+                — dlatego text-xl (20px), a nie text-lg (18px), które by tego
+                progu nie przekroczyło i adres byłby poniżej normy.
+
+                Bez cursor-target: nad adresem nie ma się pojawiać czerwony
+                celownik. Słoneczko i tak zniknie, bo odnośnik ma własny
+                kursor systemowy (pointer), a to wyłapuje reguła w TargetCursor.
+
+                <wbr /> przed małpą wyznacza miejsce, w którym adres wolno
+                złamać. Bez tego na telefonie łamał się gdzie popadnie i w
+                drugim wierszu zostawała sama litera „m". */}
             <a
-              href="mailto:sunrunlublin@gmail.com"
-              className="cursor-target inline-flex items-center justify-center px-8 py-3.5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
+              href="mailto:hospicjum.samarytanin.bieg@gmail.com"
+              className="block text-xl font-bold text-sr-red break-words"
             >
-              Skontaktuj się →
+              hospicjum.samarytanin.bieg<wbr />@gmail.com
             </a>
           </div>
         </section>
