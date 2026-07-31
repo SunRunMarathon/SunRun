@@ -1,65 +1,13 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 
-
-const TEAM = [
-  {
-    role: "Lider Projektu",
-    name: "Jakub Delega",
-    org: "III LO im. Unii Lubelskiej",
-    color: "#CE2F25",
-  },
-  {
-    role: "Koordynator Gałęzi Program",
-    name: "Tosia Polkowska",
-    org: "Gałąź Program",
-    color: "#CE2F25",
-  },
-  {
-    role: "Lider Zespołu Technicznego",
-    name: "Wiktor",
-    org: "Gałąź Program · Dział Tech",
-    color: "#CE2F25",
-  },
-  {
-    role: "Główny Deweloper",
-    name: "Miłosz Kamiński",
-    org: "Gałąź Program · Dział Tech",
-    color: "#183153",
-  },
-];
-
-const BRANCHES = [
-  {
-    name: "Administracja",
-    desc: "Zarządzanie dokumentacją, koordynacja wewnętrzna, obsługa formalna.",
-    icon: "📋",
-    color: "#183153",
-  },
-  {
-    name: "Wykonanie",
-    desc: "Logistyka, obsługa trasy, miasteczko biegowe, punkt startu i mety.",
-    icon: "🏃",
-    color: "#CE2F25",
-  },
-  {
-    name: "Promocja",
-    desc: "Media społecznościowe, materiały graficzne, PR, kontakt z mediami.",
-    icon: "📣",
-    color: "#CE2F25",
-  },
-  {
-    name: "Program",
-    desc: "Strona internetowa (Dział Tech), scena i atrakcje eventowe (Dział Sceniczny).",
-    icon: "💻",
-    color: "#183153",
-  },
-];
+// Stałe TEAM i BRANCHES zniknęły razem z sekcjami „Struktura", „Zespół"
+// i „Droga komunikacji" — bez nich były już tylko martwym kodem. Gdyby
+// któraś z tych sekcji wracała, dane są w historii gita.
 
 export default function ONasPage() {
   return (
@@ -135,114 +83,6 @@ export default function ONasPage() {
                   nad całorocznym ogrodem hospicyjnym. II edycja będzie jeszcze
                   większa — dołącz do nas!
                 </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Struktura organizacyjna */}
-        <section className="py-12 px-8 sm:px-16 md:px-28">
-          <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-3">
-              Struktura
-            </span>
-            <h2 className="text-3xl font-black uppercase text-[#183153] mb-10">
-              Gałęzie organizacyjne
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-5">
-              {BRANCHES.map((b) => (
-                <div
-                  key={b.name}
-                  className="bg-white/70 border border-sr-line hover:border-sr-line backdrop-blur-sm rounded-2xl p-6 transition-all duration-300 group shadow-sm"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-2xl">{b.icon}</span>
-                    <h3
-                      className="font-black uppercase text-lg"
-                      style={{ color: b.color }}
-                    >
-                      {b.name}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-[#3D4D65] leading-relaxed">{b.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Zespół */}
-        <section className="py-12 px-8 sm:px-16 md:px-28">
-          <div className="max-w-5xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-3">
-              Kluczowe osoby
-            </span>
-            <h2 className="text-3xl font-black uppercase text-[#183153] mb-10">
-              Zespół
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {TEAM.map((t) => (
-                <div
-                  key={t.name}
-                  className="bg-white/70 border border-sr-line backdrop-blur-sm rounded-2xl p-6 flex flex-col gap-3 shadow-sm"
-                >
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl text-white mb-1"
-                    style={{ backgroundColor: t.color }}
-                  >
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-widest font-bold text-[#3D4D65] mb-1">
-                      {t.role}
-                    </p>
-                    <p className="font-black text-[#183153]">{t.name}</p>
-                    <p className="text-xs text-[#3D4D65] mt-1">{t.org}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-[#3D4D65] mt-8 max-w-2xl">
-              Za sukcesem Sun Run stoi cała ekipa wolontariuszy i współorganizatorów
-              — lista wszystkich zaangażowanych osób zostanie opublikowana po zakończeniu II edycji.
-            </p>
-          </div>
-        </section>
-
-        {/* Droga komunikacji */}
-        <section className="py-12 px-8 sm:px-16 md:px-28">
-          <div className="max-w-5xl mx-auto">
-            <div className="bg-white/70 border border-sr-line backdrop-blur-sm rounded-3xl p-8 sm:p-12 shadow-lg">
-              <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-4">
-                Komunikacja
-              </span>
-              <h2 className="text-2xl font-black uppercase text-[#183153] mb-6">
-                Droga komunikacyjna
-              </h2>
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                {[
-                  { label: "Deweloper (Miłosz)", color: "#183153" },
-                  { label: "→" },
-                  { label: "Wiktor (Tech Lead)", color: "#CE2F25" },
-                  { label: "→" },
-                  { label: "Tosia Polkowska (Koord. Program)", color: "#CE2F25" },
-                  { label: "→" },
-                  { label: "Jakub Delega (Lider)", color: "#183153" },
-                ].map((item, i) =>
-                  item.label === "→" ? (
-                    <span key={i} className="text-[#3D4D65] font-bold text-lg">
-                      →
-                    </span>
-                  ) : (
-                    <span
-                      key={i}
-                      className="px-3 py-1.5 rounded-full text-xs font-bold text-white"
-                      style={{ backgroundColor: item.color }}
-                    >
-                      {item.label}
-                    </span>
-                  )
-                )}
               </div>
             </div>
           </div>
