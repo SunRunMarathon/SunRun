@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import StaggeredMenu from "./StaggeredMenu";
+import { POKAZ_PARTNEROW } from "@/flagi";
 
 /**
  * Pozycje menu bocznego.
@@ -48,7 +49,9 @@ const items = [
   { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026", onSelect: przejdzDoFestiwalu },
   { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu — dystans, trasa, limit czasu" },
   { label: "Archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
-  { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu" },
+  // Odfiltrowana razem z ukrytą sekcją — patrz POKAZ_PARTNEROW w src/flagi.ts.
+  // Bez tego pozycja zostałaby w menu i prowadziła do kotwicy, której nie ma.
+  { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu", ukryjGdy: !POKAZ_PARTNEROW },
   { label: "O nas", link: "/o-nas", ariaLabel: "O nas — organizatorzy Sun Run" },
   {
     label: "Zapisz się",
@@ -139,7 +142,7 @@ export function Navbar({ revealOnScroll = false }) {
     <StaggeredMenu
       position="right"
       isFixed
-      items={items}
+      items={items.filter((it) => !it.ukryjGdy)}
       socialItems={socialItems}
       displaySocials
       displayItemNumbering={false}

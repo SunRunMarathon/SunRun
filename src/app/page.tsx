@@ -8,6 +8,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 import Stack from "@/components/Stack";
+import { POKAZ_PARTNEROW } from "@/flagi";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
 
@@ -671,8 +672,14 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          4. PARTNERZY
+          4. PARTNERZY — UKRYTA
+
+          Sekcja czeka na potwierdzenie kolejnych partnerów; na razie mamy
+          jednego, więc pokazywanie pięciu kafelków wprowadzałoby w błąd.
+          Kod zostaje nietknięty — wystarczy przestawić POKAZ_PARTNEROW
+          w src/flagi.ts na true i wraca razem z pozycją w menu bocznym.
       ═══════════════════════════════════════════ */}
+      {POKAZ_PARTNEROW && (
       <section id="partnerzy" className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
         <div className="max-w-6xl mx-auto w-full">
           <div className="text-center mb-16 space-y-4">
@@ -707,6 +714,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ═══════════════════════════════════════════
           5. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
