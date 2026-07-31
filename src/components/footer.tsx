@@ -16,9 +16,10 @@ import SocialIcon from "./social-icon";
  * dozwolonych zestawień w globals.css).
  */
 
+// Bez „Dla partnerów" — podstrona /partnerzy idzie do usunięcia, więc nie
+// wysyłamy tam już nikogo ze stopki.
 const STRONY = [
   { label: "O nas", href: "/o-nas" },
-  { label: "Dla partnerów", href: "/partnerzy" },
   { label: "Archiwum I edycji", href: "/archiwum" },
   { label: "Zapisz się", href: "https://frslublin.pl/pl/app/races/sign_up_form/295" },
 ];
@@ -57,7 +58,7 @@ export function Footer() {
 
           {/* Nawigacja */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-widest">Strony</h4>
+            <h4 className="text-[13px] font-bold uppercase tracking-widest">Strony</h4>
             {STRONY.map((l) => (
               <a
                 key={l.label}
@@ -73,7 +74,7 @@ export function Footer() {
 
           {/* Kontakt */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-widest">Kontakt</h4>
+            <h4 className="text-[13px] font-bold uppercase tracking-widest">Kontakt</h4>
             <a
               href="mailto:hospicjum.samarytanin.bieg@gmail.com"
               className="block text-sm text-sr-sand/80 hover:text-sr-orange transition-colors break-words"
@@ -81,14 +82,13 @@ export function Footer() {
               hospicjum.samarytanin.bieg@gmail.com
             </a>
             <p className="text-xs text-sr-sand/80">
-              W sprawie partnerstw skontaktuj się z nami mailowo lub przez formularz
-              w zakładce Dla Partnerów.
+              W sprawie partnerstw skontaktuj się z nami mailowo.
             </p>
           </div>
 
           {/* Media społecznościowe */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-widest">Media</h4>
+            <h4 className="text-[13px] font-bold uppercase tracking-widest">Media</h4>
             <div className="flex flex-col gap-2">
               {MEDIA.map((s) => (
                 <a
