@@ -67,7 +67,7 @@ export default function ArchiwumPage() {
         hideDefaultCursor={true}
         parallaxOn={true}
         cursorColor="#183153"
-        cursorColorOnTarget="#FE8004"
+        cursorColorOnTarget="#CE2F25"
         targetSelector=".cursor-target"
       />
 
