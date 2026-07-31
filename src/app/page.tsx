@@ -11,12 +11,16 @@ import Stack from "@/components/Stack";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
 
-// Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja "Wspomnienia").
-// Zastąp docelowymi fotografiami z biegu w /public/photos.
+// Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja „Wspomnienia").
+// Karty 1 i 3 były zastępnikami i poszły do kosza: pierwsza to generyczna
+// grafika stockowa z angielskimi numerami startowymi („RUN FOR HOPE"),
+// trzecia — zdjęcie z Adobe Stock z widocznym znakiem wodnym, czyli coś,
+// co nie miało prawa stać na publicznej stronie. W ich miejsce prawdziwe
+// kadry z I edycji, przycięte do kwadratu pod karty komponentu.
 const STACK_CARDS = [
-  { id: 1, img: "/sun_run_runners.webp", alt: "Biegacze Sun Run 2025" },
+  { id: 1, img: "/photos/2025/stos-start.webp", alt: "Start I edycji Sun Run 2025" },
   { id: 2, img: "/photos/ekipa.webp", alt: "Ekipa Sun Run 2025" },
-  { id: 3, img: "/photos/sztab.webp", alt: "Sztab i wolontariusze" },
+  { id: 3, img: "/photos/2025/stos-trasa.webp", alt: "Uczestnicy na trasie w Parku Ludowym" },
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
@@ -670,7 +674,7 @@ export default function Home() {
             </h2>
             <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-md">
               Ponad 350 uczestników, świetna atmosfera i realna pomoc dla hospicjum.
-              Przeciągnij zdjęcia obok, a po całą relację, wyniki i galerię zajrzyj do archiwum.
+              Przeciągnij zdjęcia obok, a po podsumowanie edycji i galerię zajrzyj do archiwum.
             </p>
             <Link
               href="/archiwum"
