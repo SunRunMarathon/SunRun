@@ -37,12 +37,12 @@ export default function ONasPage() {
                   o krańce dba wysokość, ale bez w-fit nagłówek rozciągałby się
                   na całą kolumnę i gradient miałby zbędny zapas na boki. */}
               <h1 className="w-fit text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#183153] to-[#FE8004] leading-none">
-                O Nas
+                O Nas
               </h1>
               <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-2xl">
-                Jesteśmy zespołem około 60 młodych osób – uczniów szkół średnich i studentów
-                – których połączyła wspólna idea stworzenia wydarzenia z realnym wpływem
-                na innych. Sun Run powstał z pasji, zaangażowania i przekonania, że nawet
+                Jesteśmy zespołem około 60 młodych osób – uczniów szkół średnich i studentów –
+                których połączyła wspólna idea stworzenia wydarzenia z realnym wpływem na
+                innych. Sun Run powstał z pasji, zaangażowania i przekonania, że nawet
                 niewielkie działania mogą zmieniać czyjeś życie.
               </p>
             </div>
@@ -107,13 +107,13 @@ export default function ONasPage() {
                   >
                     Hospicjum Dobrego Samarytanina
                   </a>{" "}
-                  w Lublinie. Chcemy tworzyć wydarzenie, które daje okazję do wspólnego
-                  spędzania czasu, spotkania z przyjaciółmi, poznawania nowych osób
-                  i jednoczesnego pomagania tym, którzy tego potrzebują.
+                  w Lublinie. Chcemy tworzyć wydarzenie, które daje okazję do wspólnego
+                  spędzania czasu, spotkania z przyjaciółmi, poznawania nowych osób
+                  i jednoczesnego pomagania tym, którzy tego potrzebują.
                 </p>
                 <p>
-                  Sun Run powstał z pasji i zaangażowania wielu młodych osób, które
-                  chciały stworzyć inicjatywę łączącą ludzi wokół wspólnego celu.
+                  Sun Run powstał z pasji i zaangażowania wielu młodych osób, które chciały
+                  stworzyć inicjatywę łączącą ludzi wokół wspólnego celu.
                 </p>
               </div>
             </div>
@@ -127,12 +127,12 @@ export default function ONasPage() {
               Dołącz do naszej misji!
             </h2>
             <p className="text-sm text-[#183153]">
-              Jeśli Sun Run Cię zainteresował i chciałbyś wesprzeć nasze działania jako
-              partner, sponsor, wolontariusz lub po prostu osoba, która chce pomóc,
-              będzie nam bardzo miło Cię poznać!
+              Jeśli Sun Run Cię zainteresował i chciałbyś wesprzeć nasze działania jako partner,
+              sponsor, wolontariusz lub po prostu osoba, która chce pomóc, będzie nam bardzo
+              miło Cię poznać!
             </p>
             <p className="text-sm text-[#183153]">
-              Skontaktuj się z nami pod adresem e-mail:
+              Skontaktuj się z nami pod adresem e-mail:
             </p>
             {/* W miejsce dawnego pomarańczowego przycisku wchodzi sam adres.
                 Zostaje odnośnikiem mailto — wygląda jak zwykły tekst, bez

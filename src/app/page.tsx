@@ -209,7 +209,7 @@ export default function Home() {
     // W wariancie OBOK menu w ogóle tu nie przewija — wraca na górę strony.
     <div id="o-festiwalu" className="scroll-mt-28">
       <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5">
-        O Festiwalu
+        O Festiwalu
       </h2>
       {/* Nie ma tu już żadnego kontenera — treść leży wprost na tle strony.
           Prostokąt, który wyznaczała biała karta, istnieje nadal, tylko stał się
@@ -232,28 +232,27 @@ export default function Home() {
           szerokość bloku, a nie na szerokość okna. */}
       <div className="columns-[27rem] gap-10 text-sm sm:text-base text-[#183153] leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:break-inside-avoid">
         <p>
-          Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii.
-          Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie
-          zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie
-          charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego
-          Samarytanina w Lublinie.
+          Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce,
+          gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś
+          dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie charytatywne, którego
+          celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w Lublinie.
         </p>
         <p>
-          Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla
-          dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego
-          spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi
-          i pomaganie połączą się w jedno niezapomniane wydarzenie.
+          Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci,
+          młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu.
+          Chcemy stworzyć miejsce, w którym radość, spotkania z innymi i pomaganie połączą się
+          w jedno niezapomniane wydarzenie.
         </p>
         <p>
-          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla
-          każdego — niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz
-          również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na
-          mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego —
+          niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz również przejść
+          całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel
+          i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
-          Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem
-          słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych
-          — spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+          Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
+          nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych — spotkajmy
+          się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
         <p className="font-extrabold text-sr-red">
           Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
@@ -484,7 +483,7 @@ export default function Home() {
               type="button"
               className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
             >
-              Ankieta — skąd o nas usłyszałeś?
+              Ankieta — skąd o nas usłyszałeś?
             </button>
           </div>
 
@@ -522,7 +521,7 @@ export default function Home() {
         <div className="max-w-[88rem] mx-auto w-full">
           {/* text-[1.75rem] = dokładnie dwukrotność poprzedniego text-sm (14px). */}
           <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-8">
-            O biegu
+            O biegu
           </h2>
           {/* Na desktopie mapa zajmuje dokładnie połowę szerokości (wcześniej 3/5),
               a kolumna z kartami drugą połowę — karty rozszerzyły się ku środkowi,
@@ -633,7 +632,8 @@ export default function Home() {
                   </h2>
                 </div>
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
-                  Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką paliatywną
+                  Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką
+                  paliatywną
                   ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z chorobami terminalnymi rocznie.
                   Środki zebrane podczas Sun Run przeznaczamy na specjalistyczny sprzęt medyczny
                   oraz doskonalenie warunków opieki.
@@ -685,7 +685,7 @@ export default function Home() {
           <div className="text-center mb-16 space-y-4">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase text-[#183153]">
-              Partnerzy i Sponsorzy
+              Partnerzy i Sponsorzy
             </h2>
           </div>
           {/* Kafelki nie są już odnośnikami — prowadziły na podstronę
@@ -724,7 +724,7 @@ export default function Home() {
           {/* Tekst + CTA */}
           <div className="@container space-y-6">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red block">
-              Archiwum · I Edycja 2025
+              Archiwum · I Edycja 2025
             </span>
             {/* Wielkość nagłówka liczona od szerokości KOLUMNY (cqw), nie okna.
                 Na progach text-6xl/7xl/8xl „WSPOMNIENIA" nie mieściło się:
@@ -737,8 +737,8 @@ export default function Home() {
               Wspomnienia
             </h2>
             <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-md">
-              Ponad 350 uczestników, świetna atmosfera i realna pomoc dla hospicjum.
-              Przeciągnij zdjęcia obok, a po podsumowanie edycji i galerię zajrzyj do archiwum.
+              Ponad 350 uczestników, świetna atmosfera i realna pomoc dla hospicjum. Przeciągnij
+              zdjęcia obok, a po podsumowanie edycji i galerię zajrzyj do archiwum.
             </p>
             <Link
               href="/archiwum"

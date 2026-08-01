@@ -9,10 +9,10 @@ import TargetCursor from "@/components/TargetCursor";
 
 const ARTICLES = [
   {
-    title: "Sun Run 2025 — relacja z biegu",
+    title: "Sun Run 2025 — relacja z biegu",
     source: "Kurier Lubelski",
     date: "6 września 2025",
-    excerpt: "Ponad 350 uczestników przebiegło przez Park Ludowy w Lublinie, wspierając Hospicjum Dobrego Samarytanina...",
+    excerpt: "Ponad 350 uczestników przebiegło przez Park Ludowy w Lublinie, wspierając Hospicjum Dobrego Samarytanina...",
     url: "#",
     // color = kolor PLAMY po lewej krawędzi kafelka, nie tekstu
     color: "#FED46D",
@@ -21,7 +21,7 @@ const ARTICLES = [
     title: "Młodzież organizuje bieg dla hospicjum",
     source: "Dziennik Wschodni",
     date: "4 września 2025",
-    excerpt: "Inicjatywa lubelskich uczniów z III LO im. Unii Lubelskiej przyciągnęła setki biegaczy i spacerowiczów...",
+    excerpt: "Inicjatywa lubelskich uczniów z III LO im. Unii Lubelskiej przyciągnęła setki biegaczy i spacerowiczów...",
     url: "#",
     color: "#F6941D",
   },
@@ -29,7 +29,7 @@ const ARTICLES = [
     title: "DKMS na Sun Run — relacja",
     source: "dkms.pl",
     date: "7 września 2025",
-    excerpt: "Podczas II edycji biegu charytatywnego w Lublinie udało się zarejestrować nowych potencjalnych dawców szpiku...",
+    excerpt: "Podczas II edycji biegu charytatywnego w Lublinie udało się zarejestrować nowych potencjalnych dawców szpiku...",
     url: "#",
     color: "#F94C1F",
   },
@@ -114,7 +114,7 @@ export default function ArchiwumPage() {
             {/* Plakietka i tytuł — wyśrodkowane względem strony */}
             <div className="text-center space-y-6">
               <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30">
-                I edycja · 6 września 2025
+                I edycja · 6 września 2025
               </span>
               <h1 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-sr-red via-sr-navy to-sr-navy leading-none">
                 Archiwum<br />2025
@@ -128,30 +128,30 @@ export default function ArchiwumPage() {
             <div className="mt-16 grid lg:grid-cols-2 gap-12">
               <div className="space-y-4 text-base sm:text-lg text-[#183153] leading-relaxed">
                 <p>
-                  Rok temu, 6 września 2025 roku, odbyła się pierwsza edycja Sun Run –
-                  biegu charytatywnego z elementami festiwalowymi, którego celem było
-                  niesienie pomocy podopiecznym Hospicjum Dobrego Samarytanina w Lublinie.
+                  Rok temu, 6 września 2025 roku, odbyła się pierwsza edycja Sun Run – biegu
+                  charytatywnego z elementami festiwalowymi, którego celem było niesienie pomocy
+                  podopiecznym Hospicjum Dobrego Samarytanina w Lublinie.
                 </p>
                 <p>
-                  Wydarzenie zostało zorganizowane przez około 50 młodych osób – uczniów
-                  szkół średnich oraz studentów, którzy wspólnymi siłami stworzyli
-                  inicjatywę łączącą sport, integrację i dobroczynność.
+                  Wydarzenie zostało zorganizowane przez około 50 młodych osób – uczniów szkół
+                  średnich oraz studentów, którzy wspólnymi siłami stworzyli inicjatywę łączącą
+                  sport, integrację i dobroczynność.
                 </p>
                 <p>
-                  Pierwsza edycja okazała się ogromnym sukcesem. Na Sun Run zapisały się
-                  363 osoby, a dzięki zaangażowaniu uczestników, partnerów i wolontariuszy
-                  udało się zebrać około 13 800 zł, które zostały przekazane na wsparcie
-                  osób potrzebujących z Hospicjum Dobrego Samarytanina.
+                  Pierwsza edycja okazała się ogromnym sukcesem. Na Sun Run zapisały się 363
+                  osoby, a dzięki zaangażowaniu uczestników, partnerów i wolontariuszy udało się
+                  zebrać około 13 800 zł, które zostały przekazane na wsparcie osób
+                  potrzebujących z Hospicjum Dobrego Samarytanina.
                 </p>
                 <p>
-                  Hasłem przewodnim pierwszej edycji było: „Biegnij dla tych, którzy już
-                  nie mogą”. To właśnie ono najlepiej oddawało ideę wydarzenia – każdy
-                  przebiegnięty kilometr miał realne znaczenie i był wyrazem solidarności
-                  z tymi, którzy nie mogą już stanąć na starcie.
+                  Hasłem przewodnim pierwszej edycji było: „Biegnij dla tych, którzy już nie
+                  mogą”. To właśnie ono najlepiej oddawało ideę wydarzenia – każdy przebiegnięty
+                  kilometr miał realne znaczenie i był wyrazem solidarności z tymi, którzy nie
+                  mogą już stanąć na starcie.
                 </p>
                 <p>
-                  W tym roku chcemy pójść o krok dalej i przebić liczbę 363 uczestników.
-                  Wierzymy, że razem możemy stworzyć jeszcze większe wydarzenie i wspólnie
+                  W tym roku chcemy pójść o krok dalej i przebić liczbę 363 uczestników.
+                  Wierzymy, że razem możemy stworzyć jeszcze większe wydarzenie i wspólnie
                   zrobić jeszcze więcej dobra.
                 </p>
               </div>
@@ -198,7 +198,7 @@ export default function ArchiwumPage() {
         <section className="py-10 px-8 sm:px-16 md:px-28">
           <div className="max-w-5xl mx-auto">
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-sr-red block mb-8">
-              I edycja w liczbach
+              I edycja w liczbach
             </span>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
               {STATS_2025.map((s) => (
@@ -234,7 +234,7 @@ export default function ArchiwumPage() {
               Media
             </span>
             <h2 className="text-3xl font-black uppercase text-[#183153] mb-8">
-              Artykuły o Sun Run 2025
+              Artykuły o Sun Run 2025
             </h2>
             <div className="space-y-4">
               {ARTICLES.map((a) => (
@@ -293,7 +293,7 @@ export default function ArchiwumPage() {
               Galeria zdjęć
             </h2>
             <p className="text-sm text-[#183153] mb-8">
-              Kadry z I edycji — 6 września 2025, Park Ludowy w Lublinie.
+              Kadry z I edycji — 6 września 2025, Park Ludowy w Lublinie.
             </p>
             <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
               {/* Bez cursor-zoom-in: lupa z plusem obiecywała powiększenie,
@@ -328,7 +328,7 @@ export default function ArchiwumPage() {
               Dołącz do II edycji!
             </h2>
             <p className="text-sm text-[#183153]">
-              II edycja Sun Run 2026 już w drodze. Zapisz się i biegnij z nami!
+              II edycja Sun Run 2026 już w drodze. Zapisz się i biegnij z nami!
             </p>
             <a
               href="https://frslublin.pl/pl/app/races/sign_up_form/295"
