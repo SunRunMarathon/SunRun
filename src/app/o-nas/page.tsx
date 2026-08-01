@@ -50,10 +50,6 @@ export default function ONasPage() {
         <section style={{ paddingTop: LUKA, paddingBottom: LUKA }} className="px-8 sm:px-16 md:px-28">
           <div className="w-full grid lg:grid-cols-2 gap-10 xl:gap-16 items-center">
             <div className="max-w-3xl space-y-6">
-              {/* Czerwona plakietka — ten sam wariant co na górze /archiwum */}
-              <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30">
-                Kim jesteśmy
-              </span>
               {/* w-fit z tego samego powodu co przy „Nasza misja": bg-clip-text
                   bierze tło CAŁEGO pudełka. Tu gradient jest pionowy, więc
                   o krańce dba wysokość, ale bez w-fit nagłówek rozciągałby się

@@ -14,29 +14,37 @@ const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: f
 
 const ARTICLES = [
   {
-    title: "Sun Run 2025 - relacja z biegu",
+    title: "Pobiegli i pomogli. Wyjątkowy bieg dla Hospicjum Dobrego Samarytanina w Lublinie",
     source: "Kurier Lubelski",
-    date: "6 września 2025",
-    excerpt: "Ponad 350 uczestników przebiegło przez Park Ludowy w Lublinie, wspierając Hospicjum Dobrego Samarytanina...",
-    url: "#",
+    date: "8 września 2025",
+    excerpt: "Relacja z pierwszej edycji biegu w Parku Ludowym, w którym wzięło udział ponad 350 osób.",
+    url: "https://kurierlubelski.pl/pobiegli-i-pomogli-wyjatkowy-bieg-dla-hospicjum-dobrego-samarytanina-w-lublinie/ar/c2p2-27946763",
     // color = kolor PLAMY po lewej krawędzi kafelka, nie tekstu
     color: "#FED46D",
   },
   {
-    title: "Młodzież organizuje bieg dla hospicjum",
-    source: "Dziennik Wschodni",
-    date: "4 września 2025",
-    excerpt: "Inicjatywa lubelskich uczniów z III LO im. Unii Lubelskiej przyciągnęła setki biegaczy i spacerowiczów...",
-    url: "#",
+    title: "Bieg charytatywny dla Hospicjum Dobrego Samarytanina. Trwają zapisy na Sun Run",
+    source: "Lublin24.pl",
+    date: "31 lipca 2025",
+    excerpt: "Zapowiedź biegu na 5 km w Parku Ludowym - zebrane środki miały trafić na materace przeciwodleżynowe dla hospicjum.",
+    url: "https://lublin24.pl/zapowiedzi-imprez-w-lublinie/bieg-charytatywny-dla-hospicjum-dobrego-samarytanina-trwaja-zapisy-na-sun-run/shZf9LfjNIkGP8rtrwGg",
     color: "#F6941D",
   },
   {
-    title: "DKMS na Sun Run - relacja",
-    source: "dkms.pl",
-    date: "7 września 2025",
-    excerpt: "Podczas II edycji biegu charytatywnego w Lublinie udało się zarejestrować nowych potencjalnych dawców szpiku...",
-    url: "#",
+    title: "Sun Run 2025 - Bieg Charytatywny",
+    source: "Radio Lublin",
+    date: "6 września 2025",
+    excerpt: "Zapowiedź wydarzenia w Parku Ludowym - biegowi towarzyszyły festyn, koncert i animacje dla najmłodszych.",
+    url: "https://radio.lublin.pl/events/sun-run-2025-bieg-charytatywny/",
     color: "#F94C1F",
+  },
+  {
+    title: "Sun Run dla Hospicjum Dobrego Samarytanina",
+    source: "running.life",
+    date: "6 września 2025",
+    excerpt: "Karta wydarzenia w serwisie biegowym - trasa, zapisy i cel charytatywny biegu w Lublinie.",
+    url: "https://running.life/pl/wydarzenie/sun-run-dla-hospicjum-dobrego-samarytanina",
+    color: "#183153",
   },
 ];
 
@@ -121,11 +129,8 @@ export default function ArchiwumPage() {
             zostawał pas pustego tła. Teraz treść zaczyna się od góry. */}
         <section className="px-8 sm:px-16 md:px-28 pt-32 pb-16">
           <div className="max-w-[88rem] mx-auto">
-            {/* Plakietka i tytuł — wyśrodkowane względem strony */}
+            {/* Tytuł — wyśrodkowany względem strony */}
             <div className="text-center space-y-6">
-              <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30">
-                I edycja · 6 września 2025
-              </span>
               <h1 className="text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-sr-red via-sr-navy to-sr-navy leading-none">
                 Archiwum<br />2025
               </h1>
@@ -281,9 +286,6 @@ export default function ArchiwumPage() {
                 </a>
               ))}
             </div>
-            <p className="text-xs text-[#183153] mt-6">
-              * Linki do artykułów zostaną dodane po zebraniu wszystkich publikacji.
-            </p>
           </div>
         </section>
 
