@@ -57,10 +57,8 @@ const PARTNERS = [
 export default function Home() {
   const isMobile = useIsMobile();
   const prefersReducedMotion = usePrefersReducedMotion();
-  // Gimmick strzalki ("kliknij tutaj!") i TargetCursor to czysta dekoracja
-  // bez sensu na dotyku (i tak jest "hidden sm:flex" na waskich ekranach) —
-  // na mobile/reduced-motion pomijamy ich obliczenia scrolla w ogole, zamiast
-  // tylko chowac gotowy wynik.
+  // TargetCursor to czysta dekoracja bez sensu na dotyku — na mobile/
+  // reduced-motion w ogóle jej nie renderujemy (patrz niżej).
   const disableDecorativeMotion = isMobile || prefersReducedMotion;
 
   // Steruje wyłącznie dolnym paskiem zapisów: true, gdy przycisk „Zapisz się"
@@ -68,39 +66,19 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const przyciskZapiszRef = useRef(null);
   const [ctaDismissed, setCtaDismissed] = useState(false);
-  const [heroProgress, setHeroProgress] = useState(0);
 
-  // "Magnes" — strzałkę można próbować odciągnąć, ale jest przyklejona: rusza się
-  // tylko odrobinę (rubber-band z nasyceniem), a po puszczeniu sprężyście wraca.
-  const [pull, setPull] = useState({ x: 0, y: 0 });
-  const [pulling, setPulling] = useState(false);
-  const dragRef = useRef({ active: false, startX: 0, startY: 0 });
-
-  const rubberBand = (v) => {
-    const max = 28; // maks. wychylenie w px — magnes prawie nie puszcza
-    return max * Math.tanh(v / (max * 2.4));
-  };
-  const onArrowPointerDown = (e) => {
-    dragRef.current = { active: true, startX: e.clientX, startY: e.clientY };
-    setPulling(true);
-    e.currentTarget.setPointerCapture?.(e.pointerId);
-  };
-  const onArrowPointerMove = (e) => {
-    if (!dragRef.current.active) return;
-    setPull({
-      x: rubberBand(e.clientX - dragRef.current.startX),
-      y: rubberBand(e.clientY - dragRef.current.startY),
-    });
-  };
-  const endArrowDrag = () => {
-    if (!dragRef.current.active) return;
-    dragRef.current.active = false;
-    setPulling(false);
-    setPull({ x: 0, y: 0 }); // sprężysty powrót (transition na warstwie pull)
-  };
+  // Stan przycisku ankiety w hero — czyta ten sam klucz localStorage co sam
+  // popup, plus nasłuchuje SURVEY_ANSWERED_EVENT, żeby przełączyć się od razu
+  // po wysłaniu odpowiedzi, bez czekania na przeładowanie strony.
+  const [ankietaOdpowiedziana, setAnkietaOdpowiedziana] = useState(false);
+  useEffect(() => {
+    setAnkietaOdpowiedziana(window.localStorage.getItem(ANSWERED_KEY) === "1");
+    const onAnswered = () => setAnkietaOdpowiedziana(true);
+    window.addEventListener(SURVEY_ANSWERED_EVENT, onAnswered);
+    return () => window.removeEventListener(SURVEY_ANSWERED_EVENT, onAnswered);
+  }, []);
 
   const wspomnieniaRef = useRef(null);
-  const [returnProgress, setReturnProgress] = useState(0);
 
   // Rozmiar kart w stosie „Wspomnienia". Stack dostaje szerokość w pikselach,
   // a sztywne 380px nie mieściło się w kolumnie: na telefonie rozpychało ścieżkę
@@ -377,7 +355,6 @@ export default function Home() {
 
     const measure = () => {
       rafId = 0;
-      const vh = window.innerHeight;
 
       // Dolny pasek zapisów wchodzi dokładnie wtedy, gdy przycisk „Zapisz się"
       // spod logo wyjedzie górą poza ekran. Wcześniej był to próg ułamkowy
@@ -385,22 +362,6 @@ export default function Home() {
       // był jeszcze widoczny — dublował wtedy sam siebie.
       const przycisk = przyciskZapiszRef.current;
       setScrolled(przycisk ? przycisk.getBoundingClientRect().bottom < 0 : false);
-
-      // Gimmick strzalki jest "hidden sm:flex" i bezuzyteczny na dotyku — na
-      // mobile/reduced-motion w ogole nie liczymy jej postepu, zeby nie
-      // wywolywac dodatkowych rerenderow przy kazdym scrollu na telefonie.
-      if (disableDecorativeMotion) return;
-
-      // Postęp 0→1 w obrębie sekcji HERO — steruje animacją "łapiącej" strzałki
-      setHeroProgress(Math.min(1, window.scrollY / (vh * 0.9)));
-
-      // Postęp powrotu strzałki: rośnie, gdy sekcja "Wspomnienia" wjeżdża w ekran.
-      // 0 gdy jej góra jest jeszcze poniżej dołu okna, 1 gdy dojdzie do ~40% wysokości.
-      const el = wspomnieniaRef.current;
-      if (el) {
-        const top = el.getBoundingClientRect().top;
-        setReturnProgress(Math.max(0, Math.min(1, (vh - top) / (vh * 0.6))));
-      }
     };
 
     const onScroll = () => {
@@ -414,50 +375,7 @@ export default function Home() {
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [disableDecorativeMotion]);
-
-  // FAZA 1 — Strzałka (fixed, przy hamburgerze) próbuje go "złapać": najpierw sięga
-  // w górę i w prawo (reach), a pod koniec sekcji startowej poddaje się i całkowicie
-  // znika (giveUp).
-  const reach = Math.min(1, heroProgress / 0.72);
-  const giveUp = Math.max(0, (heroProgress - 0.72) / 0.28);
-  const heroTx = reach * 70 - giveUp * 24;
-  const heroTy = -reach * 66 + giveUp * 170;
-  const heroRot = reach * 8 + giveUp * 55;
-  const heroScale = 1 + reach * 0.15 - giveUp * 0.3;
-  const heroOpacity = Math.max(0, 1 - giveUp * 1.3); // pełne zniknięcie
-
-  // FAZA 2 — Powrót przy "Wspomnieniach": strzałka zabawnie wpada z góry z obrotem
-  // i znów zachęca do kliknięcia ("obejrzane? to teraz tutaj"). Ląduje w pozycji
-  // BAZOWEJ (0,0) — czyli wskazuje hamburgera z dystansu, dokładnie jak górna poza,
-  // a NIE wsuwa się pod niego. Tylko mniejsza.
-  const ret = returnProgress;
-  const retTx = (1 - ret) * 48;
-  const retTy = (1 - ret) * -120;
-  const retRot = (1 - ret) * 210; // pełen obrót do 0°
-  const retScale = 0.5 + ret * 0.42; // ląduje na ~0.92 — mniejsza niż górna
-  const retOpacity = Math.min(1, ret * 1.6);
-
-  // Wybór aktywnej fazy — powrót ma priorytet, gdy tylko się zaczyna.
-  const inReturn = ret > 0.01;
-  const arrowTx = inReturn ? retTx : heroTx;
-  const arrowTy = inReturn ? retTy : heroTy;
-  const arrowRot = inReturn ? retRot : heroRot;
-  const arrowScale = inReturn ? retScale : heroScale;
-  const arrowOpacity = inReturn ? retOpacity : heroOpacity;
-  const arrowText = pulling
-    ? "zostaw!"
-    : inReturn
-    ? "obejrzane? to teraz tutaj!"
-    : giveUp > 0.32
-    ? "no dobra..."
-    : reach > 0.5
-    ? "prawie!"
-    : "kliknij tutaj!";
-
-  // Drganie: przy "wysilaniu się" (mocno sięga, jeszcze się nie poddała) LUB gdy
-  // ktoś próbuje ją odciągnąć — wtedy magnes nerwowo drga.
-  const isStraining = (!inReturn && reach > 0.7 && giveUp < 0.35) || pulling;
+  }, []);
 
   return (
     <div className="relative bg-sr-sand text-sr-navy overflow-x-hidden">
@@ -531,50 +449,7 @@ export default function Home() {
         style={{ minHeight: wysokoscHero || undefined }}
         className="relative z-10 w-full flex flex-col px-8 sm:px-16 md:px-28 text-left select-none"
       >
-        {/* "kliknij tutaj!" — zakrzywiona strzałka, która przy scrollu sięga w stronę
-            hamburgera, próbując go "złapać", a pod koniec sekcji startowej poddaje się.
-            POZYCJA FIXED — zostaje na ekranie zamiast odjeżdżać z sekcją hero. */}
-        <div
-          className="fixed top-24 right-28 hidden sm:flex flex-row items-end pointer-events-none"
-          style={{
-            zIndex: 40,
-            transform: `translate(${arrowTx}px, ${arrowTy}px) rotate(${arrowRot}deg) scale(${arrowScale})`,
-            transformOrigin: "bottom right",
-            opacity: arrowOpacity,
-            transition: "transform 0.12s ease-out, opacity 0.12s ease-out",
-          }}
-        >
-          {/* Warstwa "pull" — łapie wskaźnik i pozwala próbować odciągnąć strzałkę.
-              Rusza się minimalnie (rubber-band), a po puszczeniu sprężyście wraca. */}
-          <div
-            onPointerDown={onArrowPointerDown}
-            onPointerMove={onArrowPointerMove}
-            onPointerUp={endArrowDrag}
-            onPointerCancel={endArrowDrag}
-            style={{
-              pointerEvents: arrowOpacity > 0.05 ? "auto" : "none",
-              cursor: pulling ? "grabbing" : "grab",
-              touchAction: "none",
-              transform: `translate(${pull.x}px, ${pull.y}px)`,
-              transition: pulling
-                ? "none"
-                : "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
-            }}
-          >
-            <div className={`flex flex-row items-end ${isStraining ? "arrow-shake" : ""}`}>
-              <span style={{ fontFamily: "cursive", color: "#CE2F25", fontSize: "1.7rem", fontWeight: 700, transform: "rotate(-8deg)", textShadow: "0 2px 8px rgba(245,241,232,0.8)", whiteSpace: "nowrap" }}>
-                {arrowText}
-              </span>
-              <svg viewBox="0 0 110 100" width={110} height={100} style={{ marginLeft: "-10px", marginBottom: "14px", overflow: "visible" }}>
-                {/* łuk startuje przy wykrzykniku i zakręca w górę, w stronę hamburgera */}
-                <path d="M4,86 C 42,88 76,64 94,16" fill="none" stroke="#CE2F25" strokeWidth="3.2" strokeLinecap="round" opacity="0.95" />
-                <path d="M82,22 L95,13 L96,29" fill="none" stroke="#CE2F25" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24">
+        <div ref={heroTrescRef} className="max-w-4xl pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
               przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
               okna, żeby przyciski CTA zostały widoczne bez scrollowania.
