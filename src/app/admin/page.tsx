@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SurveyDashboard } from "@/components/admin/SurveyDashboard";
 
 type Submission = {
   id: string;
@@ -17,6 +18,7 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [tab, setTab] = useState<"ankieta" | "partnerzy">("ankieta");
 
   const fetchSubmissions = async (pass: string) => {
     setLoading(true);
@@ -73,7 +75,7 @@ export default function AdminPage() {
         >
           <div>
             <h1 className="text-2xl font-black uppercase text-sr-red">Panel Admina</h1>
-            <p className="text-xs text-[#3D4D65] mt-1">Sun Run · zgłoszenia z formularza</p>
+            <p className="text-xs text-[#3D4D65] mt-1">Sun Run · zgłoszenia i ankieta</p>
           </div>
           <div>
             <label className="block text-xs text-[#3D4D65] uppercase tracking-widest mb-1.5">
@@ -102,18 +104,15 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-[#F4D8A2] text-[#183153] px-6 sm:px-12 py-12">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-black uppercase text-sr-red">Zgłoszenia partnerów</h1>
-            <p className="text-xs text-[#3D4D65] mt-1">
-              Formularz kontaktowy · {submissions.length}{" "}
-              {submissions.length === 1 ? "zgłoszenie" : "zgłoszeń"}
-            </p>
+            <h1 className="text-3xl font-black uppercase text-sr-red">Panel Admina</h1>
+            <p className="text-xs text-[#3D4D65] mt-1">Sun Run</p>
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => fetchSubmissions(password)}
+              onClick={() => (tab === "ankieta" ? window.location.reload() : fetchSubmissions(password))}
               disabled={loading}
               className="px-5 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
             >
@@ -128,39 +127,67 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {submissions.length === 0 ? (
-          <div className="bg-white border border-sr-line rounded-3xl p-12 text-center text-[#3D4D65] text-sm shadow-sm">
-            Brak zgłoszeń — gdy ktoś wypełni formularz na stronie „Dla Partnerów”, pojawi się tutaj.
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {submissions.map((s) => (
-              <div
-                key={s.id}
-                className="bg-white border border-sr-line rounded-2xl p-6 space-y-3 shadow-sm"
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <div>
-                    <span className="font-black text-[#183153]">{s.company}</span>
-                    <span className="text-[#3D4D65] text-sm"> · {s.name}</span>
+        <div className="flex gap-2 mb-8 border-b border-sr-line">
+          <button
+            onClick={() => setTab("ankieta")}
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+              tab === "ankieta"
+                ? "border-sr-orange text-[#183153]"
+                : "border-transparent text-[#3D4D65] hover:text-[#183153]"
+            }`}
+          >
+            Ankieta „skąd o nas wiesz"
+          </button>
+          <button
+            onClick={() => setTab("partnerzy")}
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+              tab === "partnerzy"
+                ? "border-sr-orange text-[#183153]"
+                : "border-transparent text-[#3D4D65] hover:text-[#183153]"
+            }`}
+          >
+            Zgłoszenia partnerów ({submissions.length})
+          </button>
+        </div>
+
+        {tab === "ankieta" && <SurveyDashboard password={password} />}
+
+        {tab === "partnerzy" &&
+          (submissions.length === 0 ? (
+            <div className="bg-white border border-sr-line rounded-3xl p-12 text-center text-[#3D4D65] text-sm shadow-sm">
+              Brak zgłoszeń - gdy ktoś wypełni formularz na stronie „Dla Partnerów”, pojawi się tutaj.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {submissions.map((s) => (
+                <div
+                  key={s.id}
+                  className="bg-white border border-sr-line rounded-2xl p-6 space-y-3 shadow-sm"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <span className="font-black text-[#183153]">{s.company}</span>
+                      <span className="text-[#3D4D65] text-sm"> · {s.name}</span>
+                    </div>
+                    <span className="text-xs text-[#3D4D65]">
+                      {new Date(s.date).toLocaleString("pl-PL")}
+                    </span>
                   </div>
-                  <span className="text-xs text-[#3D4D65]">
-                    {new Date(s.date).toLocaleString("pl-PL")}
-                  </span>
-                </div>
-                {s.phone && (
-                  <p className="text-sm text-[#3D4D65]">
-                    <span className="text-[#3D4D65] uppercase text-xs tracking-widest mr-2">Tel:</span>
-                    {s.phone}
+                  {s.phone && (
+                    <p className="text-sm text-[#3D4D65]">
+                      <span className="text-[#3D4D65] uppercase text-xs tracking-widest mr-2">
+                        Tel:
+                      </span>
+                      {s.phone}
+                    </p>
+                  )}
+                  <p className="text-sm text-[#183153] leading-relaxed whitespace-pre-wrap border-t border-[rgb(24 49 83 / 0.14)] pt-3">
+                    {s.message}
                   </p>
-                )}
-                <p className="text-sm text-[#183153] leading-relaxed whitespace-pre-wrap border-t border-[rgb(24 49 83 / 0.14)] pt-3">
-                  {s.message}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          ))}
       </div>
     </div>
   );
