@@ -560,12 +560,14 @@ export default function Home() {
 
                 {/* Akapit uzupełniający tabelę — w tej samej karcie, oddzielony
                     linią, żeby było widać, że to osobna część. */}
-                <p className="mt-5 pt-5 border-t border-[rgb(24 49 83 / 0.14)] text-sm text-[#3D4D65] leading-relaxed">
-                  Czas biegu będzie mierzony specjalnymi opaskami. Uczestnicy będą
-                  rywalizować ze sobą w ośmiu kategoriach: generalnej kobiet i mężczyzn
-                  oraz wiekowych kobiet i mężczyzn (14+, 30+, 50+). Biegacze będą mieli
-                  zapewnioną wodę pitną.
-                </p>
+                <div className="mt-5 pt-5 border-t border-[rgb(24 49 83 / 0.14)] text-sm text-[#3D4D65] leading-relaxed space-y-2">
+                  <p>Czas biegu będzie mierzony specjalnymi opaskami.</p>
+                  <p>
+                    Uczestnicy będą rywalizować ze sobą w ośmiu kategoriach: generalnej kobiet
+                    i mężczyzn oraz wiekowych kobiet i mężczyzn (14+, 30+, 50+).
+                  </p>
+                  <p>Biegacze będą mieli zapewnioną wodę pitną.</p>
+                </div>
               </div>
 
               {/* Karta: Licznik zapisanych */}
