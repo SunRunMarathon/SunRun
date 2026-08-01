@@ -18,13 +18,12 @@ const faqs = [
       "12 września 2026 w Parku Ludowym w Lublinie (al. Józefa Piłsudskiego). Festiwal otwiera się o 16:00, sam bieg startuje o 18:30.",
   },
   {
-    // Celowo BEZ konkretnych kwot i dat progów - Milosz wstrzymał ich publikację
-    // na stronie do decyzji sztabu (patrz PricingSection.tsx, obecnie wyłączona
-    // w page.tsx). Gdy decyzja zapadnie, podmień tę odpowiedź na wersję z
-    // realnymi kwotami z TIERS w PricingSection.tsx - to jedno źródło prawdy.
+    // Kwoty i daty MUSZĄ się zgadzać co do znaku z kartami w PricingSection.tsx
+    // i z offers w StructuredData.tsx - to jest właśnie różnica między
+    // poprawnym oznaczeniem danych a cloakingiem (patrz komentarz w TIERS).
     question: "Ile kosztuje udział?",
     answer:
-      "To bieg charytatywny, więc opłata to minimalna wpłata (darowizna), nie sztywna cena biletu - można wpłacić więcej. Wysokość minimalnej wpłaty rośnie w miarę zbliżania się terminu biegu, więc wcześniejszy zapis się opłaca. Szczegóły progów i terminów znajdziesz w formularzu zapisów. Cały dochód trafia do Hospicjum Dobrego Samarytanina.",
+      "To bieg charytatywny, więc opłata to minimalna wpłata (darowizna), nie sztywna cena biletu - można wpłacić więcej. Minimum wynosi 60 zł przy zapisie do 9 sierpnia 2026, 70 zł do 9 września 2026 i 80 zł w dniu biegu (12 września 2026). Cały dochód trafia do Hospicjum Dobrego Samarytanina.",
   },
   {
     question: "Jaki dystans i limit czasu ma bieg?",

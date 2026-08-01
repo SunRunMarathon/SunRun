@@ -87,21 +87,44 @@ const event2026 = {
   location: PARK_LUDOWY_PLACE,
   organizer: { "@id": `${SITE_URL}/#organization` },
   url: SITE_URL,
-  // Trzy progi MINIMALNEJ wpłaty (60/70/80 PLN, patrz TIERS w
-  // src/components/PricingSection.tsx - to jedno źródło prawdy dla dat i kwot)
-  // są już potwierdzone przez sztab, ale CELOWO nie ma tu ich cen. Milosz
-  // wstrzymał publikację: pokazanie kwot wyłącznie Google'owi (w tym znaczniku),
-  // przy jednoczesnym ukryciu ich przed użytkownikiem na stronie, to cloaking -
-  // Google wprost tego zabrania dla danych strukturalnych i grozi za to ręczna
-  // kara albo wyrzucenie z wyników rozszerzonych. Gdy PricingSection.tsx wróci
-  // na stronę (patrz komentarz w page.tsx), dopisz tu price/priceCurrency/
-  // validFrom/validThrough zgodnie z TIERS z tego samego pliku - nie osobno.
-  offers: {
-    "@type": "Offer",
-    url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
-    availability: "https://schema.org/InStock",
-    validFrom: "2026-01-01T00:00:00+01:00",
-  },
+  // Trzy progi MINIMALNEJ wpłaty - MUSZĄ się zgadzać co do znaku (kwoty, daty)
+  // z kartami w src/components/PricingSection.tsx (TIERS) i z odpowiedzią FAQ
+  // w FaqSection.tsx. To jest właśnie różnica między poprawnym oznaczeniem
+  // danych strukturalnych a cloakingiem: Google dostaje dokładnie to, co widzi
+  // człowiek na stronie, nic więcej i nic mniej. Zmieniasz próg w jednym z tych
+  // trzech miejsc -> zmień identycznie w pozostałych dwóch.
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Zapis do 9 sierpnia 2026 (I termin)",
+      price: "60",
+      priceCurrency: "PLN",
+      url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-01-01T00:00:00+01:00",
+      validThrough: "2026-08-09T23:59:59+02:00",
+    },
+    {
+      "@type": "Offer",
+      name: "Zapis do 9 września 2026 (II termin)",
+      price: "70",
+      priceCurrency: "PLN",
+      url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-08-10T00:00:00+02:00",
+      validThrough: "2026-09-09T23:59:59+02:00",
+    },
+    {
+      "@type": "Offer",
+      name: "Zapis w dniu biegu (III termin)",
+      price: "80",
+      priceCurrency: "PLN",
+      url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-09-10T00:00:00+02:00",
+      validThrough: "2026-09-12T23:59:59+02:00",
+    },
+  ],
 };
 
 const event2025 = {
