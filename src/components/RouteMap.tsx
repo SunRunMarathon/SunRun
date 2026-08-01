@@ -62,137 +62,235 @@ function ScrollZoomIntent() {
   return null;
 }
 
-// Jedno okrążenie (~2,3 km) po realnych alejkach Parku Ludowego w Lublinie —
-// punkty odczytane z granicy parku w OpenStreetMap (way 288089348), więc
-// pokrywają się z faktycznymi ścieżkami, a nie prostą linią między punktami.
-// Zweryfikowane odległością do sąsiednich obiektów z OSM:
-//  - punkt nr 24 (naroznik) leży ~20 m od Alei Józefa Piłsudskiego,
-//  - punkty nadrzeczne (ok. 45-72) leżą 15-200 m od rzeki Bystrzycy.
-// Dystans 5 km = 2 okrążenia tej pętli (patrz ROUTE niżej) + niewielki zapas
-// na strefę startu/mety, zgodnie z „5 km (2 pętle)" opisanym na stronie.
+// Jedno okrążenie po REALNYCH ALEJKACH Parku Ludowego (nie po granicy parku -
+// poprzednia wersja mapy szła po obrysie leisure=park z OSM, co Miłosz słusznie
+// zgłosił jako błędne, bo to nie jest ścieżka do biegania).
 //
-// START/META (punkt 0) przesunięty — na prośbę sztabu — bliżej półkola przy
-// Targach Lublin (wschodnia strona parku), a nie w stronę fontanny: to
-// najbliższy realny punkt granicy parku względem Targów Lublin (ok. 200 m od
-// ich terenu), leżący na w miarę prostym odcinku alejki.
+// Trasa złożona z pełnych, zweryfikowanych fragmentów alejek z OpenStreetMap
+// (way id w komentarzach), połączonych w jedną pętlę wg opisu przekazanego
+// przez Miłosza na podstawie planu parku:
+//
+//  0-9   "Aleja Europejskiej Stolicy Młodzieży Lublin 2023" (way 1005433130) -
+//        jedna z dwóch równoległych alejek tworzących oś trasy, od okrągłego
+//        węzła przy Targach Lublin do fontanny.
+//  9-13  szpilka przy fontannie (way 294448132/1057965793 - schody obok
+//        fontanny, ok. 20 m) - zawrót w miejscu okrągłego zbiornika wodnego.
+//  13-23 druga równoległa alejka (way 294442930) z powrotem do okrągłego
+//        węzła.
+//  23    okrągły węzeł/rondo przy Targach Lublin (way 995319618 - realny,
+//        widoczny na mapie łuk łączący obie alejki - dokładnie to "półkole
+//        przy targach", o którym pisał Miłosz).
+//  24-41 ramię wschodnie/północne, część 1: alejka (way 62364767) biegnąca
+//        od węzła na północ, blisko wschodniej krawędzi parku.
+//  42-64 ramię północne: dalszy ciąg (way 286179378) wzdłuż północnej
+//        krawędzi (od strony Targów Lublin) do narożnika przy al. Piłsudskiego.
+//  65-96 ramię zachodnie: alejka (way 451709904) schodząca z tego narożnika
+//        na południe, blisko cały czas Bystrzycy (średnio ok. 12 m od granicy
+//        parku wg danych OSM) - aż do punktu z wodą.
+//  96    PUNKT Z WODĄ - realne skrzyżowanie alejek w południowo-zachodniej
+//        części parku (na prośbę Miłosza punkty medyczne usunięto, ten punkt
+//        został).
+//  97-120 ramię południowe, część 1 (way 62364771 + 286178730) wzdłuż
+//        południowej krawędzi.
+//  120-158 pętla wokół południowo-wschodniego płata parku (way 1005422292) -
+//        ten "wysunięty w stronę Targów" fragment, o którym pisał Miłosz.
+//  159-170 powrót do okrągłego węzła (way 1306342584 + 1504511226).
+//
+// START/META (punkt 0) leży NA PROSTEJ, ale świadomie bliżej okrągłego węzła
+// niż fontanny (Miłosz: „dalej na prostej, dalej od fontanny, bo nie wiemy
+// dokładnie gdzie będzie start") - ok. 20 m od węzła po alejce, wobec ok.
+// 270 m do fontanny.
+//
+// Zweryfikowany dystans jednego okrążenia (Haversine po punktach poniżej,
+// licząc też zamknięcie pętli z powrotem do startu): ok. 2,88 km.
+// To WIĘCEJ niż orientacyjne „2,5 km" z założenia „5 km = 2 pętle" - różnica
+// bierze się stąd, że opisana trasa nie tylko obiega obwód parku (sam obwód
+// wg granicy z OSM to ok. 2,3 km), ale DODATKOWO robi szpilkę do fontanny w
+// głębi parku. Dwa okrążenia tej pętli to więc ok. 5,76 km, nie 5 km.
+// Zgodnie z prośbą Miłosza - nie naciągnięto tego "na siłę" do 2,5 km, tylko
+// zgłoszono wprost w raporcie; finalny dystans i tak zostanie zmierzony
+// profesjonalnie do certyfikacji PZLA.
 const ROUTE_LOOP = [
-  [51.23708, 22.56438], // 0 — START / META (bliżej Targów Lublin, na prostej)
-  [51.23723, 22.56414],
-  [51.23742, 22.56384],
-  [51.23755, 22.56364],
-  [51.23775, 22.56331],
-  [51.23790, 22.56308],
-  [51.23802, 22.56287],
-  [51.23817, 22.56261],
-  [51.23822, 22.56252],
-  [51.23831, 22.56234],
-  [51.23840, 22.56213],
-  [51.23862, 22.56161],
-  [51.23864, 22.56157],
-  [51.23865, 22.56153],
-  [51.23871, 22.56139],
-  [51.23878, 22.56121],
-  [51.23920, 22.56017],
-  [51.23922, 22.56013],
-  [51.23924, 22.56009],
-  [51.23935, 22.55981],
-  [51.23936, 22.55980],
-  [51.23938, 22.55974],
-  [51.23941, 22.55969],
-  [51.23947, 22.55955],
-  [51.23952, 22.55941], // 24 — naroznik przy al. Piłsudskiego: PUNKT MEDYCZNY 1
-  [51.23940, 22.55932],
-  [51.23911, 22.55885],
-  [51.23878, 22.55849],
-  [51.23854, 22.55842],
-  [51.23849, 22.55842],
-  [51.23823, 22.55843],
-  [51.23787, 22.55843],
-  [51.23773, 22.55844],
-  [51.23771, 22.55844],
-  [51.23765, 22.55844],
-  [51.23748, 22.55844],
-  [51.23713, 22.55845],
-  [51.23711, 22.55845],
-  [51.23668, 22.55848],
-  [51.23640, 22.55848],
-  [51.23612, 22.55843],
-  [51.23578, 22.55823],
-  [51.23540, 22.55781],
-  [51.23522, 22.55749],
-  [51.23515, 22.55749],
-  [51.23504, 22.55729],
-  [51.23491, 22.55749],
-  [51.23492, 22.55758],
-  [51.23484, 22.55752],
-  [51.23481, 22.55757],
-  [51.23489, 22.55774],
-  [51.23480, 22.55784],
-  [51.23478, 22.55788],
-  [51.23478, 22.55792],
-  [51.23480, 22.55796],
-  [51.23482, 22.55796],
-  [51.23484, 22.55795],
-  [51.23497, 22.55776],
-  [51.23502, 22.55775],
-  [51.23506, 22.55778],
-  [51.23508, 22.55785],
-  [51.23507, 22.55792],
-  [51.23505, 22.55797],
-  [51.23499, 22.55803],
-  [51.23491, 22.55810],
-  [51.23488, 22.55810], // 65 — nabrzeże Bystrzycy (~1/3 od dołu): PUNKT MEDYCZNY 2 + WODA
-  [51.23485, 22.55809],
-  [51.23479, 22.55802],
-  [51.23474, 22.55797],
-  [51.23471, 22.55796],
-  [51.23467, 22.55800],
-  [51.23453, 22.55824],
-  [51.23407, 22.55902],
-  [51.23404, 22.55906],
-  [51.23400, 22.55914],
-  [51.23391, 22.55930],
-  [51.23385, 22.55922],
-  [51.23380, 22.55930],
-  [51.23374, 22.55938],
-  [51.23372, 22.55941],
-  [51.23371, 22.55943],
-  [51.23370, 22.55941],
-  [51.23315, 22.56037],
-  [51.23310, 22.56046],
-  [51.23299, 22.56067],
-  [51.23275, 22.56117],
-  [51.23243, 22.56162],
-  [51.23243, 22.56165], // najdalej na południe
-  [51.23244, 22.56173],
-  [51.23254, 22.56201],
-  [51.23259, 22.56215],
-  [51.23275, 22.56261],
-  [51.23285, 22.56295],
-  [51.23288, 22.56309],
-  [51.23312, 22.56388],
-  [51.23375, 22.56339],
-  [51.23405, 22.56391],
-  [51.23434, 22.56436],
-  [51.23438, 22.56435],
-  [51.23543, 22.56259],
-  [51.23554, 22.56276],
-  [51.23556, 22.56279],
-  [51.23617, 22.56372],
-  [51.23620, 22.56375],
-  [51.23685, 22.56474], // najbliżej Targów Lublin
-  [51.23702, 22.56449],
+  [51.23596, 22.56218], // 0 - START/META (blisko okragego wezla, na prostej)
+  [51.2367, 22.56069],
+  [51.23704, 22.55998],
+  [51.23706, 22.55995],
+  [51.23707, 22.55993],
+  [51.23713, 22.5598],
+  [51.23716, 22.55975],
+  [51.23729, 22.55949],
+  [51.23731, 22.55932],
+  [51.23732, 22.55931],
+  [51.23721, 22.55915],
+  [51.23721, 22.55917],
+  [51.2371, 22.55926],
+  [51.23697, 22.55952],
+  [51.23656, 22.56035],
+  [51.23651, 22.56045],
+  [51.23623, 22.56103],
+  [51.23579, 22.56191],
+  [51.23578, 22.56195],
+  [51.23576, 22.56198],
+  [51.23568, 22.56212],
+  [51.23577, 22.56228],
+  [51.23585, 22.5624],
+  [51.23598, 22.56235],
+  [51.23629, 22.56235],
+  [51.23641, 22.56237],
+  [51.2365, 22.56236],
+  [51.23668, 22.56237],
+  [51.23691, 22.56241],
+  [51.23697, 22.56241],
+  [51.23712, 22.56242],
+  [51.23722, 22.56246],
+  [51.23734, 22.56249],
+  [51.23746, 22.56249],
+  [51.23754, 22.56249],
+  [51.23767, 22.56251],
+  [51.23775, 22.56253],
+  [51.23785, 22.56253],
+  [51.23797, 22.56254],
+  [51.2382, 22.56256],
+  [51.23821, 22.56257],
+  [51.23697, 22.5643],
+  [51.23712, 22.56407],
+  [51.23715, 22.56401],
+  [51.23719, 22.56394],
+  [51.23726, 22.5638],
+  [51.2375, 22.56319],
+  [51.23775, 22.56253],
+  [51.23789, 22.56222],
+  [51.23796, 22.56207],
+  [51.23812, 22.56181],
+  [51.23827, 22.56157],
+  [51.23837, 22.5614],
+  [51.23839, 22.56136],
+  [51.23841, 22.5613],
+  [51.23843, 22.56106],
+  [51.23845, 22.56081],
+  [51.23848, 22.56065],
+  [51.23852, 22.56052],
+  [51.23855, 22.56043],
+  [51.23859, 22.56031],
+  [51.23865, 22.56017],
+  [51.23874, 22.55994],
+  [51.23888, 22.55961],
+  [51.23931, 22.55956],
+  [51.23938, 22.5594],
+  [51.23933, 22.55933],
+  [51.23921, 22.55913],
+  [51.23908, 22.55894],
+  [51.239, 22.55884],
+  [51.23884, 22.55869],
+  [51.23875, 22.55862],
+  [51.23865, 22.55858],
+  [51.23855, 22.55854],
+  [51.2385, 22.55854],
+  [51.23839, 22.55853],
+  [51.23823, 22.55854],
+  [51.23807, 22.55854],
+  [51.23796, 22.55854],
+  [51.23784, 22.55855],
+  [51.23771, 22.55856],
+  [51.23766, 22.55856],
+  [51.23763, 22.55856],
+  [51.23748, 22.55857],
+  [51.23745, 22.55857],
+  [51.23729, 22.55858],
+  [51.23713, 22.55858],
+  [51.23696, 22.55858],
+  [51.23664, 22.55859],
+  [51.23645, 22.55859],
+  [51.23636, 22.55858],
+  [51.23626, 22.55856],
+  [51.23616, 22.55854],
+  [51.23608, 22.55851],
+  [51.23597, 22.55846],
+  [51.23587, 22.55842],
+  [51.23573, 22.55833], // 96 - WODA (poludniowo-zachodnia czesc parku)
+  [51.23567, 22.55853],
+  [51.2356, 22.55853],
+  [51.23554, 22.55854],
+  [51.2355, 22.55856],
+  [51.23546, 22.55858],
+  [51.2354, 22.55864],
+  [51.23534, 22.55873],
+  [51.23525, 22.55892],
+  [51.23518, 22.55904],
+  [51.23507, 22.55925],
+  [51.23493, 22.55952],
+  [51.23459, 22.56014],
+  [51.23454, 22.56023],
+  [51.23446, 22.56039],
+  [51.23433, 22.5606],
+  [51.23425, 22.56075],
+  [51.23418, 22.56089],
+  [51.23412, 22.56101],
+  [51.23409, 22.5611],
+  [51.23407, 22.56121],
+  [51.23407, 22.56131],
+  [51.23407, 22.56144],
+  [51.23408, 22.56167],
+  [51.23412, 22.56208],
+  [51.23413, 22.56233],
+  [51.23416, 22.56256],
+  [51.23417, 22.56263],
+  [51.23418, 22.56276],
+  [51.23418, 22.5629],
+  [51.23419, 22.563],
+  [51.2342, 22.56311],
+  [51.23421, 22.56322],
+  [51.23423, 22.56331],
+  [51.23425, 22.56339],
+  [51.23428, 22.56346],
+  [51.23431, 22.5635],
+  [51.23435, 22.56355],
+  [51.23439, 22.56356],
+  [51.23443, 22.56357],
+  [51.23447, 22.56357],
+  [51.2345, 22.56355],
+  [51.23454, 22.56353],
+  [51.23457, 22.5635],
+  [51.2346, 22.56346],
+  [51.23463, 22.56341],
+  [51.23466, 22.56336],
+  [51.23468, 22.56331],
+  [51.2347, 22.56326],
+  [51.23471, 22.5632],
+  [51.23473, 22.56313],
+  [51.23475, 22.56307],
+  [51.23477, 22.56304],
+  [51.23481, 22.563],
+  [51.23484, 22.56293],
+  [51.23486, 22.56289],
+  [51.23487, 22.56283],
+  [51.23486, 22.56274],
+  [51.23485, 22.56267],
+  [51.23484, 22.56261],
+  [51.23485, 22.56248],
+  [51.23485, 22.56246],
+  [51.23443, 22.56357],
+  [51.23441, 22.56369],
+  [51.23437, 22.56378],
+  [51.23433, 22.5639],
+  [51.23427, 22.56401],
+  [51.23422, 22.5641],
+  [51.23417, 22.56418],
+  [51.23431, 22.56439],
+  [51.23529, 22.56271],
+  [51.23534, 22.56258],
+  [51.23538, 22.5624],
+  [51.2354, 22.5623],
 ];
 
 const START_POINT = ROUTE_LOOP[0];
-const MEDICAL_1 = ROUTE_LOOP[24];
-const MEDICAL_2_WATER = ROUTE_LOOP[65];
+const WATER_POINT = ROUTE_LOOP[96];
 
-// Dwa pełne okrążenia (5 km): pętla 1 zamknięta powrotem do startu, potem
-// pętla 2 od razu dalej, też zamknięta na mecie.
+// Dwa pełne okrążenia (patrz komentarz wyżej ws. realnego dystansu): pętla 1
+// zamknięta powrotem do startu, potem pętla 2 od razu dalej, też zamknięta na mecie.
 const ROUTE = [...ROUTE_LOOP, START_POINT, ...ROUTE_LOOP.slice(1), START_POINT];
 
-const CENTER = [51.2359, 22.5601];
+const CENTER = [51.23673, 22.56136];
 
 export default function RouteMap() {
   const startIcon = L.divIcon({
@@ -200,12 +298,6 @@ export default function RouteMap() {
     className: '',
     iconSize: [22, 22],
     iconAnchor: [11, 11],
-  });
-  const medicalIcon = L.divIcon({
-    html: '<div class="route-medical-pin">+</div>',
-    className: '',
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
   });
   const waterIcon = L.divIcon({
     html: '<div class="route-water-pin"></div>',
@@ -217,7 +309,7 @@ export default function RouteMap() {
   return (
     <MapContainer
       center={CENTER}
-      zoom={15}
+      zoom={16}
       style={{ width: '100%', height: '100%' }}
       zoomControl={false}
       scrollWheelZoom={false}
@@ -241,37 +333,27 @@ export default function RouteMap() {
       <Marker
         position={START_POINT}
         icon={startIcon}
-        title="Start i Meta - Park Ludowy, od strony Targów Lublin"
-        alt="Start i Meta biegu - Park Ludowy, od strony Targów Lublin"
+        title="Start i Meta - Park Ludowy, przy okrągłym węźle od strony Targów Lublin"
+        alt="Start i Meta biegu - Park Ludowy, przy okrągłym węźle od strony Targów Lublin"
         eventHandlers={{
           add: (e) => {
             const el = e.target.getElement();
-            if (el) el.setAttribute('aria-label', 'Start i Meta biegu - Park Ludowy, od strony Targów Lublin');
+            if (el) el.setAttribute('aria-label', 'Start i Meta biegu - Park Ludowy, przy okrągłym węźle od strony Targów Lublin');
           },
         }}
       >
         <Popup className="route-popup">
-          <strong>Start / Meta</strong><br />Park Ludowy, od strony Targów Lublin
+          <strong>Start / Meta</strong><br />Park Ludowy, przy okrągłym węźle od strony Targów Lublin
         </Popup>
       </Marker>
       <Marker
-        position={MEDICAL_1}
-        icon={medicalIcon}
-        title="Punkt medyczny - róg parku przy al. Piłsudskiego"
-        alt="Punkt medyczny - róg parku przy al. Piłsudskiego"
-      >
-        <Popup className="route-popup">
-          <strong>Punkt medyczny</strong><br />Róg parku, al. Józefa Piłsudskiego
-        </Popup>
-      </Marker>
-      <Marker
-        position={MEDICAL_2_WATER}
+        position={WATER_POINT}
         icon={waterIcon}
-        title="Punkt medyczny i punkt z wodą - nabrzeże Bystrzycy"
-        alt="Punkt medyczny i punkt z wodą - nabrzeże Bystrzycy"
+        title="Punkt z wodą - południowo-zachodnia część parku"
+        alt="Punkt z wodą - południowo-zachodnia część parku"
       >
         <Popup className="route-popup">
-          <strong>Punkt medyczny + woda</strong><br />Nabrzeże Bystrzycy
+          <strong>Punkt z wodą</strong><br />Południowo-zachodnia część Parku Ludowego
         </Popup>
       </Marker>
       <ScrollZoomIntent />
