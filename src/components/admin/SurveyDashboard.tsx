@@ -84,6 +84,38 @@ export function SurveyDashboard({ password }: { password: string }) {
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [exporting, setExporting] = useState<"json" | "csv" | null>(null);
+  const [exportError, setExportError] = useState("");
+
+  // Pobiera plik przez fetch (nie zwykly <a href>) - endpoint wymaga naglowka
+  // Authorization, ktorego przegladarka nie doda przy zwyklej nawigacji.
+  // Nazwe pliku bierzemy z Content-Disposition ustawionego przez serwer
+  // (znacznik czasu), zamiast zgadywac ja po stronie klienta.
+  const handleExport = async (format: "json" | "csv") => {
+    setExporting(format);
+    setExportError("");
+    try {
+      const res = await fetch(`/api/admin/survey-export?format=${format}`, {
+        headers: { Authorization: `Bearer ${password}` },
+      });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const disposition = res.headers.get("Content-Disposition") || "";
+      const filename = disposition.match(/filename="([^"]+)"/)?.[1] || `ankieta.${format}`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setExportError("Nie udało się pobrać eksportu");
+    } finally {
+      setExporting(null);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -256,9 +288,38 @@ export function SurveyDashboard({ password }: { password: string }) {
       </div>
 
       <div className="bg-white border border-sr-line rounded-2xl shadow-sm overflow-hidden">
-        <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] p-6 pb-4">
-          Surowe odpowiedzi ({total})
-        </h3>
+        <div className="p-6 pb-4 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-1.5">
+              Surowe odpowiedzi ({total})
+            </h3>
+            <p className="text-[11px] text-[#3D4D65] max-w-md leading-relaxed">
+              Plik zawiera dane osobowe (adresy IP, przybliżoną lokalizację) — traktuj go jak
+              dane wrażliwe, nie przesyłaj dalej bez potrzeby.
+            </p>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => handleExport("json")}
+              disabled={exporting !== null}
+              className="px-4 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
+            >
+              {exporting === "json" ? "Pobieranie…" : "Eksport JSON"}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleExport("csv")}
+              disabled={exporting !== null}
+              className="px-4 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
+            >
+              {exporting === "csv" ? "Pobieranie…" : "Eksport CSV"}
+            </button>
+          </div>
+        </div>
+        {exportError && (
+          <p className="text-xs text-sr-red px-6 pb-4">{exportError}</p>
+        )}
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
