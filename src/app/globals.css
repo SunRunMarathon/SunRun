@@ -15,6 +15,23 @@
   animation: hand-float 3.5s ease-in-out infinite;
 }
 
+/* Siatka bezpieczenstwa dla prefers-reduced-motion: tnie DLUGOSC animacji i
+   przejsc CSS wszedzie, niezaleznie od tego, czy dany komponent sam o to
+   zadba. Animacje sterowane bezposrednio z JS (np. gimmick strzalki w hero,
+   TargetCursor) maja WLASNA logike gatingu w kodzie — patrz useIsMobile /
+   usePrefersReducedMotion — bo inline style z JS nie da sie ograniczyc samym
+   CSS-em. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

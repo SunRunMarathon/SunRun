@@ -6,13 +6,19 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import TargetCursor from "@/components/TargetCursor";
 import Stack from "@/components/Stack";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
+// gsap i cala logika sledzenia myszy w TargetCursor sa bezuzyteczne na dotyku —
+// dynamic + ssr:false, zeby ten kod w ogole nie trafial do bundle'a mobile
+// (komponent i tak renderuje null na mobile, ale bez tego jego JS nadal by
+// sie pobieral i parsowal).
+const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: false });
 
 // Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja „Wspomnienia").
 // Karty 1 i 3 były zastępnikami i poszły do kosza: pierwsza to generyczna
@@ -43,6 +49,14 @@ const PARTNERS = [
 ];
 
 export default function Home() {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  // Gimmick strzalki ("kliknij tutaj!") i TargetCursor to czysta dekoracja
+  // bez sensu na dotyku (i tak jest "hidden sm:flex" na waskich ekranach) —
+  // na mobile/reduced-motion pomijamy ich obliczenia scrolla w ogole, zamiast
+  // tylko chowac gotowy wynik.
+  const disableDecorativeMotion = isMobile || prefersReducedMotion;
+
   const [scrolled, setScrolled] = useState(false);
   const [ctaDismissed, setCtaDismissed] = useState(false);
   const [heroProgress, setHeroProgress] = useState(0);
@@ -265,9 +279,18 @@ export default function Home() {
   );
 
   useEffect(() => {
-    const onScroll = () => {
+    let rafId = 0;
+
+    const measure = () => {
+      rafId = 0;
       const vh = window.innerHeight;
       setScrolled(window.scrollY > vh * 0.38);
+
+      // Gimmick strzalki jest "hidden sm:flex" i bezuzyteczny na dotyku — na
+      // mobile/reduced-motion w ogole nie liczymy jej postepu, zeby nie
+      // wywolywac dodatkowych rerenderow przy kazdym scrollu na telefonie.
+      if (disableDecorativeMotion) return;
+
       // Postęp 0→1 w obrębie sekcji HERO — steruje animacją "łapiącej" strzałki
       setHeroProgress(Math.min(1, window.scrollY / (vh * 0.9)));
 
@@ -279,10 +302,19 @@ export default function Home() {
         setReturnProgress(Math.max(0, Math.min(1, (vh - top) / (vh * 0.6))));
       }
     };
-    onScroll();
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(measure);
+    };
+
+    measure();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [disableDecorativeMotion]);
 
   // FAZA 1 — Strzałka (fixed, przy hamburgerze) próbuje go "złapać": najpierw sięga
   // w górę i w prawo (reach), a pod koniec sekcji startowej poddaje się i całkowicie
@@ -334,14 +366,16 @@ export default function Home() {
           więc mają logo widoczne od razu. */}
       <Navbar revealOnScroll />
 
-      <TargetCursor
-        spinDuration={3}
-        hideDefaultCursor={true}
-        parallaxOn={true}
-        cursorColor="#183153"
-        cursorColorOnTarget="#CE2F25"
-        targetSelector=".cursor-target"
-      />
+      {!disableDecorativeMotion && (
+        <TargetCursor
+          spinDuration={3}
+          hideDefaultCursor={true}
+          parallaxOn={true}
+          cursorColor="#183153"
+          cursorColorOnTarget="#CE2F25"
+          targetSelector=".cursor-target"
+        />
+      )}
 
       {/* ═══════════════════════════════════════════
           STICKY CTA — "Zapisz się" (pojawia się po scrollowaniu)

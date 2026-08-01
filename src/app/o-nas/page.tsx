@@ -1,27 +1,38 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import TargetCursor from "@/components/TargetCursor";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+
+// gsap w TargetCursor jest bezuzyteczny na dotyku — dynamic + ssr:false, zeby
+// jego JS w ogole nie trafial do bundle'a mobile (patrz src/app/page.tsx).
+const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: false });
 
 // Stałe TEAM i BRANCHES zniknęły razem z sekcjami „Struktura", „Zespół"
 // i „Droga komunikacji" — bez nich były już tylko martwym kodem. Gdyby
 // któraś z tych sekcji wracała, dane są w historii gita.
 
 export default function ONasPage() {
+  const isMobile = useIsMobile();
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   return (
     <div className="relative min-h-screen bg-sr-sand text-sr-navy overflow-x-hidden">
 
       <Navbar />
-      <TargetCursor
-        spinDuration={3}
-        hideDefaultCursor={true}
-        parallaxOn={true}
-        cursorColor="#183153"
-        cursorColorOnTarget="#CE2F25"
-        targetSelector=".cursor-target"
-      />
+      {!isMobile && !prefersReducedMotion && (
+        <TargetCursor
+          spinDuration={3}
+          hideDefaultCursor={true}
+          parallaxOn={true}
+          cursorColor="#183153"
+          cursorColorOnTarget="#CE2F25"
+          targetSelector=".cursor-target"
+        />
+      )}
 
       <main className="relative z-10">
         {/* Hero */}

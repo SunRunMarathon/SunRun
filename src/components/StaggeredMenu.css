@@ -83,6 +83,12 @@
   overflow: visible;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  /* Sam tekst "Menu" ma tylko ~16px wysokości — za mały cel dotykowy (poniżej
+     zalecanych 44px). Padding + ujemny margines tej samej wielkości: powiększa
+     realny obszar klikalny/dotykowy, ale nie rusza wizualnej pozycji napisu
+     względem reszty nagłówka (margines znosi dodaną przestrzeń w layoucie). */
+  padding: 0.875rem 0.5rem;
+  margin: -0.875rem -0.5rem;
 }
 
 .sm-toggle:focus-visible {
