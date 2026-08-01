@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
-import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
+import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
 import { FaqSection } from "@/components/FaqSection";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -505,17 +505,29 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Ankieta „Skąd o nas usłyszałeś?" — na razie przycisk nic nie robi.
-                Docelowo otworzy okienko z ankietą, gdy ją przygotujemy.
-                Granat #183153 z pomarańczowym tekstem #FE8004 daje 5,2:1, czyli
-                spełnia AA — to jedno z niewielu zestawień, w których pomarańcz
-                wolno użyć jako koloru tekstu (patrz tabela w globals.css). */}
+            {/* Ankieta „Skąd o nas usłyszałaś/eś?" — popup otwiera się TYLKO na
+                kliknięcie tego przycisku (patrz SurveyPopup.tsx — nie ma już
+                samoczynnego wyskakiwania przy scrollu). Po odpowiedzi przycisk
+                się dezaktywuje i blaknie na #3D4D65/#FBBA76.
+                Aktywny wariant: granat #183153 z pomarańczowym tekstem #FE8004
+                daje 5,2:1, czyli spełnia AA — to jedno z niewielu zestawień,
+                w których pomarańcz wolno użyć jako koloru tekstu (patrz tabela
+                w globals.css). */}
             <button
               type="button"
+              disabled={ankietaOdpowiedziana}
               onClick={() => window.dispatchEvent(new Event(OPEN_SURVEY_EVENT))}
-              className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+              className={`inline-flex w-full items-center justify-center px-8 py-5 font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 ${
+                ankietaOdpowiedziana
+                  // cursor-none: bez tego przeglądarka pokazuje domyślny "not-allowed"
+                  // nad zdezaktywowanym przyciskiem, a TargetCursor chowa słonko nad
+                  // KAŻDYM elementem z własnym kursorem systemowym (patrz maWlasnyKursor
+                  // w TargetCursor.tsx) — słonko znikałoby tu bez potrzeby.
+                  ? "cursor-none bg-[#3D4D65] text-[#FBBA76]"
+                  : "cursor-target cursor-pointer bg-sr-navy text-sr-orange shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+              }`}
             >
-              Ankieta - skąd o nas usłyszałeś?
+              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Ankieta - skąd o nas usłyszałaś/eś?"}
             </button>
           </div>
 

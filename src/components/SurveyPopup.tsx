@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -14,15 +14,19 @@ import { trackEvent } from "@/lib/analytics";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { getBackdropVariants, getModalPanelVariants, getStepVariants } from "@/lib/motion-variants";
 
-const SEEN_KEY = "sr_survey_seen";
-const ANSWERED_KEY = "sr_survey_answered";
-// Próg przescrollowania, po którym wyskakuje ankieta — 28% wysokości strony,
-// czyli już wyraźnie po hero, ale nie na końcu strony.
-const SCROLL_THRESHOLD_RATIO = 0.28;
+// Eksportowany, bo page.tsx czyta ten sam klucz, żeby wiedzieć, czy przycisk
+// "Ankieta" ma pokazywać pytanie, czy już podziękowanie za odpowiedź.
+export const ANSWERED_KEY = "sr_survey_answered";
 
-// Zdarzenie, przez które przycisk "Ankieta" w hero (patrz page.tsx) może
-// otworzyć ten sam popup ręcznie, niezależnie od scrolla.
+// Zdarzenie, przez które przycisk "Ankieta" w hero (patrz page.tsx) otwiera
+// ten popup. To JEDYNY sposób, w jaki się teraz otwiera — nie ma już
+// wyskakiwania samo z siebie przy scrollu.
 export const OPEN_SURVEY_EVENT = "sunrun:open-survey";
+
+// Zdarzenie wysyłane zaraz po zapisaniu odpowiedzi, żeby przycisk w hero mógł
+// natychmiast przełączyć się w stan "już odpowiedziano" bez przeładowania
+// strony (localStorage samo z siebie nie powiadamia komponentów o zmianie).
+export const SURVEY_ANSWERED_EVENT = "sunrun:survey-answered";
 
 // Krok w obrębie popupu: "main" to pierwsze pytanie, "sub" to doprecyzowanie
 // (na razie tylko dla "Media społecznościowe"), "detail" to opcjonalne pole
@@ -32,11 +36,9 @@ type Step = "main" | "sub" | "detail";
 export function SurveyPopup() {
   const reducedMotion = usePrefersReducedMotion();
   const [open, setOpen] = useState(false);
-  const [manualOpen, setManualOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [alreadyAnswered, setAlreadyAnswered] = useState(false);
-  const triggeredRef = useRef(false);
 
   const [step, setStep] = useState<Step>("main");
   const [mainValue, setMainValue] = useState<string | null>(null);
@@ -45,39 +47,14 @@ export function SurveyPopup() {
 
   const mainOption = SURVEY_OPTIONS.find((o) => o.value === mainValue) || null;
 
+  // Jedyne wejście do popupu to zdarzenie z przycisku "Ankieta" w hero — nie
+  // ma już samoczynnego otwierania przy scrollu.
   useEffect(() => {
     setAlreadyAnswered(window.localStorage.getItem(ANSWERED_KEY) === "1");
 
-    const onOpenRequest = () => {
-      setManualOpen(true);
-      setOpen(true);
-    };
+    const onOpenRequest = () => setOpen(true);
     window.addEventListener(OPEN_SURVEY_EVENT, onOpenRequest);
-
-    const seen = window.localStorage.getItem(SEEN_KEY) === "1";
-    const answered = window.localStorage.getItem(ANSWERED_KEY) === "1";
-    if (seen || answered) {
-      return () => window.removeEventListener(OPEN_SURVEY_EVENT, onOpenRequest);
-    }
-
-    const onScroll = () => {
-      if (triggeredRef.current) return;
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollable <= 0) return;
-      const ratio = window.scrollY / scrollable;
-      if (ratio >= SCROLL_THRESHOLD_RATIO) {
-        triggeredRef.current = true;
-        window.localStorage.setItem(SEEN_KEY, "1");
-        setOpen(true);
-        window.removeEventListener("scroll", onScroll);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener(OPEN_SURVEY_EVENT, onOpenRequest);
-    };
+    return () => window.removeEventListener(OPEN_SURVEY_EVENT, onOpenRequest);
   }, []);
 
   const resetSteps = () => {
@@ -89,7 +66,6 @@ export function SurveyPopup() {
 
   const close = () => {
     setOpen(false);
-    setManualOpen(false);
     setSubmitted(false);
     resetSteps();
   };
@@ -109,8 +85,8 @@ export function SurveyPopup() {
       console.error("Nie udało się zapisać odpowiedzi ankiety");
     } finally {
       window.localStorage.setItem(ANSWERED_KEY, "1");
-      window.localStorage.setItem(SEEN_KEY, "1");
       setAlreadyAnswered(true);
+      window.dispatchEvent(new Event(SURVEY_ANSWERED_EVENT));
       trackEvent("survey_submit", { answer, answerDetail: answerDetail ?? undefined });
       setSubmitting(false);
       setSubmitted(true);
@@ -199,7 +175,7 @@ export function SurveyPopup() {
                 </p>
                 <p className="text-sm text-[#183153]">Twoja odpowiedź została zapisana.</p>
               </div>
-            ) : alreadyAnswered && manualOpen ? (
+            ) : alreadyAnswered ? (
               <div className="pt-2">
                 <p className="text-sm text-[#183153]">
                   Dziękujemy, Twoja odpowiedź została już zapisana wcześniej 🙌
