@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
+import { AnimatePresence, motion } from "framer-motion";
 import { trackShare } from "@/lib/track-share";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { getBackdropVariants, getModalPanelVariants } from "@/lib/motion-variants";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 
@@ -14,6 +17,7 @@ function buildUrl(medium: string) {
 }
 
 export function ShareModal() {
+  const reducedMotion = usePrefersReducedMotion();
   const [open, setOpen] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState<"link" | "qr" | null>(null);
@@ -121,15 +125,26 @@ export function ShareModal() {
         Udostępnij
       </button>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-4 sm:p-6"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Udostępnij Sun Run"
-        >
-          <div className="absolute inset-0 bg-[#183153]/60 backdrop-blur-sm" onClick={close} />
-          <div className="relative w-full max-w-md bg-sr-sand border border-sr-line rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-4 sm:p-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Udostępnij Sun Run"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+          <motion.div
+            variants={getBackdropVariants(reducedMotion)}
+            className="absolute inset-0 bg-[#183153]/60 backdrop-blur-sm"
+            onClick={close}
+          />
+          <motion.div
+            variants={getModalPanelVariants(reducedMotion)}
+            className="relative w-full max-w-md bg-sr-sand border border-sr-line rounded-3xl p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto"
+          >
             <button
               type="button"
               onClick={close}
@@ -208,9 +223,10 @@ export function ShareModal() {
                 {copied === "link" ? "Link skopiowany ✓" : "Kopiuj link"}
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

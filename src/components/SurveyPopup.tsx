@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { SURVEY_OPTIONS, SURVEY_QUESTION } from "@/lib/survey-options";
 import { collectClientMeta } from "@/lib/client-meta";
 import { trackEvent } from "@/lib/analytics";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { getBackdropVariants, getModalPanelVariants } from "@/lib/motion-variants";
 
 const SEEN_KEY = "sr_survey_seen";
 const ANSWERED_KEY = "sr_survey_answered";
@@ -17,6 +20,7 @@ const SCROLL_THRESHOLD_RATIO = 0.28;
 export const OPEN_SURVEY_EVENT = "sunrun:open-survey";
 
 export function SurveyPopup() {
+  const reducedMotion = usePrefersReducedMotion();
   const [open, setOpen] = useState(false);
   const [manualOpen, setManualOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -89,68 +93,85 @@ export function SurveyPopup() {
     }
   };
 
-  if (!open) return null;
+  const backdropVariants = getBackdropVariants(reducedMotion);
+  const panelVariants = getModalPanelVariants(reducedMotion);
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 sm:p-6"
-      role="dialog"
-      aria-modal="true"
-      aria-label={SURVEY_QUESTION}
-    >
-      <div className="absolute inset-0 bg-[#183153]/50 backdrop-blur-sm" onClick={close} />
-      <div className="relative w-full max-w-md bg-sr-sand border border-sr-line rounded-3xl p-7 sm:p-8 shadow-2xl">
-        <button
-          type="button"
-          onClick={close}
-          aria-label="Zamknij"
-          className="cursor-target absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full text-[#3D4D65] hover:text-[#183153] hover:bg-black/5 transition-colors text-xl leading-none"
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label={SURVEY_QUESTION}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
         >
-          ×
-        </button>
+          <motion.div
+            variants={backdropVariants}
+            className="absolute inset-0 bg-[#183153]/50 backdrop-blur-sm"
+            onClick={close}
+          />
+          <motion.div
+            variants={panelVariants}
+            className="relative w-full max-w-md bg-sr-sand border border-sr-line rounded-3xl p-7 sm:p-8 shadow-2xl"
+          >
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Zamknij"
+              className="cursor-target absolute right-4 top-4 w-8 h-8 flex items-center justify-center rounded-full text-[#3D4D65] hover:text-[#183153] hover:bg-black/5 transition-colors text-xl leading-none"
+            >
+              ×
+            </button>
 
-        {submitted ? (
-          <div className="pt-2">
-            <p className="text-xl font-black text-sr-red uppercase tracking-wide mb-1">Dzięki!</p>
-            <p className="text-sm text-[#183153]">Twoja odpowiedź została zapisana.</p>
-          </div>
-        ) : alreadyAnswered && manualOpen ? (
-          <div className="pt-2">
-            <p className="text-sm text-[#183153]">
-              Dziękujemy, Twoja odpowiedź została już zapisana wcześniej 🙌
-            </p>
-          </div>
-        ) : (
-          <>
-            <h2 className="text-lg sm:text-xl font-black text-[#183153] pr-8 mb-5">
-              {SURVEY_QUESTION}
-            </h2>
-            <div className="flex flex-col gap-3">
-              {SURVEY_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  disabled={submitting}
-                  onClick={() => submit(opt.value)}
-                  className="cursor-target text-left px-5 py-3.5 bg-white border border-sr-line hover:border-sr-orange rounded-2xl text-sm font-bold text-[#183153] transition-colors disabled:opacity-50"
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-[11px] text-[#3D4D65] leading-relaxed mt-5">
-              Odpowiedź zapisujemy razem z podstawowymi danymi technicznymi (adres IP, przybliżona
-              lokalizacja, źródło wejścia na stronę), żeby lepiej rozumieć, skąd przychodzą
-              uczestnicy. Szczegóły w{" "}
-              <Link href="/polityka-prywatnosci" className="underline hover:text-[#183153]">
-                polityce prywatności
-              </Link>
-              .
-            </p>
-          </>
-        )}
-      </div>
-    </div>
+            {submitted ? (
+              <div className="pt-2">
+                <p className="text-xl font-black text-sr-red uppercase tracking-wide mb-1">
+                  Dzięki!
+                </p>
+                <p className="text-sm text-[#183153]">Twoja odpowiedź została zapisana.</p>
+              </div>
+            ) : alreadyAnswered && manualOpen ? (
+              <div className="pt-2">
+                <p className="text-sm text-[#183153]">
+                  Dziękujemy, Twoja odpowiedź została już zapisana wcześniej 🙌
+                </p>
+              </div>
+            ) : (
+              <>
+                <h2 className="text-lg sm:text-xl font-black text-[#183153] pr-8 mb-5">
+                  {SURVEY_QUESTION}
+                </h2>
+                <div className="flex flex-col gap-3">
+                  {SURVEY_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      disabled={submitting}
+                      onClick={() => submit(opt.value)}
+                      className="cursor-target text-left px-5 py-3.5 bg-white border border-sr-line hover:border-sr-orange rounded-2xl text-sm font-bold text-[#183153] transition-colors disabled:opacity-50"
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[11px] text-[#3D4D65] leading-relaxed mt-5">
+                  Odpowiedź zapisujemy razem z podstawowymi danymi technicznymi (adres IP,
+                  przybliżona lokalizacja, źródło wejścia na stronę), żeby lepiej rozumieć, skąd
+                  przychodzą uczestnicy. Szczegóły w{" "}
+                  <Link href="/polityka-prywatnosci" className="underline hover:text-[#183153]">
+                    polityce prywatności
+                  </Link>
+                  .
+                </p>
+              </>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
