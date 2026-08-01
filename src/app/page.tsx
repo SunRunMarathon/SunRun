@@ -109,6 +109,54 @@ export default function Home() {
     };
   }, []);
 
+  // ── Odstępy między sekcjami ──────────────────────────────────────────────
+  // Jedna wartość na całą stronę: wysokość kafelka „Zapisanych uczestników"
+  // z sekcji „O biegu". Kafelek ma 166px niezależnie od szerokości okna
+  // (sprawdzone od 1920 do 390px), więc nadaje się na miarę odniesienia.
+  const LUKA = 166;
+
+  const heroSekcjaRef = useRef(null);
+  const [wysokoscHero, setWysokoscHero] = useState(0);
+
+  // Dolny odstęp sekcji „Wspomnienia". Liczony od przycisku „Odwiedź Archiwum",
+  // a nie od dołu sekcji: stos zdjęć obok sięga niżej niż przycisk, więc zwykły
+  // padding dałby lukę mierzoną od zdjęć. Sztab chce ją mierzyć od przycisku
+  // i zignorować, że zdjęcia podejdą bliżej stopki.
+  const przyciskArchiwumRef = useRef(null);
+  const [dolWspomnien, setDolWspomnien] = useState(LUKA);
+
+  useEffect(() => {
+    const policz = () => {
+      const sekcja = wspomnieniaRef.current;
+      const przycisk = przyciskArchiwumRef.current;
+      const siatka = siatkaWspomnienRef.current;
+      if (!sekcja || !przycisk || !siatka) return;
+
+      // Gdy siatka zwinie się do jednej kolumny, zdjęcia nie stoją już OBOK
+      // przycisku, tylko POD nim — i to one są ostatnim elementem sekcji.
+      // Mierzenie luki od przycisku znaczyłoby wtedy, że stopka wchodzi na
+      // zdjęcia, więc w tym układzie wracamy do zwykłego odstępu od dołu.
+      const kolumn = getComputedStyle(siatka).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
+      if (kolumn < 2) {
+        setDolWspomnien(LUKA);
+        return;
+      }
+
+      const cs = getComputedStyle(sekcja);
+      const dolTresci = sekcja.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom);
+      const nadmiar = dolTresci - przycisk.getBoundingClientRect().bottom;
+      setDolWspomnien(Math.max(0, Math.round(LUKA - nadmiar)));
+    };
+    policz();
+    const ro = new ResizeObserver(policz);
+    if (wspomnieniaRef.current) ro.observe(wspomnieniaRef.current);
+    window.addEventListener("resize", policz);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", policz);
+    };
+  }, []);
+
   // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
   // Warunek ze sztabu: lewa krawędź ramki ma sięgać środka ekranu. Nie da się
   // tego rozstrzygnąć samym progiem szerokości, bo logo ma szerokość
@@ -142,8 +190,19 @@ export default function Home() {
         cta ? cta.getBoundingClientRect().right : 0
       );
       if (!prawa) return;
+
+      // Wysokość sekcji startowej liczymy zawsze — także w wariancie POD, gdzie
+      // funkcja kończy się wcześniej. Wcześniej stała za tym wczesnym `return`
+      // i w tym wariancie w ogóle się nie ustawiała, przez co luka nad sekcją
+      // „O Festiwalu" wynosiła zero zamiast LUKA.
+      const sekcjaHero = heroSekcjaRef.current;
+      const dolPrzycisku = sekcjaHero
+        ? cta.getBoundingClientRect().bottom - sekcjaHero.getBoundingClientRect().top
+        : 0;
+
       if (prawa + ODSTEP > window.innerWidth / 2) {
         setFestiwalObok(false);
+        setWysokoscHero(Math.round(dolPrzycisku + LUKA));
         return;
       }
 
@@ -176,6 +235,20 @@ export default function Home() {
       const miesciSie = wysokosc <= window.innerHeight - 2 * MARGINES;
       setFestiwalPrawy(prawyOdstep);
       setFestiwalObok(miesciSie);
+
+      // WYSOKOŚĆ SEKCJI STARTOWEJ. Pod najniższym elementem ma zostać dokładnie
+      // jedna LUKA. Najniższy element to przycisk ankiety albo — w wariancie
+      // OBOK — ramka „O Festiwalu", zależnie od tego, co sięga dalej.
+      //
+      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii:
+      // jest wyśrodkowana w sekcji, więc jej dolna krawędź zależy od wysokości
+      // sekcji, a ta od niej — pomiar na żywo zapętliłby się. Przy wyśrodkowaniu
+      // w sekcji o wysokości H ramka o wysokości B kończy się na H/2 + B/2,
+      // więc warunek „LUKA pod ramką" daje H = B + 2·LUKA.
+      const zPrzycisku = dolPrzycisku + LUKA;
+      setWysokoscHero(
+        Math.round(miesciSie ? Math.max(zPrzycisku, wysokosc + 2 * LUKA) : zPrzycisku)
+      );
 
       // Wejście z podstrony przez „/#o-festiwalu": przeglądarka sama skoczyła do
       // kotwicy, ale w wariancie OBOK ta kotwica jest na górze strony, więc skok
@@ -384,7 +457,16 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           1. HERO SECTION
       ═══════════════════════════════════════════ */}
-      <section className="relative z-10 w-full min-h-screen flex flex-col justify-center px-8 sm:px-16 md:px-28 text-left select-none">
+      {/* Sekcja startowa NIE ma już min-h-screen. Wcześniej była zawsze wysoka
+          na całe okno niezależnie od treści, przez co pod przyciskami zostawał
+          pas pustki rosnący razem z ekranem. Teraz jej wysokość liczy się
+          z treści (patrz wysokoscHero w efekcie pomiarowym) tak, żeby pod
+          najniższym elementem została dokładnie jedna LUKA. */}
+      <section
+        ref={heroSekcjaRef}
+        style={{ minHeight: wysokoscHero || undefined }}
+        className="relative z-10 w-full flex flex-col px-8 sm:px-16 md:px-28 text-left select-none"
+      >
         {/* "kliknij tutaj!" — zakrzywiona strzałka, która przy scrollu sięga w stronę
             hamburgera, próbując go "złapać", a pod koniec sekcji startowej poddaje się.
             POZYCJA FIXED — zostaje na ekranie zamiast odjeżdżać z sekcją hero. */}
@@ -428,7 +510,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24 pb-16">
+        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
               przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
               okna, żeby przyciski CTA zostały widoczne bez scrollowania.
@@ -505,7 +587,7 @@ export default function Home() {
       {/* Wariant POD SPODEM: gdy kolumna z logo jest za szeroka, żeby ramka
           zmieściła się obok, cała sekcja razem z nagłówkiem spada tutaj. */}
       {!festiwalObok && (
-        <section className="relative z-10 w-full px-6 sm:px-12 pb-20">
+        <section className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}>
           <div className="max-w-[88rem] mx-auto">{festiwal}</div>
         </section>
       )}
@@ -516,7 +598,7 @@ export default function Home() {
       ═══════════════════════════════════════════ */}
       <section
         id="o-biegu"
-        className="relative z-10 w-full min-h-screen flex items-center py-16 px-6 sm:px-12"
+        className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}
       >
         <div className="max-w-[88rem] mx-auto w-full">
           {/* text-[1.75rem] = dokładnie dwukrotność poprzedniego text-sm (14px). */}
@@ -612,7 +694,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="max-w-[88rem] mx-auto pb-20">
+        <div className="max-w-[88rem] mx-auto" style={{ paddingBottom: LUKA }}>
           <div className="rounded-3xl bg-[#FFFFFF] border border-sr-line text-[#183153] p-8 sm:p-10 shadow-lg">
             {/* Dwie równe kolumny: tekst po lewej, zdjęcie po prawej — każda po
                 połowie szerokości ramki.
@@ -721,7 +803,16 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           5. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
       ═══════════════════════════════════════════ */}
-      <section ref={wspomnieniaRef} className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
+      {/* Bez min-h-screen: sekcja miała wcześniej wymuszoną wysokość całego okna
+          przy 428px treści, więc przy 1920×1080 zostawało w niej 652px pustki.
+          Dolny odstęp liczy się od PRZYCISKU, nie od dołu sekcji — stos zdjęć
+          sięga niżej niż przycisk, a sztab chce mierzyć lukę od przycisku
+          i zignorować zdjęcia. */}
+      <section
+        ref={wspomnieniaRef}
+        style={{ paddingBottom: dolWspomnien }}
+        className="relative z-10 w-full flex items-center px-6 sm:px-12"
+      >
         <div ref={siatkaWspomnienRef} className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-20 items-center">
           {/* Tekst + CTA */}
           <div className="@container space-y-6">
@@ -743,6 +834,7 @@ export default function Home() {
               zdjęcia obok, a po podsumowanie edycji i galerię zajrzyj do archiwum.
             </p>
             <Link
+              ref={przyciskArchiwumRef}
               href="/archiwum"
               className="cursor-target inline-flex items-center gap-2 px-9 py-4 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-base tracking-widest uppercase transition-all duration-300 shadow-lg hover:-translate-y-0.5"
             >
