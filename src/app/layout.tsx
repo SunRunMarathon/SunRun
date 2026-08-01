@@ -49,8 +49,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  // Tytul karty (widoczny np. w karcie Chrome) ma na pierwszym miejscu slowo
+  // "Festiwal" - tak zdecydowal sztab. "Bieg" zostaje w tytule (dalej wazna
+  // fraza SEO, patrz keywords ponizej) i wszedzie indziej na stronie oraz w
+  // danych strukturalnych - zmiana dotyczy WYLACZNIE tego tytulu.
   title: {
-    default: "Sun Run Lublin 2026 - Bieg Charytatywny | 5 km, Park Ludowy",
+    default: "Sun Run Lublin 2026 - Festiwal Charytatywny | Bieg 5 km, Park Ludowy",
     template: "%s | Sun Run Lublin",
   },
   description:

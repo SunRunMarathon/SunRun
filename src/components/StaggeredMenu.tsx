@@ -18,6 +18,7 @@ export const StaggeredMenu = ({
   logoUrl,
   logoNode,
   logoStyle,
+  headerStyle,
   menuButtonColor = '#183153',
   openMenuButtonColor = '#183153',
   accentColor = '#FE8004',
@@ -379,6 +380,7 @@ export const StaggeredMenu = ({
       <header
         className={`staggered-menu-header${headerHidden && !open ? ' sm-header-hidden' : ''}`}
         aria-label="Main navigation header"
+        style={headerStyle}
       >
         <a href="/" className="sm-logo" aria-label="Sun Run - strona główna" style={logoStyle}>
           {logoNode ? (

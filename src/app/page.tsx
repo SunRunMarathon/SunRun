@@ -9,10 +9,11 @@ import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
-import { PricingSection } from "@/components/PricingSection";
 import { FaqSection } from "@/components/FaqSection";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { SECTION_GAP } from "@/lib/layout";
+import { TIERS, getActiveTierIndex } from "@/lib/pricing";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
 // gsap i cala logika sledzenia myszy w TargetCursor sa bezuzyteczne na dotyku —
@@ -137,7 +138,20 @@ export default function Home() {
   // Jedna wartość na całą stronę: wysokość kafelka „Zapisanych uczestników"
   // z sekcji „O biegu". Kafelek ma 166px niezależnie od szerokości okna
   // (sprawdzone od 1920 do 390px), więc nadaje się na miarę odniesienia.
-  const LUKA = 166;
+  // Sama liczba mieszka w src/lib/layout.ts (SECTION_GAP) - żeby komponenty
+  // sekcji renderowane osobno (np. FaqSection.tsx) używały dokładnie tej
+  // samej wartości, a nie własnych, ręcznie dobranych marginesów.
+  const LUKA = SECTION_GAP;
+
+  // Aktualny próg minimalnej wpłaty (oś czasu w sekcji „O biegu") - liczony z
+  // biezacej daty w efekcie, nie przy pierwszym renderze: serwer i klient
+  // mogłyby przy odrobinie pecha wylosować inny dzień w okolicach północy i
+  // React zgłosiłby niezgodność hydracji. Pierwsza klatka po obu stronach jest
+  // identyczna (bez podświetleń), właściwy stan doskakuje chwilę później.
+  const [aktualnyProg, setAktualnyProg] = useState(null);
+  useEffect(() => {
+    setAktualnyProg(getActiveTierIndex(new Date()));
+  }, []);
 
   const heroSekcjaRef = useRef(null);
   const [wysokoscHero, setWysokoscHero] = useState(0);
@@ -659,7 +673,7 @@ export default function Home() {
       ═══════════════════════════════════════════ */}
       <section
         id="o-biegu"
-        className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}
+        className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA }}
       >
         <div className="max-w-[88rem] mx-auto w-full">
           {/* text-[1.75rem] = dokładnie dwukrotność poprzedniego text-sm (14px). */}
@@ -713,6 +727,62 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Karta: Minimalna wpłata - kompaktowa oś czasu, nie osobna
+                  sekcja na pół ekranu (poprzednia wersja była za duża - sztab
+                  poprosił o przeniesienie tutaj, obok reszty danych o biegu).
+                  Wartości progów trzymane w src/lib/pricing.ts (TIERS) - to
+                  samo źródło zasila FAQ i offers w JSON-LD, więc kwoty i daty
+                  w tych trzech miejscach zawsze się zgadzają. */}
+              <div className="rounded-3xl bg-sr-white border border-sr-line p-6 shadow-lg">
+                <span className="text-xs font-bold uppercase tracking-widest text-sr-red mb-1 block">
+                  Minimalna wpłata
+                </span>
+                <p className="text-xs text-[#3D4D65] leading-relaxed mb-4">
+                  To darowizna z progiem minimalnym, nie cena biletu - możesz wpłacić więcej.
+                </p>
+
+                {/* Oś czasu: cienki pasek pod trzema progami, wypełniony do
+                    aktywnego kroku. Czysto dekoracyjny (aria-hidden) - stan
+                    każdego progu jest już jednoznacznie opisany słownie
+                    (etykieta "Teraz" / "Zakończony"), nie samym kolorem. */}
+                <div aria-hidden="true" className="h-1 rounded-full bg-sr-line mb-3 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-sr-orange transition-[width] duration-700 ease-out"
+                    style={{ width: aktualnyProg === null ? 0 : `${((aktualnyProg + 1) / TIERS.length) * 100}%` }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
+                  {TIERS.map((tier, i) => {
+                    const isActive = aktualnyProg === i;
+                    const isPast = aktualnyProg !== null && i < aktualnyProg;
+                    return (
+                      <div
+                        key={tier.id}
+                        className={`rounded-xl border p-2.5 text-center ${
+                          isActive
+                            ? "bg-sr-white border-sr-orange"
+                            : isPast
+                              ? "bg-sr-sand/40 border-sr-line"
+                              : "bg-sr-white border-sr-line"
+                        }`}
+                      >
+                        <p className="text-lg font-black text-[#183153] leading-none">
+                          {tier.amount}<span className="text-xs font-bold text-[#3D4D65]"> zł</span>
+                        </p>
+                        <p className="text-[10px] text-[#3D4D65] leading-tight mt-1">{tier.deadlineLabel}</p>
+                        {isActive && (
+                          <p className="text-[9px] font-black uppercase tracking-wider text-sr-orange mt-1">Teraz</p>
+                        )}
+                        {isPast && (
+                          <p className="text-[9px] font-black uppercase tracking-wider text-sr-navy mt-1">Zakończony</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Karta: Licznik zapisanych */}
               <div className="rounded-3xl bg-sr-white border border-sr-orange/25 p-6 shadow-lg">
                 <span className="text-xs font-bold uppercase tracking-widest text-sr-red mb-3 block">
@@ -732,10 +802,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <PricingSection />
-
-      <FaqSection />
 
       {/* ═══════════════════════════════════════════
           3. CEL CHARYTATYWNY — zwykła ramka
@@ -819,6 +885,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <FaqSection />
 
       {/* ═══════════════════════════════════════════
           4. PARTNERZY — UKRYTA

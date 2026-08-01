@@ -42,7 +42,17 @@
   pointer-events: none;
   z-index: 20;
   transform: translateY(0);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Logo w rogu naklada sie wizualnie na otwarty panel (i przy okazji laguje,
+   bo GSAP animuje panel na tej samej klatce, na ktorej logo wciaz jest
+   kompozytowane) - przy otwartym menu znika NAPRAWDE (display:none), nie
+   samą przezroczystością, więc realnie wypada z układu i przestaje się
+   renderować. "Strona główna" jest i tak pierwszą pozycją w otwartym menu,
+   więc nawigacyjnie nic tu nie ginie. */
+.staggered-menu-wrapper[data-open] .sm-logo {
+  display: none;
 }
 
 /* Chowanie paska przy scrollu w dol / na stopce (tylko mobile, patrz
