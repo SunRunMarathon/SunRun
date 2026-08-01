@@ -143,12 +143,22 @@ const TargetCursor = ({
       });
     };
 
+    // Licznik "pokazań" słoneczka. Przy szybkim, powtarzanym najeżdżaniu na
+    // kolejne cele animacja pokazSlonce() bywa przerywana (overwrite:'auto')
+    // zanim zdąży dojść do onComplete — bez tego licznika spin nigdy by się
+    // nie wznowił, gdyby AKURAT ostatni w serii cykl pokaż/schowaj skończył
+    // się na przerwanym pokazSlonce. Każde wywołanie ukryjSlonce/pokazSlonce
+    // podbija licznik; onComplete uruchamia spin tylko, jeśli w międzyczasie
+    // nie zaszło nic nowszego.
+    const showGenRef = { current: 0 };
+
     // Wspólne animacje znikania i powrotu słoneczka. Używa ich zarówno najazd
     // na element .cursor-target, jak i najazd na element z własnym kursorem
     // systemowym (łapka, rączka) — dzięki temu przejście wygląda wszędzie
     // tak samo.
     const ukryjSlonce = () => {
       if (!sunRef.current) return;
+      showGenRef.current += 1;
       spinTweenRef.current?.kill();
       spinTweenRef.current = null;
       gsap.to(sunRef.current, {
@@ -163,6 +173,7 @@ const TargetCursor = ({
 
     const pokazSlonce = () => {
       if (!sunRef.current) return;
+      const myGen = ++showGenRef.current;
       gsap.to(sunRef.current, {
         opacity: 1,
         scale: 1,
@@ -170,7 +181,9 @@ const TargetCursor = ({
         duration: 0.4,
         ease: 'power3.out',
         overwrite: 'auto',
-        onComplete: startSpin
+        onComplete: () => {
+          if (showGenRef.current === myGen) startSpin();
+        }
       });
     };
 
