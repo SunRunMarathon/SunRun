@@ -39,9 +39,10 @@ const STACK_CARDS = [
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
-// Szerokość głównego logo w sekcji startowej. Używa jej też kontener daty pod
-// spodem, żeby napis był wyśrodkowany względem znaku — dlatego wartość stoi
-// w jednym miejscu, a nie w dwóch, gdzie mogłaby się rozjechać.
+// Startowa szerokość głównego logo w sekcji hero — używana tylko zanim JS
+// zmierzy realną szerokość kolumny przycisków i ją przejmie (patrz
+// szerokoscLogo w komponencie niżej). Zostaje jako wartość na SSR/pierwszą
+// klatkę, żeby logo nie renderowało się z szerokością 0 ani nie mrugało.
 const SZEROKOSC_LOGO = "min(720px, 88vw, 62vh)";
 
 // Pole `anchor` usunięte razem z podstroną /partnerzy — wskazywało kotwice
@@ -170,6 +171,36 @@ export default function Home() {
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", policz);
+    };
+  }, []);
+
+  // ── Szerokość loga = szerokość kolumny przycisków ────────────────────────
+  // Wcześniej logo miało własną, niezależną formułę (min(720px, 88vw, 62vh)),
+  // przez co na typowych ekranach było WĘŻSZE niż rząd przycisków pod nim
+  // (rozjazd sięgał kilkudziesięciu procent), a na bardzo wysokich oknach —
+  // szersze. Teraz logo dopasowuje się do zmierzonej szerokości przycisku
+  // ankiety (patrz data-hero-cta niżej) — to on, nie logo, jest dziś zwykle
+  // szerszym elementem kolumny, więc to on powinien dyktować rozmiar.
+  // Brak pętli: szerokość przycisków zależy tylko od ich własnego tekstu
+  // i paddingu, więc pomiar jest jednokierunkowy (przycisk → logo).
+  // SZEROKOSC_LOGO zostaje jako wartość startowa (SSR i pierwsza klatka,
+  // zanim JS zdąży zmierzyć przycisk) — bez tego logo mignęłoby w złym
+  // rozmiarze albo miało szerokość 0 przed pierwszym pomiarem.
+  const ctaRef = useRef(null);
+  const [szerokoscLogo, setSzerokoscLogo] = useState(SZEROKOSC_LOGO);
+
+  useEffect(() => {
+    const zmierzPrzycisk = () => {
+      const w = ctaRef.current?.getBoundingClientRect().width;
+      if (w) setSzerokoscLogo(Math.round(w));
+    };
+    zmierzPrzycisk();
+    const ro = new ResizeObserver(zmierzPrzycisk);
+    if (ctaRef.current) ro.observe(ctaRef.current);
+    window.addEventListener("resize", zmierzPrzycisk);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", zmierzPrzycisk);
     };
   }, []);
 
@@ -451,8 +482,9 @@ export default function Home() {
       >
         <div ref={heroTrescRef} className="max-w-4xl pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
-              przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
-              okna, żeby przyciski CTA zostały widoczne bez scrollowania.
+              przesuwa się. Szerokość = zmierzona szerokość kolumny przycisków
+              (patrz efekt wyżej) — zanim pomiar zdąży się wykonać, renderuje się
+              z SZEROKOSC_LOGO jako wartością startową.
               id="hero-logo" — Navbar obserwuje ten element, by wiedzieć, kiedy
               pokazać małe logo w rogu. */}
           <h1 id="hero-logo" className="m-0">
@@ -462,7 +494,7 @@ export default function Home() {
               width={870}
               height={634}
               className="h-auto"
-              style={{ width: SZEROKOSC_LOGO }}
+              style={{ width: szerokoscLogo }}
               draggable={false}
             />
             {/* Logo samo w sobie nie niesie tekstu, a H1 to najważniejszy sygnał
@@ -496,11 +528,11 @@ export default function Home() {
           <div data-hero-cta className="flex flex-col gap-4 pt-2 w-fit pointer-events-auto">
             <div className="flex flex-col sm:flex-row gap-4">
               <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
-                className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
                 Zapisz się
               </a>
               <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-                className="cursor-target cursor-pointer inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+                className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
                 Dowiedz się więcej ↓
               </button>
             </div>
