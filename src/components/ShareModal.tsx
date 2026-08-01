@@ -16,7 +16,7 @@ function buildUrl(medium: string) {
 export function ShareModal() {
   const [open, setOpen] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
-  const [copied, setCopied] = useState<"link" | "instagram" | "qr" | null>(null);
+  const [copied, setCopied] = useState<"link" | "qr" | null>(null);
   const [canNativeShare, setCanNativeShare] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function ShareModal() {
 
   const close = () => setOpen(false);
 
-  const copyToClipboard = async (text: string, which: "link" | "instagram") => {
+  const copyToClipboard = async (text: string, which: "link") => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(which);
@@ -71,7 +71,7 @@ export function ShareModal() {
   const shareTwitter = () => {
     trackShare("twitter");
     const url = buildUrl("twitter");
-    const text = "Dołącz do Sun Run 2026 — charytatywnego biegu w Lublinie na rzecz Hospicjum Dobrego Samarytanina!";
+    const text = "Dołącz do Sun Run 2026 - charytatywnego biegu w Lublinie na rzecz Hospicjum Dobrego Samarytanina!";
     window.open(
       `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
       "_blank",
@@ -89,14 +89,13 @@ export function ShareModal() {
     );
   };
 
-  const shareInstagram = () => copyToClipboard(buildUrl("instagram"), "instagram");
   const copyLink = () => copyToClipboard(buildUrl("copy_link"), "link");
 
   const nativeShare = async () => {
     try {
       await navigator.share({
         title: "Sun Run 2026",
-        text: "Dołącz do Sun Run 2026 — charytatywnego biegu w Lublinie na rzecz Hospicjum Dobrego Samarytanina!",
+        text: "Dołącz do Sun Run 2026 - charytatywnego biegu w Lublinie na rzecz Hospicjum Dobrego Samarytanina!",
         url: buildUrl("native_share"),
       });
       trackShare("native_share");
@@ -201,19 +200,6 @@ export function ShareModal() {
               >
                 Facebook
               </button>
-              <div className="px-5 py-3.5 bg-white border border-sr-line rounded-2xl">
-                <button
-                  type="button"
-                  onClick={shareInstagram}
-                  className="cursor-target text-sm font-bold text-[#183153] block w-full text-left"
-                >
-                  {copied === "instagram" ? "Link skopiowany ✓" : "Instagram — kopiuj link"}
-                </button>
-                <p className="text-[11px] text-[#3D4D65] mt-1">
-                  Instagram nie pozwala udostępniać linków wprost ze stron — wklej go w Stories
-                  albo w bio.
-                </p>
-              </div>
               <button
                 type="button"
                 onClick={copyLink}

@@ -10,7 +10,6 @@ const VALID_CHANNELS = [
   "qr_copy",
   "twitter",
   "facebook",
-  "instagram_copy",
   "copy_link",
   "native_share",
 ];

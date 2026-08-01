@@ -11,11 +11,10 @@ type ShareClick = {
 
 const CHANNEL_LABELS: Record<string, string> = {
   modal_open: "Otwarcie modala",
-  qr_download: "QR — pobierz PNG",
-  qr_copy: "QR — kopiuj obraz",
+  qr_download: "QR - pobierz PNG",
+  qr_copy: "QR - kopiuj obraz",
   twitter: "X / Twitter",
   facebook: "Facebook",
-  instagram_copy: "Instagram (kopiuj link)",
   copy_link: "Kopiuj link",
   native_share: "Udostępnij (system)",
 };
@@ -133,7 +132,7 @@ export function ShareDashboard({ password }: { password: string }) {
             Najpopularniejszy kanał
           </p>
           <p className="text-lg font-black text-[#183153] leading-tight">
-            {channelDist[0] ? CHANNEL_LABELS[channelDist[0].key] ?? channelDist[0].key : "—"}
+            {channelDist[0] ? CHANNEL_LABELS[channelDist[0].key] ?? channelDist[0].key : "-"}
           </p>
         </div>
       </div>
@@ -196,7 +195,7 @@ export function ShareDashboard({ password }: { password: string }) {
                     {CHANNEL_LABELS[c.channel] ?? c.channel}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#3D4D65]">
-                    {c.landing_path ?? "—"}
+                    {c.landing_path ?? "-"}
                   </td>
                 </tr>
               ))}
