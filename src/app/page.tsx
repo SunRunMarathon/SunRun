@@ -499,7 +499,7 @@ export default function Home() {
       <section
         ref={heroSekcjaRef}
         style={{ minHeight: wysokoscHero || undefined }}
-        className="relative z-10 w-full flex flex-col pl-[60px] pr-8 sm:pr-16 md:pr-28 text-left select-none"
+        className="relative z-10 w-full flex flex-col pl-8 sm:pl-[60px] pr-8 sm:pr-16 md:pr-28 text-left select-none"
       >
         <div ref={heroTrescRef} className="max-w-4xl pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
