@@ -14,17 +14,37 @@ export const metadata: Metadata = {
 // aktualizacji bez grzebania w JSX każdej sekcji z osobna.
 const SECTIONS: { title: string; body: React.ReactNode }[] = [
   {
+    // Dane administratora - Lubelskie Towarzystwo Przyjaciol Chorych "Hospicjum
+    // Dobrego Samarytanina" (zweryfikowane w KRS i na oficjalnej stronie
+    // hospicjum, przekazane bezposrednio przez sztab). UWAGA: samo wpisanie tu
+    // tej nazwy nie czyni hospicjum administratorem w rozumieniu RODO - to,
+    // kto faktycznie decyduje o celach i sposobach przetwarzania (a serwis,
+    // baze i analityke prowadzi sztab Sun Run), musi byc ustalone z zarzadem
+    // hospicjum. To do rozstrzygniecia poza kodem, patrz raport.
     title: "1. Administrator danych",
     body: (
       <>
         <p>
-          Administratorem danych osobowych zbieranych przez tę stronę jest [DO UZUPEŁNIENIA - pełna
-          nazwa podmiotu / organizatora Sun Run] z siedzibą pod adresem [DO UZUPEŁNIENIA - adres].
+          Administratorem danych osobowych zbieranych przez tę stronę jest{" "}
+          <strong>
+            Lubelskie Towarzystwo Przyjaciół Chorych „Hospicjum Dobrego Samarytanina"
+          </strong>{" "}
+          (stowarzyszenie, organizacja pożytku publicznego) z siedzibą przy ul. Bernardyńskiej
+          11A, 20-109 Lublin, wpisane do Krajowego Rejestru Sądowego pod numerem KRS 0000026380,
+          NIP 946-183-06-61, REGON 001416234.
         </p>
         <p>
           Kontakt w sprawach związanych z ochroną danych:{" "}
           <a href="mailto:hospicjum.samarytanin.bieg@gmail.com" className="underline hover:text-sr-orange">
             hospicjum.samarytanin.bieg@gmail.com
+          </a>{" "}
+          (skrzynka organizacyjna wydarzenia Sun Run) lub bezpośrednio z hospicjum:{" "}
+          <a href="mailto:poczta@hospicjum-samarytanin.pl" className="underline hover:text-sr-orange">
+            poczta@hospicjum-samarytanin.pl
+          </a>{" "}
+          albo{" "}
+          <a href="mailto:zarzad@hospicjum-samarytanin.pl" className="underline hover:text-sr-orange">
+            zarzad@hospicjum-samarytanin.pl
           </a>
           .
         </p>
