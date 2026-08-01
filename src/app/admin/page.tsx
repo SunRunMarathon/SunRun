@@ -48,8 +48,25 @@ export default function AdminPage() {
   const [webauthnSupported, setWebauthnSupported] = useState(false);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
 
+  // Formularz zapasowy (bez klucza) ma dwa mozliwe warianty w zaleznosci od
+  // tego, co jest naprawde skonfigurowane w Railway: docelowy - trzy kolorowe
+  // sekrety, albo dotychczasowy - jedno haslo ADMIN_PASSWORD (na wypadek, gdy
+  // nowe zmienne jeszcze nie zostaly dodane). null = jeszcze nie sprawdzono.
+  const [loginConfig, setLoginConfig] = useState<{
+    tripleConfigured: boolean;
+    legacyConfigured: boolean;
+    sessionSigningConfigured: boolean;
+  } | null>(null);
+  const [legacyPassword, setLegacyPassword] = useState("");
+
   useEffect(() => {
     setWebauthnSupported(browserSupportsWebAuthn());
+    fetch("/api/admin/login-secrets")
+      .then((res) => res.json())
+      .then(setLoginConfig)
+      .catch(() =>
+        setLoginConfig({ tripleConfigured: false, legacyConfigured: false, sessionSigningConfigured: false })
+      );
   }, []);
 
   const verifyAndLoad = async (tok: string) => {
@@ -121,6 +138,31 @@ export default function AdminPage() {
     }
   };
 
+  // Wariant zapasowy na dotychczasowym ADMIN_PASSWORD - dziala bez zadnych
+  // nowych zmiennych w Railway, dopoki docelowe trzy sekrety nie sa ustawione.
+  const handleLegacyLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/login-secrets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ legacyPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.token) {
+        setError(data.error || "Nieprawidłowe dane logowania");
+        setLoading(false);
+        return;
+      }
+      await verifyAndLoad(data.token);
+    } catch {
+      setError("Błąd połączenia z serwerem");
+      setLoading(false);
+    }
+  };
+
   const handleLogout = () => {
     setAuthed(false);
     setToken("");
@@ -152,44 +194,89 @@ export default function AdminPage() {
 
           {error && <p className="text-sm text-sr-red">{error}</p>}
 
-          {!showSecretsForm ? (
-            <button
-              type="button"
-              onClick={() => setShowSecretsForm(true)}
-              className="w-full text-center text-xs text-[#3D4D65] underline hover:text-[#183153]"
-            >
-              Nie masz klucza? Zaloguj się trzema hasłami
-            </button>
-          ) : (
-            <form onSubmit={handleSecretsLogin} className="space-y-4 pt-2 border-t border-sr-line">
-              <p className="text-[11px] text-[#3D4D65] pt-4">
-                Kolejność pól jest losowa przy każdym wejściu — wpisz hasło przypisane do koloru,
-                nie do pozycji.
-              </p>
-              {fieldOrder.map((color) => (
-                <div key={color}>
-                  <label
-                    className={`block text-xs font-bold uppercase tracking-widest mb-1.5 border-l-4 pl-2 ${COLOR_STYLES[color].className}`}
-                  >
-                    {COLOR_STYLES[color].label}
+          {loginConfig && !loginConfig.sessionSigningConfigured && (
+            <p className="text-xs text-sr-red bg-sr-red/10 border border-sr-red/30 rounded-xl p-3">
+              Logowanie zapasowe jest wyłączone: serwer nie ma ustawionej zmiennej
+              ADMIN_SESSION_SECRET ani ADMIN_PASSWORD. Dodaj jedną z nich w Railway.
+            </p>
+          )}
+
+          {loginConfig?.tripleConfigured &&
+            (!showSecretsForm ? (
+              <button
+                type="button"
+                onClick={() => setShowSecretsForm(true)}
+                className="w-full text-center text-xs text-[#3D4D65] underline hover:text-[#183153]"
+              >
+                Nie masz klucza? Zaloguj się trzema hasłami
+              </button>
+            ) : (
+              <form onSubmit={handleSecretsLogin} className="space-y-4 pt-2 border-t border-sr-line">
+                <p className="text-[11px] text-[#3D4D65] pt-4">
+                  Kolejność pól jest losowa przy każdym wejściu — wpisz hasło przypisane do koloru,
+                  nie do pozycji.
+                </p>
+                {fieldOrder.map((color) => (
+                  <div key={color}>
+                    <label
+                      className={`block text-xs font-bold uppercase tracking-widest mb-1.5 border-l-4 pl-2 ${COLOR_STYLES[color].className}`}
+                    >
+                      {COLOR_STYLES[color].label}
+                    </label>
+                    <input
+                      type="password"
+                      value={secrets[color]}
+                      onChange={(e) => setSecrets((s) => ({ ...s, [color]: e.target.value }))}
+                      className="w-full bg-[#F4D8A2] border border-sr-line focus:border-sr-orange rounded-xl px-4 py-2.5 text-sm text-[#183153] outline-none transition-colors"
+                    />
+                  </div>
+                ))}
+                <button
+                  type="submit"
+                  disabled={loading || !secrets.red || !secrets.green || !secrets.yellow}
+                  className="w-full py-3 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-50 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
+                >
+                  {loading ? "Logowanie..." : "Zaloguj"}
+                </button>
+              </form>
+            ))}
+
+          {/* Haslo ADMIN_PASSWORD dziala tylko dopoki docelowe trzy sekrety nie
+              sa jeszcze skonfigurowane - gdy oba warianty sa ustawione, wygrywa
+              silniejszy (trojka) i to pole znika. */}
+          {loginConfig?.legacyConfigured &&
+            !loginConfig.tripleConfigured &&
+            (!showSecretsForm ? (
+              <button
+                type="button"
+                onClick={() => setShowSecretsForm(true)}
+                className="w-full text-center text-xs text-[#3D4D65] underline hover:text-[#183153]"
+              >
+                Nie masz klucza? Zaloguj się hasłem
+              </button>
+            ) : (
+              <form onSubmit={handleLegacyLogin} className="space-y-4 pt-2 border-t border-sr-line">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest mb-1.5 text-[#3D4D65]">
+                    Hasło
                   </label>
                   <input
                     type="password"
-                    value={secrets[color]}
-                    onChange={(e) => setSecrets((s) => ({ ...s, [color]: e.target.value }))}
+                    value={legacyPassword}
+                    onChange={(e) => setLegacyPassword(e.target.value)}
                     className="w-full bg-[#F4D8A2] border border-sr-line focus:border-sr-orange rounded-xl px-4 py-2.5 text-sm text-[#183153] outline-none transition-colors"
+                    autoFocus
                   />
                 </div>
-              ))}
-              <button
-                type="submit"
-                disabled={loading || !secrets.red || !secrets.green || !secrets.yellow}
-                className="w-full py-3 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-50 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
-              >
-                {loading ? "Logowanie..." : "Zaloguj"}
-              </button>
-            </form>
-          )}
+                <button
+                  type="submit"
+                  disabled={loading || !legacyPassword}
+                  className="w-full py-3 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-50 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
+                >
+                  {loading ? "Logowanie..." : "Zaloguj"}
+                </button>
+              </form>
+            ))}
         </div>
       </div>
     );

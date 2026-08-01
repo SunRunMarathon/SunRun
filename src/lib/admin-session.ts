@@ -3,9 +3,34 @@ import crypto from "crypto";
 // Sekret do podpisywania tokenow sesji i wyzwan WebAuthn. BEZ tego wszystkie
 // tokeny sa nie do zweryfikowania - "fail closed", nie "fail open": brak
 // zmiennej oznacza, ze NIKT sie nie zaloguje, a nie ze logowanie jest otwarte.
-const SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || "";
+//
+// Zeby wdrozenie tego systemu logowania NIE zablokowalo dostepu do /admin,
+// zanim ktos recznie doda ADMIN_SESSION_SECRET w Railway, sekret spada do
+// pochodnej z JUZ istniejacego ADMIN_PASSWORD (jest tajny i juz skonfigurowany
+// na produkcji) zamiast pustego stringa. To wciaz prawdziwy, nieprzewidywalny
+// dla atakujacego klucz podpisu - nie "otwarte na sciezaj". Docelowo lepiej
+// ustawic dedykowany ADMIN_SESSION_SECRET (niezalezny od hasla logowania),
+// ale system dziala bezpiecznie i bez tego.
+function resolveSessionSecret(): string {
+  if (process.env.ADMIN_SESSION_SECRET) return process.env.ADMIN_SESSION_SECRET;
+  if (process.env.ADMIN_PASSWORD) {
+    return crypto
+      .createHash("sha256")
+      .update("sunrun-session-fallback:" + process.env.ADMIN_PASSWORD)
+      .digest("hex");
+  }
+  return "";
+}
+
+const SESSION_SECRET = resolveSessionSecret();
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000; // 12h
 const CHALLENGE_TTL_MS = 5 * 60 * 1000; // 5 minut na dokonczenie WebAuthn
+
+// Do wyswietlenia jasnego komunikatu na ekranie logowania zamiast cichego,
+// niewyjasnionego bledu - patrz uzycie w API routes logowania.
+export function isSessionSigningConfigured(): boolean {
+  return SESSION_SECRET.length > 0;
+}
 
 function hmac(payloadB64: string): string {
   return crypto.createHmac("sha256", SESSION_SECRET).update(payloadB64).digest("base64url");
