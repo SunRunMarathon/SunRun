@@ -549,17 +549,8 @@ export default function Home() {
                 Zapisz się
               </a>
               <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-                className="cursor-target cursor-pointer relative inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+                className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
                 Dowiedz się więcej
-                {/* Strzałka POZA pastylką (absolute, nie w przepływie) - jako zwykły
-                    znak w tekście poszerzała przycisk względem "Zapisz się" obok,
-                    mimo że oba mają mieć tę samą szerokość (patrz komentarz nad
-                    rodzicem). Pulsowanie w dół sugeruje scroll; globalna siatka
-                    bezpieczeństwa dla prefers-reduced-motion w globals.css tnie
-                    animation-duration do 0.01ms, więc nie trzeba osobnego gatingu. */}
-                <span aria-hidden="true" className="pointer-events-none absolute left-1/2 top-full mt-1 text-base text-sr-orange animate-scroll-hint">
-                  ↓
-                </span>
               </button>
             </div>
 
