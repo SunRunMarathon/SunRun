@@ -87,16 +87,42 @@ const event2026 = {
   location: PARK_LUDOWY_PLACE,
   organizer: { "@id": `${SITE_URL}/#organization` },
   url: SITE_URL,
-  // Ceny pakietów 2026 nie są jeszcze potwierdzone (patrz placeholder
-  // "[DATA 2026]" w src/components/sections/pricing.tsx) — offers celowo
-  // bez price/priceCurrency, żeby nie publikować zmyślonej ceny w wynikach
-  // wyszukiwania. Dodaj price/priceCurrency tutaj, gdy sztab potwierdzi stawki.
-  offers: {
-    "@type": "Offer",
-    url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
-    availability: "https://schema.org/InStock",
-    validFrom: "2026-01-01T00:00:00+01:00",
-  },
+  // Trzy progi MINIMALNEJ wpłaty (to bieg charytatywny - darowizna z progiem
+  // minimalnym, nie sztywna cena biletu) potwierdzone przez sztab. Trzymaj
+  // zgodnie z widoczną na stronie sekcją "Minimalna wpłata"
+  // (src/components/PricingSection.tsx) - to jedno źródło prawdy dla dat i kwot.
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Zapis do 9 sierpnia 2026 (I termin)",
+      price: "60",
+      priceCurrency: "PLN",
+      url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-01-01T00:00:00+01:00",
+      validThrough: "2026-08-09T23:59:59+02:00",
+    },
+    {
+      "@type": "Offer",
+      name: "Zapis do 9 września 2026 (II termin)",
+      price: "70",
+      priceCurrency: "PLN",
+      url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-08-10T00:00:00+02:00",
+      validThrough: "2026-09-09T23:59:59+02:00",
+    },
+    {
+      "@type": "Offer",
+      name: "Zapis w dniu biegu (III termin)",
+      price: "80",
+      priceCurrency: "PLN",
+      url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+      availability: "https://schema.org/InStock",
+      validFrom: "2026-09-10T00:00:00+02:00",
+      validThrough: "2026-09-12T23:59:59+02:00",
+    },
+  ],
 };
 
 const event2025 = {

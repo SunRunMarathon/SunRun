@@ -9,6 +9,8 @@ import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
+import { PricingSection } from "@/components/PricingSection";
+import { FaqSection } from "@/components/FaqSection";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
@@ -730,6 +732,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <PricingSection />
+
+      <FaqSection />
 
       {/* ═══════════════════════════════════════════
           3. CEL CHARYTATYWNY — zwykła ramka
