@@ -859,8 +859,6 @@ export default function Home() {
         </div>
       </section>
 
-      <FaqSection />
-
       {/* ═══════════════════════════════════════════
           4. PARTNERZY — UKRYTA
 
@@ -978,6 +976,8 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      <FaqSection />
       </main>
 
       {/* ═══════════════════════════════════════════
