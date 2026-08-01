@@ -45,7 +45,11 @@
   padding: 0 1.5em;
   background: transparent;
   pointer-events: none;
-  z-index: 20;
+  /* Niżej niż .staggered-menu-panel (10) - otwarty panel ma przykrywać ten
+     pasek, nie na odwrót. Przycisk menu żyje teraz w osobnej warstwie
+     (.sm-toggle-layer, patrz niżej) właśnie po to, żeby mógł zostać wyżej
+     niż panel, mimo że wizualnie stoi w tym samym miejscu co header. */
+  z-index: 8;
   transform: translateY(0);
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
@@ -60,9 +64,21 @@
   display: none;
 }
 
+/* Zabezpieczenie oprócz z-index: na desktopie panel nie sięga na całą
+   szerokość ekranu (--sm-panel-w), więc na lewej, nieprzykrytej części paska
+   wciąż byłoby widać jego tło. Przy otwartym menu pasek znika w całości -
+   nie ma wtedy znaczenia, że panel go "przykrywa" tylko częściowo. */
+.staggered-menu-wrapper[data-open] .staggered-menu-header {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
 /* Chowanie paska przy scrollu w dol / na stopce (tylko mobile, patrz
-   navbar.tsx) - transform, nie top/height, zeby nie wywolywac reflow. */
-.staggered-menu-header.sm-header-hidden {
+   navbar.tsx) - transform, nie top/height, zeby nie wywolywac reflow.
+   Ta sama klasa i regula dziala tez na .sm-toggle-layer nizej - obie warstwy
+   maja chowac sie razem. */
+.staggered-menu-header.sm-header-hidden,
+.sm-toggle-layer.sm-header-hidden {
   transform: translateY(-100%);
 }
 
@@ -74,6 +90,33 @@
 
 .staggered-menu-header > * {
   pointer-events: auto;
+}
+
+/* Warstwa samego przycisku menu - fizyczny bliźniak headera (te same wymiary
+   i padding), ale POZA nim w drzewie DOM. Header ma transform, więc tworzy
+   własny kontekst warstwowania - żaden z-index dziecka headera nie mógłby go
+   z tego kontekstu wypuścić, niezależnie od wartości. Trzymając przycisk jako
+   rodzeństwo headera i panelu, jego z-index liczy się na tym samym poziomie
+   co ich, więc realnie może wylądować nad panelem. */
+.sm-toggle-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--sr-navbar-h, 100px);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5em;
+  pointer-events: none;
+  z-index: 30;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .sm-toggle-layer {
+    padding: 0 2em;
+  }
 }
 
 .sm-logo {
@@ -98,6 +141,10 @@
   background: transparent;
   border: none;
   cursor: pointer;
+  /* .sm-toggle-layer (rodzic) ma pointer-events:none - żeby pusta przestrzeń
+     wokół przycisku nie blokowała kliknięć w treść pod spodem. Sam przycisk
+     musi to sobie z powrotem włączyć. */
+  pointer-events: auto;
   color: #183153;
   font-weight: 700;
   font-size: 1rem;
