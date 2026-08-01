@@ -14,37 +14,48 @@ export const metadata: Metadata = {
 // aktualizacji bez grzebania w JSX każdej sekcji z osobna.
 const SECTIONS: { title: string; body: React.ReactNode }[] = [
   {
-    // Dane administratora - Lubelskie Towarzystwo Przyjaciol Chorych "Hospicjum
-    // Dobrego Samarytanina" (zweryfikowane w KRS i na oficjalnej stronie
-    // hospicjum, przekazane bezposrednio przez sztab). UWAGA: samo wpisanie tu
-    // tej nazwy nie czyni hospicjum administratorem w rozumieniu RODO - to,
-    // kto faktycznie decyduje o celach i sposobach przetwarzania (a serwis,
-    // baze i analityke prowadzi sztab Sun Run), musi byc ustalone z zarzadem
-    // hospicjum. To do rozstrzygniecia poza kodem, patrz raport.
+    // Administratorami sa dwie osoby fizyczne ze sztabu (wspoladministrowanie,
+    // art. 26 RODO) - hospicjum jeszcze NIE potwierdzilo, czy ma figurowac w
+    // tej roli (patrz poprzednia wersja tego pliku / raport), wiec na razie
+    // go tu nie ma. Hospicjum zostaje gdzie indziej na stronie jako
+    // BENEFICJENT zbiorki - to inna rola i nie wolno ich mieszac.
+    //
+    // Adresy zamieszkania administratorow CELOWO nie sa tu podane - Milosz
+    // zdecydowal, ze na razie tylko kontakt mailowy wystarcza (RODO art. 13
+    // wymaga tozsamosci i danych KONTAKTOWYCH, nie koniecznie adresu
+    // zamieszkania, a raz opublikowany adres domowy trafia do wyszukiwarek
+    // i archiwow bezpowrotnie). Gdyby zdecydowal inaczej, dopisanie adresu to
+    // jedna zmiana - PLACEHOLDER ponizej pokazuje gdzie.
     title: "1. Administrator danych",
     body: (
       <>
         <p>
-          Administratorem danych osobowych zbieranych przez tę stronę jest{" "}
-          <strong>
-            Lubelskie Towarzystwo Przyjaciół Chorych „Hospicjum Dobrego Samarytanina"
-          </strong>{" "}
-          (stowarzyszenie, organizacja pożytku publicznego) z siedzibą przy ul. Bernardyńskiej
-          11A, 20-109 Lublin, wpisane do Krajowego Rejestru Sądowego pod numerem KRS 0000026380,
-          NIP 946-183-06-61, REGON 001416234.
+          Administratorami danych osobowych zbieranych przez tę stronę są (współadministrowanie
+          w rozumieniu art. 26 RODO):
         </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li>
+            <strong>Miłosz Kamiński</strong> - kontakt:{" "}
+            <a href="mailto:miloszzkamm@gmail.com" className="underline hover:text-sr-orange">
+              miloszzkamm@gmail.com
+            </a>
+            {/* PLACEHOLDER: adres zamieszkania - dopisz tutaj tylko po wyraznej
+                decyzji Milosza, w formacie: ", zamieszkały pod adresem [ulica,
+                kod pocztowy, miejscowość]". Do tego czasu zostaje tak jak jest. */}
+          </li>
+          <li>
+            <strong>Michał Żaba</strong> - kontakt:{" "}
+            <a href="mailto:michal.zaba4@wp.pl" className="underline hover:text-sr-orange">
+              michal.zaba4@wp.pl
+            </a>
+          </li>
+        </ul>
         <p>
-          Kontakt w sprawach związanych z ochroną danych:{" "}
-          <a href="mailto:hospicjum.samarytanin.bieg@gmail.com" className="underline hover:text-sr-orange">
-            hospicjum.samarytanin.bieg@gmail.com
-          </a>{" "}
-          (skrzynka organizacyjna wydarzenia Sun Run) lub bezpośrednio z hospicjum:{" "}
-          <a href="mailto:poczta@hospicjum-samarytanin.pl" className="underline hover:text-sr-orange">
-            poczta@hospicjum-samarytanin.pl
-          </a>{" "}
-          albo{" "}
-          <a href="mailto:zarzad@hospicjum-samarytanin.pl" className="underline hover:text-sr-orange">
-            zarzad@hospicjum-samarytanin.pl
+          Zgodnie z uzgodnieniem między współadministratorami, w sprawach związanych z ochroną
+          danych osobowych (dostęp, sprostowanie, usunięcie i pozostałe prawa opisane w sekcji 7)
+          napisz na adres:{" "}
+          <a href="mailto:miloszzkamm@gmail.com" className="underline hover:text-sr-orange">
+            miloszzkamm@gmail.com
           </a>
           .
         </p>
@@ -154,8 +165,8 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         </ul>
         <p className="mt-3">
           Aby skorzystać z tych praw, napisz na{" "}
-          <a href="mailto:hospicjum.samarytanin.bieg@gmail.com" className="underline hover:text-sr-orange">
-            hospicjum.samarytanin.bieg@gmail.com
+          <a href="mailto:miloszzkamm@gmail.com" className="underline hover:text-sr-orange">
+            miloszzkamm@gmail.com
           </a>
           .
         </p>
