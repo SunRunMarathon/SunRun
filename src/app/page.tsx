@@ -576,7 +576,7 @@ export default function Home() {
                   : "cursor-target cursor-pointer bg-sr-navy text-sr-orange shadow-xl hover:-translate-y-0.5 active:translate-y-0"
               }`}
             >
-              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Ankieta - skąd o nas usłyszałaś/eś?"}
+              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Skąd o nas usłyszałaś/eś?"}
             </button>
           </div>
 
