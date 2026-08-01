@@ -62,46 +62,52 @@ function ScrollZoomIntent() {
   return null;
 }
 
-// TRZECIE podejście do tej trasy. Pierwsze szło po obrysie parku z OSM (to
-// nie jest ścieżka do biegania). Drugie łączyło realne alejki, ale użyło
-// niewłaściwego odcinka przy Targach (spoke przez środek zamiast realnej
-// krawędzi) i błędnie zorientowanej "prostej" - dawało to widoczne wystające
-// "ogonki" na mapie. Milosz przysłał wzorzec z Google Maps (żółta trasa) -
-// ta wersja jest zbudowana pod TEN wzorzec: jedna zamknięta pętla po
-// obwodzie parku + jedna wewnętrzna ostroga do fontanny, nic więcej.
+// CZWARTE podejście do tej trasy. Trzecie (patrz historia w git) miało dwie
+// wady, które Milosz zaznaczył ręcznie na zrzucie z żywej strony: (1) trasa
+// wypuszczała się za daleko na wschód, w stronę Piasek/Dworcowej (pętla
+// way 1005422292 od strony Targów) i (2) w płn-zach części parku skręcała
+// na skos przez środek (way 62364771) zamiast trzymać się zewnętrznej
+// krawędzi. Obie te rzeczy zostały tu usunięte. W ich miejsce doszła spora
+// część trasy, której wcześniej brakowało: dalsze przedłużenie zachodniej
+// krawędzi w stronę ul. Stadionowej, duży płat południowy sięgający niemal
+// do ul. Lubelskiego Lipca '80, i powrót na północ przez środek parku,
+// zamykający kształt. Segmenty 0-82 (start, szpilka do fontanny, rondo,
+// ramię północne i zachodnie do punktu z wodą) są niezmienione względem
+// trzeciego podejścia - błędy dotyczyły wyłącznie części za punktem z wodą.
 //
 // Każdy odcinek to konkretny, zweryfikowany fragment alejki z OpenStreetMap
 // (Overpass API), połączony w kolejności:
 //
-//  0-9    Jedna z dwóch równoległych alejek "Aleja Europejskiej Stolicy
-//         Młodzieży Lublin 2023" (way 1005433130) - START leży na niej,
-//         blisko ronda, po czym trasa dochodzi do fontanny.
-//  9-13   Szpilka przy fontannie (way 294448132/1057965793) - ciasny zawrót
-//         przy okrągłym zbiorniku wodnym.
-//  13-23  Druga równoległa alejka (way 294442930) z powrotem do ronda.
-//  23     Rondo przy Targach Lublin (way 995319618) - węzeł centralny, z
-//         którego odchodzą trzy ramiona.
-//  24-28  Realne połączenie rondo -> narożnik wschodni (way 294442933) -
-//         to jest odcinek, którego brakowało w drugiej wersji (był tam
-//         objazd przez środek parku, stąd "ogonek" na starej mapie).
-//  29-50  Ramię północne wzdłuż al. Piłsudskiego (way 286179378) do
-//         narożnika północnego.
-//  51-83  Ramię zachodnie wzdłuż Bystrzycy (way 451709904) do punktu z wodą.
-//  83     PUNKT Z WODĄ - realne skrzyżowanie alejek w płd-zach części parku
-//         (punkty medyczne usunięte na prośbę Milosza, ten punkt został).
-//  84-109 Ramię południowe (way 62364771 + 286178730) wzdłuż południowej
-//         krawędzi.
-//  109-144 Pętla wokół płata w południowej części parku (way 1005422292) -
-//         to jest "obiega płat", o którym pisał Milosz.
-//  144-149 Powrót skosem na północny wschód do ronda (way 62364768).
+//  0-13   Jedna z dwóch równoległych alejek do fontanny i z powrotem,
+//         szpilka przy okrągłym zbiorniku wodnym (bez zmian).
+//  13-23  Druga równoległa alejka z powrotem do ronda (bez zmian).
+//  23-28  Rondo przy Targach Lublin -> narożnik wschodni (bez zmian).
+//  29-50  Ramię północne wzdłuż al. Piłsudskiego (bez zmian).
+//  51-82  Ramię zachodnie wzdłuż Bystrzycy do punktu z wodą (bez zmian).
+//  82     PUNKT Z WODĄ - bez zmian.
+//  82-83  Dalszy ciąg zachodniej krawędzi za punkt wody (way 294442929) -
+//         to jest przedłużenie "dalej na południowy zachód", o które
+//         prosił Milosz, zamiast dawnego skosu przez środek (62364771,
+//         USUNIĘTY).
+//  83-108 Poprzez way 995319614 + 959638425 + 959638422 w stronę ul.
+//         Stadionowej - realna krawędź parku, nie przybliżenie.
+//  108-125 Way 442874000 - szeroki łuk przez południowy płat parku, w dół
+//         do niemal samej ul. Lubelskiego Lipca '80. To jest ten "duży
+//         brakujący kawałek", o którym pisał Milosz.
+//  125-126 Krótkie połączenie z powrotem do południowego węzła way 62364768
+//         (way 421557439).
+//  126-159 Way 62364768 - powrót na północ przez środek parku, zamykający
+//         kształt trasy, z powrotem do ronda/startu. Dawna pętla wokół
+//         wschodniego płata (way 1005422292, USUNIĘTA) już się tu nie
+//         pojawia.
 //
 // START/META (punkt 0) leży NA OSTRODZE, bliżej ronda niż fontanny -
-// zgodnie z prośbą Milosza ("dalej na prostej, dalej od fontanny").
+// bez zmian względem poprzednich podejść.
 //
 // Zweryfikowany dystans jednego okrążenia (Haversine, z zamknięciem pętli
-// do startu): ok. 2,34 km. Dwa okrążenia (5 km wg założenia) dają ok.
-// 4,68 km - trochę mniej niż 5 km, ale bliżej tego celu niż poprzednie
-// wersje. Ostateczny dystans i tak zmierzy pomiar do certyfikacji PZLA.
+// do startu): ok. 2,61 km - bliżej celu 2,5 km niż poprzednie 2,34 km
+// (różnica w dużej mierze to nowy płat południowy). Dwa okrążenia dają
+// ok. 5,2 km. Ostateczny dystans i tak zmierzy pomiar do certyfikacji PZLA.
 const ROUTE_LOOP = [
   [51.23596, 22.56218], // 0 - START/META (blisko ronda, na ostrodze)
   [51.2367, 22.56069],
@@ -186,67 +192,77 @@ const ROUTE_LOOP = [
   [51.23597, 22.55846],
   [51.23587, 22.55842],
   [51.23573, 22.55833], // 82 - WODA (poludniowo-zachodnia czesc parku)
-  [51.23567, 22.55853],
-  [51.2356, 22.55853],
-  [51.23554, 22.55854],
-  [51.2355, 22.55856],
-  [51.23546, 22.55858],
-  [51.2354, 22.55864],
-  [51.23534, 22.55873],
-  [51.23525, 22.55892],
-  [51.23518, 22.55904],
-  [51.23507, 22.55925],
-  [51.23493, 22.55952],
-  [51.23459, 22.56014],
-  [51.23454, 22.56023],
-  [51.23446, 22.56039],
-  [51.23433, 22.5606],
-  [51.23425, 22.56075],
-  [51.23418, 22.56089],
-  [51.23412, 22.56101],
-  [51.23409, 22.5611],
-  [51.23407, 22.56121],
-  [51.23407, 22.56131],
-  [51.23407, 22.56144],
-  [51.23408, 22.56167],
-  [51.23412, 22.56208],
-  [51.23413, 22.56233],
+  [51.23545, 22.55805],
+  [51.23542, 22.55812],
+  [51.2354, 22.55818],
+  [51.23539, 22.55826],
+  [51.23537, 22.55833],
+  [51.23535, 22.55841],
+  [51.23531, 22.55849],
+  [51.23527, 22.55857],
+  [51.2352, 22.55865],
+  [51.23516, 22.55867],
+  [51.23512, 22.55869],
+  [51.23506, 22.5587],
+  [51.23498, 22.5587],
+  [51.23493, 22.5587],
+  [51.23487, 22.55869],
+  [51.23479, 22.5587],
+  [51.23473, 22.55872],
+  [51.23466, 22.55875],
+  [51.23455, 22.55882],
+  [51.23446, 22.55892],
+  [51.23436, 22.55907],
+  [51.23432, 22.55916],
+  [51.23426, 22.55929],
+  [51.23422, 22.55941],
+  [51.23417, 22.55961],
+  [51.23406, 22.55944],
+  [51.23374, 22.55938],
+  [51.23373, 22.55938],
+  [51.23346, 22.55976],
+  [51.23298, 22.5606],
+  [51.23269, 22.56118],
+  [51.23243, 22.56156],
+  [51.2324, 22.5616],
+  [51.23238, 22.56163],
+  [51.23238, 22.56167],
+  [51.23238, 22.56171],
+  [51.23239, 22.56174],
+  [51.23241, 22.5618],
+  [51.23243, 22.56185],
+  [51.23252, 22.5621],
+  [51.23255, 22.56208],
+  [51.23268, 22.56203],
+  [51.23272, 22.56215],
+  [51.23279, 22.56229],
+  [51.23288, 22.56242],
+  [51.23291, 22.5625],
+  [51.23294, 22.56258],
+  [51.23299, 22.56266],
+  [51.23302, 22.56271],
+  [51.23306, 22.56273],
+  [51.23311, 22.56275],
+  [51.23316, 22.56276],
+  [51.23322, 22.56275],
+  [51.23329, 22.56273],
+  [51.23337, 22.56272],
+  [51.23345, 22.5627],
+  [51.23353, 22.56267],
+  [51.23359, 22.56268],
+  [51.23366, 22.56268],
+  [51.23377, 22.56264],
+  [51.23392, 22.56261],
+  [51.23403, 22.56259],
+  [51.23413, 22.56257],
   [51.23416, 22.56256],
-  [51.23417, 22.56263],
-  [51.23418, 22.56276],
-  [51.23418, 22.5629],
-  [51.23419, 22.563],
-  [51.2342, 22.56311],
-  [51.23421, 22.56322],
-  [51.23423, 22.56331],
-  [51.23425, 22.56339],
-  [51.23428, 22.56346],
-  [51.23431, 22.5635],
-  [51.23435, 22.56355],
-  [51.23439, 22.56356],
-  [51.23443, 22.56357],
-  [51.23447, 22.56357],
-  [51.2345, 22.56355],
-  [51.23454, 22.56353],
-  [51.23457, 22.5635],
-  [51.2346, 22.56346],
-  [51.23463, 22.56341],
-  [51.23466, 22.56336],
-  [51.23468, 22.56331],
-  [51.2347, 22.56326],
-  [51.23471, 22.5632],
-  [51.23473, 22.56313],
-  [51.23475, 22.56307],
-  [51.23477, 22.56304],
-  [51.23481, 22.563],
-  [51.23484, 22.56293],
-  [51.23486, 22.56289],
-  [51.23487, 22.56283],
-  [51.23486, 22.56274],
-  [51.23485, 22.56267],
-  [51.23484, 22.56261],
-  [51.23485, 22.56248],
+  [51.23435, 22.56254],
+  [51.23448, 22.56251],
+  [51.23457, 22.56248],
+  [51.23463, 22.56248],
+  [51.23472, 22.5625],
   [51.23485, 22.56246],
+  [51.23494, 22.56242],
   [51.23506, 22.56237],
   [51.23517, 22.56232],
   [51.2353, 22.56229],
