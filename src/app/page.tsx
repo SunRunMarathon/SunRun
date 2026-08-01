@@ -196,9 +196,25 @@ export default function Home() {
   const [szerokoscLogo, setSzerokoscLogo] = useState(SZEROKOSC_LOGO);
 
   useEffect(() => {
+    // Naturalne proporcje wektora loga (870×634) - potrzebne, żeby przełożyć
+    // limit wysokości (62vh, jak w starej formule SZEROKOSC_LOGO) na limit
+    // szerokości, bo tu sterujemy tylko szerokością (h-auto dolicza wysokość).
+    const PROPORCJA_LOGO = 870 / 634;
     const zmierzPrzycisk = () => {
       const w = ctaRef.current?.getBoundingClientRect().width;
-      if (w) setSzerokoscLogo(Math.round(w));
+      if (!w) return;
+      // Szerokość kolumny przycisków to GŁÓWNY wyznacznik, ale bez górnego
+      // ograniczenia logo mogło urosnąć wyżej niż samo okno (i wizualnie
+      // "wychodzić" nad jego górną krawędź) - dokładnie to, przed czym
+      // chroniła stara formuła min(720px, 88vw, 62vh). Te same dwa limity
+      // (88vw, 62vh) wracają tutaj jako sufit, pod który wciąż może się
+      // dopasować do przycisków, gdy tylko starczy miejsca.
+      const limitSzerokosci = Math.min(
+        w,
+        window.innerWidth * 0.88,
+        window.innerHeight * 0.62 * PROPORCJA_LOGO
+      );
+      setSzerokoscLogo(Math.round(limitSzerokosci));
     };
     zmierzPrzycisk();
     const ro = new ResizeObserver(zmierzPrzycisk);
@@ -337,7 +353,16 @@ export default function Home() {
       ro.disconnect();
       window.removeEventListener("resize", zmierz);
     };
-  }, []);
+    // szerokoscLogo: ten efekt i efekt liczący szerokość loga (wyżej) to dwa
+    // NIEZALEŻNE pomiary DOM-u, które nie czekają na siebie nawzajem - na
+    // pierwszym renderze ten tutaj potrafił zmierzyć hero jeszcze ze STARĄ
+    // (startową, zwykle za dużą) szerokością logo, zanim React zdążył
+    // przemalować logo na docelową. Efekt sam nie wychwytywał tej zmiany
+    // (heroTrescRef ma sztywne max-w-4xl, więc jego własna szerokość się nie
+    // rusza, a ResizeObserver bywał zbyt wolny), co dawało za wysoką sekcję
+    // hero i pustą lukę pod przyciskami. Jawna zależność wymusza ponowny
+    // pomiar dokładnie w momencie, gdy logo dostaje docelową szerokość.
+  }, [szerokoscLogo]);
 
   // Wspólna treść sekcji — renderowana w jednym z dwóch miejsc, nigdy w obu.
   const festiwal = (
