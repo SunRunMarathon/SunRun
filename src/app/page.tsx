@@ -122,6 +122,12 @@ export default function Home() {
   // samej wartości, a nie własnych, ręcznie dobranych marginesów.
   const LUKA = SECTION_GAP;
 
+  // Odległość górnej krawędzi logo od góry sekcji hero - odpowiada pt-24 na
+  // heroTrescRef (patrz JSX niżej). Ramka „O Festiwalu" w wariancie OBOK ma
+  // zaczynać się na tej samej wysokości co logo, więc liczba mieszka w jednym
+  // miejscu zamiast żyć osobno w klasie Tailwinda i w matematyce pozycji.
+  const GORA_RAMKI_OBOK = 96;
+
   // Aktualny próg minimalnej wpłaty (oś czasu w sekcji „O biegu") - liczony z
   // biezacej daty w efekcie, nie przy pierwszym renderze: serwer i klient
   // mogłyby przy odrobinie pecha wylosować inny dzień w okolicach północy i
@@ -205,38 +211,38 @@ export default function Home() {
   }, []);
 
   // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
-  // Warunek ze sztabu: lewa krawędź ramki ma sięgać środka ekranu. Nie da się
-  // tego rozstrzygnąć samym progiem szerokości, bo logo ma szerokość
-  // min(720px, 88vw, 62vh) — przy niskim oknie jest wąskie i ramka się zmieści,
-  // przy wysokim szerokie i nie. Mierzymy więc realną prawą krawędź kolumny
-  // z logo i przyciskami, i porównujemy ze środkiem okna. Gdy się nie mieści,
-  // cała sekcja z nagłówkiem spada pod spód.
+  // Lewa krawędź ramki nie jest już przypięta do środka okna — to zostawiało
+  // ogromną, niewykorzystaną szczelinę między logo (rzadko sięgającym połowy
+  // ekranu) a ramką, i właśnie dlatego wariant OBOK tak rzadko się mieścił
+  // pionowo (tekst dostawał wąską kolumnę, mimo wolnego miejsca po lewej).
+  // Teraz ramka zaczyna się tuż za prawą krawędzią kolumny z logo/przyciskami,
+  // odsunięta o PADDING_LOGO. Prawa krawędź to stałe PRAWA_GRANICA od brzegu
+  // ekranu — niezależne od PADDING_LOGO i od pozycji przycisku Menu.
   const heroTrescRef = useRef(null);
   const kotwicaObsluzona = useRef(false);
   const [festiwalObok, setFestiwalObok] = useState(false);
-  const [festiwalPrawy, setFestiwalPrawy] = useState(32);
+  const [festiwalLewy, setFestiwalLewy] = useState(0);
+  const [festiwalPrawy, setFestiwalPrawy] = useState(60);
 
   useEffect(() => {
-    const ODSTEP = 56; // minimalny prześwit między kolumną logo a ramką
-    const MARGINES = 24; // zapas nad ramką i pod nią
-    const POLE_MENU = 32; // pole ochronne między ramką a linią przycisku Menu
+    const PRAWA_GRANICA = 60; // ramka zawsze kończy się 60px od prawej krawędzi ekranu — bez względu na przycisk Menu
+    const PADDING_LOGO = 64; // odstęp ramki od kolumny logo/przycisków po lewej
+    const ZAPAS_POD_RAMKA = 50; // ile luzu pod przyciskiem ankiety, zanim ramka musi zejść pod logo
 
     const zmierz = () => {
       const el = heroTrescRef.current;
       if (!el) return;
 
-      // (1) WARUNEK POZIOMY — czy kolumna z logo kończy się przed środkiem okna.
       // UWAGA: mierzymy konkretne elementy treści, a NIE bezpośrednich potomków
       // kontenera. Te są blokowe i zawsze mają szerokość całego kontenera
-      // (max-w-4xl = 896px) niezależnie od tego, jak szerokie jest logo — przez
-      // co warunek nigdy by się nie spełnił.
+      // (max-w-4xl = 896px) niezależnie od tego, jak szerokie jest logo.
       const logo = el.querySelector("#hero-logo img");
       const cta = el.querySelector("[data-hero-cta]");
-      const prawa = Math.max(
+      const prawaLogo = Math.max(
         logo ? logo.getBoundingClientRect().right : 0,
         cta ? cta.getBoundingClientRect().right : 0
       );
-      if (!prawa) return;
+      if (!prawaLogo) return;
 
       // Wysokość sekcji startowej liczymy zawsze — także w wariancie POD, gdzie
       // funkcja kończy się wcześniej. Wcześniej stała za tym wczesnym `return`
@@ -247,26 +253,27 @@ export default function Home() {
         ? cta.getBoundingClientRect().bottom - sekcjaHero.getBoundingClientRect().top
         : 0;
 
-      if (prawa + ODSTEP > window.innerWidth / 2) {
+      // PRAWA KRAWĘDŹ. Stała odległość od prawej krawędzi ekranu — nie zależy
+      // już od pozycji przycisku Menu. Menu jest wyżej niż GORA_RAMKI_OBOK
+      // (zaczyna się przy samej górze), a ramka zaczyna się dopiero na
+      // wysokości logo, więc i tak nigdy się nie stykają w pionie.
+      const prawyOdstep = PRAWA_GRANICA;
+
+      const lewyOdstep = prawaLogo + PADDING_LOGO;
+      const dostepnaSzerokosc = window.innerWidth - prawyOdstep - lewyOdstep;
+
+      // Gdy logo + Menu zostawiają ramce ujemną albo zerową szerokość (bardzo
+      // wąskie okno), nie ma czego mierzyć — od razu POD SPODEM.
+      if (dostepnaSzerokosc <= 0) {
         setFestiwalObok(false);
         setWysokoscHero(Math.round(dolPrzycisku + LUKA));
         return;
       }
 
-      // (2) PRAWA KRAWĘDŹ. Ramka nie może wejść pod przycisk Menu — zatrzymuje
-      // się na pionowej linii poprowadzonej od jego LEWEJ krawędzi, minus pole
-      // ochronne. Szerokość przycisku zależy od wyrenderowanego napisu „Menu",
-      // więc bierzemy ją z pomiaru, a nie z zapisanej na sztywno wartości.
-      const menu = document.querySelector(".sm-toggle");
-      const prawyOdstep = menu
-        ? window.innerWidth - menu.getBoundingClientRect().left + POLE_MENU
-        : 32;
-
-      // (3) WARUNEK PIONOWY — ramka ma się zmieścić w oknie, żeby nie wjeżdżała
-      // w kolejną sekcję. Wysokość mierzymy na KOPII poza ekranem, ustawionej na
-      // docelową szerokość: oryginał ma zawsze szerokość tego wariantu, w którym
-      // akurat stoi, więc decyzja zaczęłaby się zapętlać (pod → mieści się →
-      // obok → nie mieści się → pod → …).
+      // WARUNEK PIONOWY — wysokość mierzymy na KOPII poza ekranem, ustawionej
+      // na docelową szerokość: oryginał ma zawsze szerokość tego wariantu,
+      // w którym akurat stoi, więc decyzja zaczęłaby się zapętlać (pod →
+      // mieści się → obok → nie mieści się → pod → …).
       const zrodlo = document.getElementById("o-festiwalu");
       if (!zrodlo) return;
       const kopia = zrodlo.cloneNode(true);
@@ -274,12 +281,22 @@ export default function Home() {
       kopia.setAttribute("aria-hidden", "true");
       kopia.style.cssText =
         "position:fixed;top:0;left:-99999px;visibility:hidden;pointer-events:none;" +
-        `width:${window.innerWidth / 2 - prawyOdstep}px`;
+        `width:${dostepnaSzerokosc}px`;
       document.body.appendChild(kopia);
       const wysokosc = kopia.getBoundingClientRect().height;
       kopia.remove();
 
-      const miesciSie = wysokosc <= window.innerHeight - 2 * MARGINES;
+      // Dolna granica ramki to teraz spód przycisku ankiety + ZAPAS_POD_RAMKA —
+      // NIE wysokość okna. Wcześniej porównanie było z window.innerHeight, co
+      // na wysokich, wąskich ekranach (telefon w pionie) prawie zawsze
+      // wychodziło "mieści się", bo okno miało mnóstwo wysokości do
+      // dyspozycji — ale ramka i tak kończyła się daleko poniżej kolumny
+      // z logo, wizualnie oderwana od niej. Teraz liczy się wyłącznie to,
+      // czy ramka kończy się w rozsądnej odległości od przycisków, a nie
+      // czy w ogóle zmieści się na ekranie.
+      const dolnaGranicaRamki = dolPrzycisku + ZAPAS_POD_RAMKA;
+      const miesciSie = GORA_RAMKI_OBOK + wysokosc <= dolnaGranicaRamki;
+      setFestiwalLewy(lewyOdstep);
       setFestiwalPrawy(prawyOdstep);
       setFestiwalObok(miesciSie);
 
@@ -287,14 +304,14 @@ export default function Home() {
       // jedna LUKA. Najniższy element to przycisk ankiety albo — w wariancie
       // OBOK — ramka „O Festiwalu", zależnie od tego, co sięga dalej.
       //
-      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii:
-      // jest wyśrodkowana w sekcji, więc jej dolna krawędź zależy od wysokości
-      // sekcji, a ta od niej — pomiar na żywo zapętliłby się. Przy wyśrodkowaniu
-      // w sekcji o wysokości H ramka o wysokości B kończy się na H/2 + B/2,
-      // więc warunek „LUKA pod ramką" daje H = B + 2·LUKA.
+      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii —
+      // pomiar na żywo zapętliłby się, bo dolna krawędź zależy od wysokości
+      // sekcji, a ta od niej. Ramka zaczyna się GORA_RAMKI_OBOK pod górą sekcji
+      // (tyle co logo) i kończy GORA_RAMKI_OBOK + B, więc warunek „LUKA pod
+      // ramką" daje H = GORA_RAMKI_OBOK + B + LUKA.
       const zPrzycisku = dolPrzycisku + LUKA;
       setWysokoscHero(
-        Math.round(miesciSie ? Math.max(zPrzycisku, wysokosc + 2 * LUKA) : zPrzycisku)
+        Math.round(miesciSie ? Math.max(zPrzycisku, GORA_RAMKI_OBOK + wysokosc + LUKA) : zPrzycisku)
       );
 
       // Wejście z podstrony przez „/#o-festiwalu": przeglądarka sama skoczyła do
@@ -482,7 +499,7 @@ export default function Home() {
       <section
         ref={heroSekcjaRef}
         style={{ minHeight: wysokoscHero || undefined }}
-        className="relative z-10 w-full flex flex-col px-8 sm:px-16 md:px-28 text-left select-none"
+        className="relative z-10 w-full flex flex-col pl-[60px] pr-8 sm:pr-16 md:pr-28 text-left select-none"
       >
         <div ref={heroTrescRef} className="max-w-4xl pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
@@ -563,14 +580,18 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Wariant OBOK: ramka zajmuje prawą połowę ekranu. Pozycjonowana
+          {/* Wariant OBOK: ramka wypełnia miejsce od prawej krawędzi logo aż po
+              stałe PRAWA_GRANICA (60px) od brzegu ekranu. Pozycjonowana
               bezwzględnie, bo musi wyjść poza padding sekcji — lewa krawędź
-              w połowie okna, prawa zatrzymana na linii LEWEJ krawędzi przycisku
-              Menu (patrz pomiar wyżej), żeby ramka pod niego nie wchodziła. */}
+              tuż za logo (patrz pomiar wyżej, festiwalLewy), prawa niezależna
+              już od pozycji przycisku Menu.
+              Górna krawędź na wysokości GORA_RAMKI_OBOK, czyli tej samej co
+              góra logo — wcześniej ramka była wyśrodkowana w sekcji i jej
+              nagłówek zaczynał się wyraźnie niżej niż logo. */}
           {festiwalObok && (
             <div
-              className="absolute top-1/2 -translate-y-1/2 z-10"
-              style={{ left: "50%", right: festiwalPrawy }}
+              className="absolute z-10"
+              style={{ left: festiwalLewy, right: festiwalPrawy, top: GORA_RAMKI_OBOK }}
             >
               {festiwal}
             </div>
