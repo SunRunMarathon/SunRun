@@ -337,9 +337,13 @@ export default function Home() {
           nie przekroczyć, i to względem niego liczy się, czy sekcja mieści się
           obok logo. Zniknięcie paddingu p-8 samo zrównało lewą krawędź tekstu
           z lewą krawędzią nagłówka. */}
-      {/* Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
+      {/* Data doszła tutaj z pola pod logo — stąd też jest pierwsza w wierszu,
+          przed godziną, tak jak w usuniętym miejscu.
+          Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
           patrz AGENTS.md. Sam bieg ma własną godzinę w sekcji „O biegu". */}
       <div className="flex flex-wrap items-center gap-3 pb-5 mb-5 border-b border-sr-line text-sm sm:text-base font-extrabold uppercase tracking-[0.18em] text-[#183153]">
+        <span>12 września 2026</span>
+        <span aria-hidden="true" className="text-sr-red">|</span>
         <span>16:00</span>
         <span aria-hidden="true" className="text-sr-red">|</span>
         <span>Park Ludowy w Lublinie</span>
@@ -506,18 +510,14 @@ export default function Home() {
             </span>
           </h1>
 
-          {/* Data odsunięta od logo — wcześniej pt-1, przez co przyklejała się
-              do dolnej krawędzi znaku.
-              Wyśrodkowana względem SAMEGO LOGA, nie kolumny hero: kontener daty
-              dostaje tę samą szerokość co znak (SZEROKOSC_LOGO), więc środek
-              napisu leży dokładnie pod środkiem logo, niezależnie od tego, którą
-              wartość z min() akurat wybiera przeglądarka. */}
-          <div className="pt-6 max-w-full" style={{ width: SZEROKOSC_LOGO }}>
-            <p className="text-center text-2xl sm:text-3xl font-extrabold tracking-widest text-[#183153] uppercase">
-              12 września 2026
-            </p>
-          </div>
-
+          {/* Data zniknęła stąd — przeniesiona do nagłówka „O Festiwalu" (razem
+              z godziną i miejscem, w jednym wierszu).
+              Odstęp od logo to JAWNY pt-8 na tym kontenerze, nie space-y-6/8
+              z heroTrescRef — h1 z logo ma klasę m-0, która (mając wyższą
+              specyficzność niż owinięty w :where() space-y w Tailwind v4)
+              zawsze wygrywa i zeruje margin-bottom loga. Odstęp z space-y
+              wcześniej działał tylko przypadkiem: to USUNIĘTY blok z datą miał
+              własny pt-6, nie logo. Bez tego przyciski dotykały loga. */}
           {/* Przyciski. Zewnętrzny kontener ma szerokość dopasowaną do treści
               (w-fit), więc trzeci przycisk rozciągnięty na w-full ma dokładnie
               taką samą szerokość jak para nad nim — od lewej krawędzi
@@ -525,7 +525,7 @@ export default function Home() {
           {/* Przyciski nie znikają już przy przewijaniu — wcześniej gasły po
               minięciu 38% wysokości okna, więc odjeżdżały z ekranu wygaszone,
               a użytkownik wracający w górę widział je dopiero po chwili. */}
-          <div data-hero-cta className="flex flex-col gap-4 pt-2 w-fit pointer-events-auto">
+          <div data-hero-cta ref={ctaRef} className="flex flex-col gap-4 pt-8 w-fit pointer-events-auto">
             <div className="flex flex-col sm:flex-row gap-4">
               <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
                 className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
