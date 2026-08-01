@@ -50,11 +50,11 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Sun Run Lublin 2026 — Bieg Charytatywny | 5 km, Park Ludowy",
+    default: "Sun Run Lublin 2026 - Bieg Charytatywny | 5 km, Park Ludowy",
     template: "%s | Sun Run Lublin",
   },
   description:
-    "Sun Run to charytatywny bieg w Lublinie (5 km, Park Ludowy) w 100% organizowany przez lubelską młodzież na rzecz Hospicjum Dobrego Samarytanina. Bieganie, sport i pomoc — dołącz do II edycji 2026 lub zostań wolontariuszem albo partnerem.",
+    "Sun Run to charytatywny bieg w Lublinie (5 km, Park Ludowy) w 100% organizowany przez lubelską młodzież na rzecz Hospicjum Dobrego Samarytanina. Bieganie, sport i pomoc - dołącz do II edycji 2026 lub zostań wolontariuszem albo partnerem.",
   keywords: [
     // marka
     "Sun Run", "Sun Run Lublin", "Sun Run 2026",
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
     locale: "pl_PL",
     url: SITE_URL,
     siteName: "Sun Run Lublin",
-    title: "Sun Run Lublin 2026 — Bieg Charytatywny | 5 km, Park Ludowy",
+    title: "Sun Run Lublin 2026 - Bieg Charytatywny | 5 km, Park Ludowy",
     description:
       "Charytatywny bieg w Lublinie na rzecz Hospicjum Dobrego Samarytanina. 5 km · Park Ludowy · bieg i Nordic Walking · 350+ uczestników w 2025. Dołącz do II edycji 2026!",
     images: [
@@ -93,13 +93,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Sun Run Lublin 2026 — bieg charytatywny w Parku Ludowym",
+        alt: "Sun Run Lublin 2026 - bieg charytatywny w Parku Ludowym",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sun Run Lublin 2026 — Bieg Charytatywny",
+    title: "Sun Run Lublin 2026 - Bieg Charytatywny",
     description:
       "Charytatywny bieg 5 km w Parku Ludowym w Lublinie na rzecz Hospicjum Dobrego Samarytanina. Dołącz do II edycji!",
     images: ["/og-image.png"],

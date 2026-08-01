@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 export const metadata: Metadata = {
   title: "Polityka prywatności",
   description:
-    "Polityka prywatności Sun Run Lublin — jakie dane zbieramy (ankieta, IP, geolokalizacja, Google Analytics), w jakim celu i jakie masz prawa.",
+    "Polityka prywatności Sun Run Lublin - jakie dane zbieramy (ankieta, IP, geolokalizacja, Google Analytics), w jakim celu i jakie masz prawa.",
   alternates: { canonical: "/polityka-prywatnosci" },
   robots: { index: true, follow: true },
 };
@@ -18,8 +18,8 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         <p>
-          Administratorem danych osobowych zbieranych przez tę stronę jest [DO UZUPEŁNIENIA — pełna
-          nazwa podmiotu / organizatora Sun Run] z siedzibą pod adresem [DO UZUPEŁNIENIA — adres].
+          Administratorem danych osobowych zbieranych przez tę stronę jest [DO UZUPEŁNIENIA - pełna
+          nazwa podmiotu / organizatora Sun Run] z siedzibą pod adresem [DO UZUPEŁNIENIA - adres].
         </p>
         <p>
           Kontakt w sprawach związanych z ochroną danych:{" "}
@@ -38,7 +38,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <p>Zbieramy następujące kategorie danych:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <strong>Odpowiedź w ankiecie „Skąd się o nas dowiedziałeś?"</strong> — wybrana opcja
+            <strong>Odpowiedź w ankiecie „Skąd się o nas dowiedziałeś?"</strong> - wybrana opcja
             (np. media społecznościowe, od znajomego, z ulotki).
           </li>
           <li>
@@ -46,17 +46,17 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
             na podstawie adresu IP w momencie wypełnienia ankiety.
           </li>
           <li>
-            <strong>Źródło ruchu</strong> — informacja, skąd trafiłeś na stronę: wyszukiwarka
+            <strong>Źródło ruchu</strong> - informacja, skąd trafiłeś na stronę: wyszukiwarka
             (np. Google), media społecznościowe (Instagram, Facebook, TikTok), konkretna kampania
             lub post (parametry UTM w adresie URL) albo wejście bezpośrednie.
           </li>
           <li>
-            <strong>Dane techniczne</strong> — typ przeglądarki i urządzenia (user agent), rodzaj
+            <strong>Dane techniczne</strong> - typ przeglądarki i urządzenia (user agent), rodzaj
             urządzenia (telefon / tablet / komputer), znacznik czasu oraz podstrona, na którą
             trafiłeś (ścieżka wejścia).
           </li>
           <li>
-            <strong>Dane z Google Analytics</strong> (pliki cookie) — wyłącznie po wyrażeniu zgody
+            <strong>Dane z Google Analytics</strong> (pliki cookie) - wyłącznie po wyrażeniu zgody
             w banerze cookies: statystyki odwiedzin, czas spędzony na stronie, przewijanie strony,
             kliknięcia w wybrane elementy, ścieżka nawigacji między podstronami.
           </li>
@@ -80,12 +80,12 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <ul className="list-disc pl-5 space-y-1.5">
         <li>
-          Art. 6 ust. 1 lit. a) RODO — <strong>zgoda</strong>: dla odpowiedzi w ankiecie (wyrażana
+          Art. 6 ust. 1 lit. a) RODO - <strong>zgoda</strong>: dla odpowiedzi w ankiecie (wyrażana
           przez wybranie opcji) oraz dla plików cookie Google Analytics (wyrażana w banerze
           zgody).
         </li>
         <li>
-          Art. 6 ust. 1 lit. f) RODO — <strong>prawnie uzasadniony interes</strong> administratora:
+          Art. 6 ust. 1 lit. f) RODO - <strong>prawnie uzasadniony interes</strong> administratora:
           podstawowe logi techniczne (np. adres IP) niezbędne do zabezpieczenia i utrzymania
           strony.
         </li>
@@ -108,11 +108,11 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <ul className="list-disc pl-5 space-y-1.5">
         <li>
-          Dostawca hostingu i bazy danych: Railway Corporation — przechowuje dane serwisu i bazę
+          Dostawca hostingu i bazy danych: Railway Corporation - przechowuje dane serwisu i bazę
           danych na potrzeby jego działania.
         </li>
         <li>
-          Google Ireland Limited (Google Analytics) — wyłącznie po wyrażeniu zgody w banerze
+          Google Ireland Limited (Google Analytics) - wyłącznie po wyrażeniu zgody w banerze
           cookies, w celu analizy ruchu na stronie.
         </li>
       </ul>
@@ -148,7 +148,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
       <p>
         Strona korzysta z plików cookie Google Analytics wyłącznie po wyrażeniu zgody w banerze
         wyświetlanym przy pierwszej wizycie. Możesz w każdej chwili cofnąć zgodę, czyszcząc dane
-        strony w ustawieniach przeglądarki — baner pojawi się ponownie przy kolejnej wizycie.
+        strony w ustawieniach przeglądarki - baner pojawi się ponownie przy kolejnej wizycie.
       </p>
     ),
   },

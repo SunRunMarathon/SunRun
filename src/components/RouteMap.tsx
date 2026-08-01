@@ -241,12 +241,12 @@ export default function RouteMap() {
       <Marker
         position={START_POINT}
         icon={startIcon}
-        title="Start i Meta — Park Ludowy, od strony Targów Lublin"
-        alt="Start i Meta biegu — Park Ludowy, od strony Targów Lublin"
+        title="Start i Meta - Park Ludowy, od strony Targów Lublin"
+        alt="Start i Meta biegu - Park Ludowy, od strony Targów Lublin"
         eventHandlers={{
           add: (e) => {
             const el = e.target.getElement();
-            if (el) el.setAttribute('aria-label', 'Start i Meta biegu — Park Ludowy, od strony Targów Lublin');
+            if (el) el.setAttribute('aria-label', 'Start i Meta biegu - Park Ludowy, od strony Targów Lublin');
           },
         }}
       >
@@ -257,8 +257,8 @@ export default function RouteMap() {
       <Marker
         position={MEDICAL_1}
         icon={medicalIcon}
-        title="Punkt medyczny — róg parku przy al. Piłsudskiego"
-        alt="Punkt medyczny — róg parku przy al. Piłsudskiego"
+        title="Punkt medyczny - róg parku przy al. Piłsudskiego"
+        alt="Punkt medyczny - róg parku przy al. Piłsudskiego"
       >
         <Popup className="route-popup">
           <strong>Punkt medyczny</strong><br />Róg parku, al. Józefa Piłsudskiego
@@ -267,8 +267,8 @@ export default function RouteMap() {
       <Marker
         position={MEDICAL_2_WATER}
         icon={waterIcon}
-        title="Punkt medyczny i punkt z wodą — nabrzeże Bystrzycy"
-        alt="Punkt medyczny i punkt z wodą — nabrzeże Bystrzycy"
+        title="Punkt medyczny i punkt z wodą - nabrzeże Bystrzycy"
+        alt="Punkt medyczny i punkt z wodą - nabrzeże Bystrzycy"
       >
         <Popup className="route-popup">
           <strong>Punkt medyczny + woda</strong><br />Nabrzeże Bystrzycy

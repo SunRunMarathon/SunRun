@@ -47,16 +47,16 @@ const przejdzDoFestiwalu = (e) => {
 const items = [
   { label: "Strona główna", link: "/", ariaLabel: "Przejdź na stronę główną" },
   { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026", onSelect: przejdzDoFestiwalu },
-  { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu — dystans, trasa, limit czasu" },
+  { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu - dystans, trasa, limit czasu" },
   { label: "Archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
   // Odfiltrowana razem z ukrytą sekcją — patrz POKAZ_PARTNEROW w src/flagi.ts.
   // Bez tego pozycja zostałaby w menu i prowadziła do kotwicy, której nie ma.
   { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu", ukryjGdy: !POKAZ_PARTNEROW },
-  { label: "O nas", link: "/o-nas", ariaLabel: "O nas — organizatorzy Sun Run" },
+  { label: "O nas", link: "/o-nas", ariaLabel: "O nas - organizatorzy Sun Run" },
   {
     label: "Zapisz się",
     link: "https://frslublin.pl/pl/app/races/sign_up_form/295",
-    ariaLabel: "Zapisz się na Sun Run 2026 — formularz zapisów FRS",
+    ariaLabel: "Zapisz się na Sun Run 2026 - formularz zapisów FRS",
     external: true,
     color: "#F94C1F",
   },

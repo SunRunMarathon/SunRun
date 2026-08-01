@@ -120,7 +120,7 @@ export default function History() {
                 variant="outline"
                 className="border-zinc-700 bg-zinc-800/50 text-zinc-300"
               >
-                Datasport — pomiar czasu
+                Datasport - pomiar czasu
               </Badge>
               <Badge
                 variant="outline"

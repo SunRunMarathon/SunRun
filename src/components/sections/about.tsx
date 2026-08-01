@@ -12,19 +12,19 @@ const features = [
     icon: Heart,
     title: "Cel charytatywny",
     description:
-      "Cały dochód z biegu trafia do Hospicjum Dobrego Samarytanina w Lublinie — organizacji, która wspiera blisko 800 rodzin pacjentów terminalnie chorych na nowotwory rocznie. Każdy kilometr ma znaczenie.",
+      "Cały dochód z biegu trafia do Hospicjum Dobrego Samarytanina w Lublinie - organizacji, która wspiera blisko 800 rodzin pacjentów terminalnie chorych na nowotwory rocznie. Każdy kilometr ma znaczenie.",
   },
   {
     icon: Users,
     title: "Organizacja młodzieżowa",
     description:
-      "Sun Run to w pełni oddolna inicjatywa lubelskiej młodzieży. Od logistyki przez promocję po program — za wszystkim stoi zespół młodych ludzi, którzy wierzą, że mogą zmieniać świat na lepsze.",
+      "Sun Run to w pełni oddolna inicjatywa lubelskiej młodzieży. Od logistyki przez promocję po program - za wszystkim stoi zespół młodych ludzi, którzy wierzą, że mogą zmieniać świat na lepsze.",
   },
   {
     icon: Trophy,
     title: "Sport i integracja",
     description:
-      "5 km po asfaltowych ścieżkach Parku Ludowego — trasa idealna zarówno dla biegaczy, jak i dla osób preferujących spacer. To wydarzenie łączy aktywność fizyczną z budowaniem wspólnoty.",
+      "5 km po asfaltowych ścieżkach Parku Ludowego - trasa idealna zarówno dla biegaczy, jak i dla osób preferujących spacer. To wydarzenie łączy aktywność fizyczną z budowaniem wspólnoty.",
   },
 ] as const;
 

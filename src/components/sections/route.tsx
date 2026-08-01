@@ -20,7 +20,7 @@ const routeDetails = [
     icon: Clock,
     question: "Jaki jest limit czasowy?",
     answer:
-      "Limit czasowy wynosi 60 minut. Trasa jest odpowiednia zarówno dla biegaczy, jak i osób preferujących szybki marsz — każdy może ją ukończyć w wyznaczonym czasie.",
+      "Limit czasowy wynosi 60 minut. Trasa jest odpowiednia zarówno dla biegaczy, jak i osób preferujących szybki marsz - każdy może ją ukończyć w wyznaczonym czasie.",
   },
   {
     id: "age",
@@ -34,7 +34,7 @@ const routeDetails = [
     icon: Footprints,
     question: "Jaka jest nawierzchnia?",
     answer:
-      "Cała trasa przebiega po asfaltowych ścieżkach Parku Ludowego (al. J. Piłsudskiego). Nawierzchnia jest równa i komfortowa — idealna do biegania w standardowych butach do biegania.",
+      "Cała trasa przebiega po asfaltowych ścieżkach Parku Ludowego (al. J. Piłsudskiego). Nawierzchnia jest równa i komfortowa - idealna do biegania w standardowych butach do biegania.",
   },
 ] as const;
 
@@ -52,7 +52,7 @@ export default function RoutePage() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-zinc-400">
             5 kilometrów po malowniczych ścieżkach Parku Ludowego w&nbsp;Lublinie
-            — dwie pętle pełne zieleni i&nbsp;pozytywnej energii.
+            - dwie pętle pełne zieleni i&nbsp;pozytywnej energii.
           </p>
         </div>
 

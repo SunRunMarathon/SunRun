@@ -38,8 +38,8 @@ export default function Beneficiary() {
               w&nbsp;Lublinie.
             </p>
             <p className="leading-relaxed text-zinc-400">
-              Codziennie zespół hospicjum — lekarze, pielęgniarki, psycholodzy
-              i&nbsp;wolontariusze — dba o&nbsp;godność i&nbsp;komfort życia
+              Codziennie zespół hospicjum - lekarze, pielęgniarki, psycholodzy
+              i&nbsp;wolontariusze - dba o&nbsp;godność i&nbsp;komfort życia
               swoich podopiecznych. Sun Run istnieje, by wspierać tę misję.
             </p>
 
@@ -94,7 +94,7 @@ export default function Beneficiary() {
           </CardHeader>
           <CardContent className="text-center">
             <p className="mx-auto max-w-lg text-zinc-400">
-              Szczegóły wkrótce — cel zbiórki zostanie ogłoszony po
+              Szczegóły wkrótce - cel zbiórki zostanie ogłoszony po
               konsultacjach z&nbsp;Hospicjum. Śledź nasze kanały, aby dowiedzieć
               się więcej.
             </p>

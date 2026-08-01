@@ -376,7 +376,7 @@ export const StaggeredMenu = ({
         })()}
       </div>
       <header className="staggered-menu-header" aria-label="Main navigation header">
-        <a href="/" className="sm-logo" aria-label="Sun Run — strona główna" style={logoStyle}>
+        <a href="/" className="sm-logo" aria-label="Sun Run - strona główna" style={logoStyle}>
           {logoNode ? (
             logoNode
           ) : (

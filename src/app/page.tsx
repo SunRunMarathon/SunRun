@@ -326,7 +326,7 @@ export default function Home() {
         <p>
           Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce,
           gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś
-          dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie charytatywne, którego
+          dobrego. Tak właśnie wyglądać będzie Sun Run 2026 - wydarzenie charytatywne, którego
           celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w Lublinie.
         </p>
         <p>
@@ -336,14 +336,14 @@ export default function Home() {
           w jedno niezapomniane wydarzenie.
         </p>
         <p>
-          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego —
+          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego -
           niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz również przejść
           całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel
           i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
           Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
-          nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych — spotkajmy
+          nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy
           się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
         <p className="font-extrabold text-sr-red">
@@ -564,7 +564,7 @@ export default function Home() {
           <h1 id="hero-logo" className="m-0">
             <img
               src="/logo/sunrun-pelne.svg"
-              alt="Sun Run — Spotkajmy się dla Hospicjum"
+              alt="Sun Run - Spotkajmy się dla Hospicjum"
               width={870}
               height={634}
               className="h-auto"
@@ -614,7 +614,7 @@ export default function Home() {
               onClick={() => window.dispatchEvent(new Event(OPEN_SURVEY_EVENT))}
               className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
             >
-              Ankieta — skąd o nas usłyszałeś?
+              Ankieta - skąd o nas usłyszałeś?
             </button>
           </div>
 

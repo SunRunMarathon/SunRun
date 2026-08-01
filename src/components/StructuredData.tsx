@@ -63,7 +63,7 @@ const website = {
   url: SITE_URL,
   name: "Sun Run Lublin",
   description:
-    "Charytatywny bieg w Lublinie na rzecz Hospicjum Dobrego Samarytanina — bieganie, sport i pomoc.",
+    "Charytatywny bieg w Lublinie na rzecz Hospicjum Dobrego Samarytanina - bieganie, sport i pomoc.",
   inLanguage: "pl-PL",
   publisher: { "@id": `${SITE_URL}/#organization` },
 };
@@ -75,7 +75,7 @@ const website = {
 const event2026 = {
   "@type": "SportsEvent",
   "@id": `${SITE_URL}/#event-2026`,
-  name: "Sun Run 2026 — Bieg Charytatywny w Lublinie",
+  name: "Sun Run 2026 - Bieg Charytatywny w Lublinie",
   description:
     "II edycja charytatywnego biegu na 5 km (2 pętle) w Parku Ludowym w Lublinie. Bieg i Nordic Walking na rzecz Hospicjum Dobrego Samarytanina. Otwarte dla wszystkich od 14. roku życia.",
   sport: "Bieganie",
@@ -101,9 +101,9 @@ const event2026 = {
 const event2025 = {
   "@type": "SportsEvent",
   "@id": `${SITE_URL}/#event-2025`,
-  name: "Sun Run 2025 — I Bieg Charytatywny w Lublinie",
+  name: "Sun Run 2025 - I Bieg Charytatywny w Lublinie",
   description:
-    "I edycja charytatywnego biegu na 5 km w Parku Ludowym w Lublinie — ponad 350 uczestników na rzecz Hospicjum Dobrego Samarytanina.",
+    "I edycja charytatywnego biegu na 5 km w Parku Ludowym w Lublinie - ponad 350 uczestników na rzecz Hospicjum Dobrego Samarytanina.",
   sport: "Bieganie",
   startDate: "2025-09-06T09:00:00+02:00",
   endDate: "2025-09-06T12:00:00+02:00",

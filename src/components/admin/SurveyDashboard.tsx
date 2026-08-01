@@ -150,9 +150,9 @@ export function SurveyDashboard({ password }: { password: string }) {
     <div className="space-y-8">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <KpiCard label="Wypełnień ankiety" value={String(total)} />
-        <KpiCard label="Wejść (zliczonych)" value={visitCount === null ? "—" : String(visitCount)} />
-        <KpiCard label="Conversion rate" value={conversionRate ? `${conversionRate}%` : "—"} accent />
-        <KpiCard label="Najczęstsza odpowiedź" value={answerDist[0]?.key ?? "—"} />
+        <KpiCard label="Wejść (zliczonych)" value={visitCount === null ? "-" : String(visitCount)} />
+        <KpiCard label="Conversion rate" value={conversionRate ? `${conversionRate}%` : "-"} accent />
+        <KpiCard label="Najczęstsza odpowiedź" value={answerDist[0]?.key ?? "-"} />
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -245,28 +245,28 @@ export function SurveyDashboard({ password }: { password: string }) {
                     {surveyOptionLabel(r.answer)}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#183153]">
-                    {r.traffic_source ?? "—"}
+                    {r.traffic_source ?? "-"}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#3D4D65]">
-                    {[r.utm_source, r.utm_medium, r.utm_campaign].filter(Boolean).join(" / ") || "—"}
+                    {[r.utm_source, r.utm_medium, r.utm_campaign].filter(Boolean).join(" / ") || "-"}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#183153]">
-                    {[r.city, r.country].filter(Boolean).join(", ") || "—"}
+                    {[r.city, r.country].filter(Boolean).join(", ") || "-"}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#3D4D65] font-mono">
-                    {r.ip ?? "—"}
+                    {r.ip ?? "-"}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#183153]">
-                    {r.device_type ?? "—"}
+                    {r.device_type ?? "-"}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#3D4D65]">
-                    {r.landing_path ?? "—"}
+                    {r.landing_path ?? "-"}
                   </td>
                   <td
                     className="px-4 py-2.5 text-[#3D4D65] max-w-[220px] truncate"
                     title={r.user_agent ?? undefined}
                   >
-                    {r.user_agent ?? "—"}
+                    {r.user_agent ?? "-"}
                   </td>
                 </tr>
               ))}

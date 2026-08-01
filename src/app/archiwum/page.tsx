@@ -14,7 +14,7 @@ const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: f
 
 const ARTICLES = [
   {
-    title: "Sun Run 2025 — relacja z biegu",
+    title: "Sun Run 2025 - relacja z biegu",
     source: "Kurier Lubelski",
     date: "6 września 2025",
     excerpt: "Ponad 350 uczestników przebiegło przez Park Ludowy w Lublinie, wspierając Hospicjum Dobrego Samarytanina...",
@@ -31,7 +31,7 @@ const ARTICLES = [
     color: "#F6941D",
   },
   {
-    title: "DKMS na Sun Run — relacja",
+    title: "DKMS na Sun Run - relacja",
     source: "dkms.pl",
     date: "7 września 2025",
     excerpt: "Podczas II edycji biegu charytatywnego w Lublinie udało się zarejestrować nowych potencjalnych dawców szpiku...",
@@ -138,12 +138,12 @@ export default function ArchiwumPage() {
             <div className="mt-16 grid lg:grid-cols-2 gap-12">
               <div className="space-y-4 text-base sm:text-lg text-[#183153] leading-relaxed">
                 <p>
-                  Rok temu, 6 września 2025 roku, odbyła się pierwsza edycja Sun Run – biegu
+                  Rok temu, 6 września 2025 roku, odbyła się pierwsza edycja Sun Run - biegu
                   charytatywnego z elementami festiwalowymi, którego celem było niesienie pomocy
                   podopiecznym Hospicjum Dobrego Samarytanina w Lublinie.
                 </p>
                 <p>
-                  Wydarzenie zostało zorganizowane przez około 50 młodych osób – uczniów szkół
+                  Wydarzenie zostało zorganizowane przez około 50 młodych osób - uczniów szkół
                   średnich oraz studentów, którzy wspólnymi siłami stworzyli inicjatywę łączącą
                   sport, integrację i dobroczynność.
                 </p>
@@ -155,7 +155,7 @@ export default function ArchiwumPage() {
                 </p>
                 <p>
                   Hasłem przewodnim pierwszej edycji było: „Biegnij dla tych, którzy już nie
-                  mogą”. To właśnie ono najlepiej oddawało ideę wydarzenia – każdy przebiegnięty
+                  mogą”. To właśnie ono najlepiej oddawało ideę wydarzenia - każdy przebiegnięty
                   kilometr miał realne znaczenie i był wyrazem solidarności z tymi, którzy nie
                   mogą już stanąć na starcie.
                 </p>
@@ -303,7 +303,7 @@ export default function ArchiwumPage() {
               Galeria zdjęć
             </h2>
             <p className="text-sm text-[#183153] mb-8">
-              Kadry z I edycji — 6 września 2025, Park Ludowy w Lublinie.
+              Kadry z I edycji - 6 września 2025, Park Ludowy w Lublinie.
             </p>
             <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 space-y-3">
               {/* Bez cursor-zoom-in: lupa z plusem obiecywała powiększenie,

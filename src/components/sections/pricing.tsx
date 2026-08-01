@@ -45,7 +45,7 @@ const tiers = [
     price: "80",
     deadline: "w dniu biegu",
     description:
-      "Rejestracja w&nbsp;dniu biegu — jeśli zostaną wolne miejsca. Nie czekaj na ostatnią chwilę!",
+      "Rejestracja w&nbsp;dniu biegu - jeśli zostaną wolne miejsca. Nie czekaj na ostatnią chwilę!",
     icon: Zap,
     highlight: "Ostatnia szansa",
   },

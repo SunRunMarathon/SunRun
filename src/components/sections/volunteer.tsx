@@ -33,7 +33,7 @@ export default function Volunteer() {
             </h2>
 
             <p className="mb-6 text-lg leading-relaxed text-zinc-400">
-              Sun Run jest organizowany w&nbsp;całości przez wolontariuszy —
+              Sun Run jest organizowany w&nbsp;całości przez wolontariuszy -
               młodych ludzi z&nbsp;Lublina, którzy wierzą w&nbsp;siłę
               wspólnego działania. Potrzebujemy Ciebie!
             </p>

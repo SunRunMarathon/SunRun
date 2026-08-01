@@ -62,7 +62,7 @@ export default function ONasPage() {
                 O Nas
               </h1>
               <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-2xl">
-                Jesteśmy zespołem około 60 młodych osób – uczniów szkół średnich i studentów –
+                Jesteśmy zespołem około 60 młodych osób - uczniów szkół średnich i studentów -
                 których połączyła wspólna idea stworzenia wydarzenia z realnym wpływem na
                 innych. Sun Run powstał z pasji, zaangażowania i przekonania, że nawet
                 niewielkie działania mogą zmieniać czyjeś życie.
@@ -77,7 +77,7 @@ export default function ONasPage() {
             <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-sr-line shadow-2xl">
               <img
                 src="/photos/ekipa.webp"
-                alt="Ekipa Sun Run 2025 — organizatorzy i wolontariusze"
+                alt="Ekipa Sun Run 2025 - organizatorzy i wolontariusze"
                 className="w-full h-full object-cover"
               />
             </div>
