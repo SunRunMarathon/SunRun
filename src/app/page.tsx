@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
-import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
+import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
 import { FaqSection } from "@/components/FaqSection";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -39,9 +39,10 @@ const STACK_CARDS = [
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
 
-// Szerokość głównego logo w sekcji startowej. Używa jej też kontener daty pod
-// spodem, żeby napis był wyśrodkowany względem znaku — dlatego wartość stoi
-// w jednym miejscu, a nie w dwóch, gdzie mogłaby się rozjechać.
+// Startowa szerokość głównego logo w sekcji hero — używana tylko zanim JS
+// zmierzy realną szerokość kolumny przycisków i ją przejmie (patrz
+// szerokoscLogo w komponencie niżej). Zostaje jako wartość na SSR/pierwszą
+// klatkę, żeby logo nie renderowało się z szerokością 0 ani nie mrugało.
 const SZEROKOSC_LOGO = "min(720px, 88vw, 62vh)";
 
 // Pole `anchor` usunięte razem z podstroną /partnerzy — wskazywało kotwice
@@ -57,10 +58,8 @@ const PARTNERS = [
 export default function Home() {
   const isMobile = useIsMobile();
   const prefersReducedMotion = usePrefersReducedMotion();
-  // Gimmick strzalki ("kliknij tutaj!") i TargetCursor to czysta dekoracja
-  // bez sensu na dotyku (i tak jest "hidden sm:flex" na waskich ekranach) —
-  // na mobile/reduced-motion pomijamy ich obliczenia scrolla w ogole, zamiast
-  // tylko chowac gotowy wynik.
+  // TargetCursor to czysta dekoracja bez sensu na dotyku — na mobile/
+  // reduced-motion w ogóle jej nie renderujemy (patrz niżej).
   const disableDecorativeMotion = isMobile || prefersReducedMotion;
 
   // Steruje wyłącznie dolnym paskiem zapisów: true, gdy przycisk „Zapisz się"
@@ -68,39 +67,19 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const przyciskZapiszRef = useRef(null);
   const [ctaDismissed, setCtaDismissed] = useState(false);
-  const [heroProgress, setHeroProgress] = useState(0);
 
-  // "Magnes" — strzałkę można próbować odciągnąć, ale jest przyklejona: rusza się
-  // tylko odrobinę (rubber-band z nasyceniem), a po puszczeniu sprężyście wraca.
-  const [pull, setPull] = useState({ x: 0, y: 0 });
-  const [pulling, setPulling] = useState(false);
-  const dragRef = useRef({ active: false, startX: 0, startY: 0 });
-
-  const rubberBand = (v) => {
-    const max = 28; // maks. wychylenie w px — magnes prawie nie puszcza
-    return max * Math.tanh(v / (max * 2.4));
-  };
-  const onArrowPointerDown = (e) => {
-    dragRef.current = { active: true, startX: e.clientX, startY: e.clientY };
-    setPulling(true);
-    e.currentTarget.setPointerCapture?.(e.pointerId);
-  };
-  const onArrowPointerMove = (e) => {
-    if (!dragRef.current.active) return;
-    setPull({
-      x: rubberBand(e.clientX - dragRef.current.startX),
-      y: rubberBand(e.clientY - dragRef.current.startY),
-    });
-  };
-  const endArrowDrag = () => {
-    if (!dragRef.current.active) return;
-    dragRef.current.active = false;
-    setPulling(false);
-    setPull({ x: 0, y: 0 }); // sprężysty powrót (transition na warstwie pull)
-  };
+  // Stan przycisku ankiety w hero — czyta ten sam klucz localStorage co sam
+  // popup, plus nasłuchuje SURVEY_ANSWERED_EVENT, żeby przełączyć się od razu
+  // po wysłaniu odpowiedzi, bez czekania na przeładowanie strony.
+  const [ankietaOdpowiedziana, setAnkietaOdpowiedziana] = useState(false);
+  useEffect(() => {
+    setAnkietaOdpowiedziana(window.localStorage.getItem(ANSWERED_KEY) === "1");
+    const onAnswered = () => setAnkietaOdpowiedziana(true);
+    window.addEventListener(SURVEY_ANSWERED_EVENT, onAnswered);
+    return () => window.removeEventListener(SURVEY_ANSWERED_EVENT, onAnswered);
+  }, []);
 
   const wspomnieniaRef = useRef(null);
-  const [returnProgress, setReturnProgress] = useState(0);
 
   // Rozmiar kart w stosie „Wspomnienia". Stack dostaje szerokość w pikselach,
   // a sztywne 380px nie mieściło się w kolumnie: na telefonie rozpychało ścieżkę
@@ -142,6 +121,12 @@ export default function Home() {
   // sekcji renderowane osobno (np. FaqSection.tsx) używały dokładnie tej
   // samej wartości, a nie własnych, ręcznie dobranych marginesów.
   const LUKA = SECTION_GAP;
+
+  // Odległość górnej krawędzi logo od góry sekcji hero - odpowiada pt-24 na
+  // heroTrescRef (patrz JSX niżej). Ramka „O Festiwalu" w wariancie OBOK ma
+  // zaczynać się na tej samej wysokości co logo, więc liczba mieszka w jednym
+  // miejscu zamiast żyć osobno w klasie Tailwinda i w matematyce pozycji.
+  const GORA_RAMKI_OBOK = 96;
 
   // Aktualny próg minimalnej wpłaty (oś czasu w sekcji „O biegu") - liczony z
   // biezacej daty w efekcie, nie przy pierwszym renderze: serwer i klient
@@ -195,39 +180,69 @@ export default function Home() {
     };
   }, []);
 
+  // ── Szerokość loga = szerokość kolumny przycisków ────────────────────────
+  // Wcześniej logo miało własną, niezależną formułę (min(720px, 88vw, 62vh)),
+  // przez co na typowych ekranach było WĘŻSZE niż rząd przycisków pod nim
+  // (rozjazd sięgał kilkudziesięciu procent), a na bardzo wysokich oknach —
+  // szersze. Teraz logo dopasowuje się do zmierzonej szerokości przycisku
+  // ankiety (patrz data-hero-cta niżej) — to on, nie logo, jest dziś zwykle
+  // szerszym elementem kolumny, więc to on powinien dyktować rozmiar.
+  // Brak pętli: szerokość przycisków zależy tylko od ich własnego tekstu
+  // i paddingu, więc pomiar jest jednokierunkowy (przycisk → logo).
+  // SZEROKOSC_LOGO zostaje jako wartość startowa (SSR i pierwsza klatka,
+  // zanim JS zdąży zmierzyć przycisk) — bez tego logo mignęłoby w złym
+  // rozmiarze albo miało szerokość 0 przed pierwszym pomiarem.
+  const ctaRef = useRef(null);
+  const [szerokoscLogo, setSzerokoscLogo] = useState(SZEROKOSC_LOGO);
+
+  useEffect(() => {
+    const zmierzPrzycisk = () => {
+      const w = ctaRef.current?.getBoundingClientRect().width;
+      if (w) setSzerokoscLogo(Math.round(w));
+    };
+    zmierzPrzycisk();
+    const ro = new ResizeObserver(zmierzPrzycisk);
+    if (ctaRef.current) ro.observe(ctaRef.current);
+    window.addEventListener("resize", zmierzPrzycisk);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", zmierzPrzycisk);
+    };
+  }, []);
+
   // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
-  // Warunek ze sztabu: lewa krawędź ramki ma sięgać środka ekranu. Nie da się
-  // tego rozstrzygnąć samym progiem szerokości, bo logo ma szerokość
-  // min(720px, 88vw, 62vh) — przy niskim oknie jest wąskie i ramka się zmieści,
-  // przy wysokim szerokie i nie. Mierzymy więc realną prawą krawędź kolumny
-  // z logo i przyciskami, i porównujemy ze środkiem okna. Gdy się nie mieści,
-  // cała sekcja z nagłówkiem spada pod spód.
+  // Lewa krawędź ramki nie jest już przypięta do środka okna — to zostawiało
+  // ogromną, niewykorzystaną szczelinę między logo (rzadko sięgającym połowy
+  // ekranu) a ramką, i właśnie dlatego wariant OBOK tak rzadko się mieścił
+  // pionowo (tekst dostawał wąską kolumnę, mimo wolnego miejsca po lewej).
+  // Teraz ramka zaczyna się tuż za prawą krawędzią kolumny z logo/przyciskami,
+  // odsunięta o PADDING_LOGO. Prawa krawędź to stałe PRAWA_GRANICA od brzegu
+  // ekranu — niezależne od PADDING_LOGO i od pozycji przycisku Menu.
   const heroTrescRef = useRef(null);
   const kotwicaObsluzona = useRef(false);
   const [festiwalObok, setFestiwalObok] = useState(false);
-  const [festiwalPrawy, setFestiwalPrawy] = useState(32);
+  const [festiwalLewy, setFestiwalLewy] = useState(0);
+  const [festiwalPrawy, setFestiwalPrawy] = useState(60);
 
   useEffect(() => {
-    const ODSTEP = 56; // minimalny prześwit między kolumną logo a ramką
-    const MARGINES = 24; // zapas nad ramką i pod nią
-    const POLE_MENU = 32; // pole ochronne między ramką a linią przycisku Menu
+    const PRAWA_GRANICA = 60; // ramka zawsze kończy się 60px od prawej krawędzi ekranu — bez względu na przycisk Menu
+    const PADDING_LOGO = 64; // odstęp ramki od kolumny logo/przycisków po lewej
+    const ZAPAS_POD_RAMKA = 50; // ile luzu pod przyciskiem ankiety, zanim ramka musi zejść pod logo
 
     const zmierz = () => {
       const el = heroTrescRef.current;
       if (!el) return;
 
-      // (1) WARUNEK POZIOMY — czy kolumna z logo kończy się przed środkiem okna.
       // UWAGA: mierzymy konkretne elementy treści, a NIE bezpośrednich potomków
       // kontenera. Te są blokowe i zawsze mają szerokość całego kontenera
-      // (max-w-4xl = 896px) niezależnie od tego, jak szerokie jest logo — przez
-      // co warunek nigdy by się nie spełnił.
+      // (max-w-4xl = 896px) niezależnie od tego, jak szerokie jest logo.
       const logo = el.querySelector("#hero-logo img");
       const cta = el.querySelector("[data-hero-cta]");
-      const prawa = Math.max(
+      const prawaLogo = Math.max(
         logo ? logo.getBoundingClientRect().right : 0,
         cta ? cta.getBoundingClientRect().right : 0
       );
-      if (!prawa) return;
+      if (!prawaLogo) return;
 
       // Wysokość sekcji startowej liczymy zawsze — także w wariancie POD, gdzie
       // funkcja kończy się wcześniej. Wcześniej stała za tym wczesnym `return`
@@ -238,26 +253,27 @@ export default function Home() {
         ? cta.getBoundingClientRect().bottom - sekcjaHero.getBoundingClientRect().top
         : 0;
 
-      if (prawa + ODSTEP > window.innerWidth / 2) {
+      // PRAWA KRAWĘDŹ. Stała odległość od prawej krawędzi ekranu — nie zależy
+      // już od pozycji przycisku Menu. Menu jest wyżej niż GORA_RAMKI_OBOK
+      // (zaczyna się przy samej górze), a ramka zaczyna się dopiero na
+      // wysokości logo, więc i tak nigdy się nie stykają w pionie.
+      const prawyOdstep = PRAWA_GRANICA;
+
+      const lewyOdstep = prawaLogo + PADDING_LOGO;
+      const dostepnaSzerokosc = window.innerWidth - prawyOdstep - lewyOdstep;
+
+      // Gdy logo + Menu zostawiają ramce ujemną albo zerową szerokość (bardzo
+      // wąskie okno), nie ma czego mierzyć — od razu POD SPODEM.
+      if (dostepnaSzerokosc <= 0) {
         setFestiwalObok(false);
         setWysokoscHero(Math.round(dolPrzycisku + LUKA));
         return;
       }
 
-      // (2) PRAWA KRAWĘDŹ. Ramka nie może wejść pod przycisk Menu — zatrzymuje
-      // się na pionowej linii poprowadzonej od jego LEWEJ krawędzi, minus pole
-      // ochronne. Szerokość przycisku zależy od wyrenderowanego napisu „Menu",
-      // więc bierzemy ją z pomiaru, a nie z zapisanej na sztywno wartości.
-      const menu = document.querySelector(".sm-toggle");
-      const prawyOdstep = menu
-        ? window.innerWidth - menu.getBoundingClientRect().left + POLE_MENU
-        : 32;
-
-      // (3) WARUNEK PIONOWY — ramka ma się zmieścić w oknie, żeby nie wjeżdżała
-      // w kolejną sekcję. Wysokość mierzymy na KOPII poza ekranem, ustawionej na
-      // docelową szerokość: oryginał ma zawsze szerokość tego wariantu, w którym
-      // akurat stoi, więc decyzja zaczęłaby się zapętlać (pod → mieści się →
-      // obok → nie mieści się → pod → …).
+      // WARUNEK PIONOWY — wysokość mierzymy na KOPII poza ekranem, ustawionej
+      // na docelową szerokość: oryginał ma zawsze szerokość tego wariantu,
+      // w którym akurat stoi, więc decyzja zaczęłaby się zapętlać (pod →
+      // mieści się → obok → nie mieści się → pod → …).
       const zrodlo = document.getElementById("o-festiwalu");
       if (!zrodlo) return;
       const kopia = zrodlo.cloneNode(true);
@@ -265,12 +281,22 @@ export default function Home() {
       kopia.setAttribute("aria-hidden", "true");
       kopia.style.cssText =
         "position:fixed;top:0;left:-99999px;visibility:hidden;pointer-events:none;" +
-        `width:${window.innerWidth / 2 - prawyOdstep}px`;
+        `width:${dostepnaSzerokosc}px`;
       document.body.appendChild(kopia);
       const wysokosc = kopia.getBoundingClientRect().height;
       kopia.remove();
 
-      const miesciSie = wysokosc <= window.innerHeight - 2 * MARGINES;
+      // Dolna granica ramki to teraz spód przycisku ankiety + ZAPAS_POD_RAMKA —
+      // NIE wysokość okna. Wcześniej porównanie było z window.innerHeight, co
+      // na wysokich, wąskich ekranach (telefon w pionie) prawie zawsze
+      // wychodziło "mieści się", bo okno miało mnóstwo wysokości do
+      // dyspozycji — ale ramka i tak kończyła się daleko poniżej kolumny
+      // z logo, wizualnie oderwana od niej. Teraz liczy się wyłącznie to,
+      // czy ramka kończy się w rozsądnej odległości od przycisków, a nie
+      // czy w ogóle zmieści się na ekranie.
+      const dolnaGranicaRamki = dolPrzycisku + ZAPAS_POD_RAMKA;
+      const miesciSie = GORA_RAMKI_OBOK + wysokosc <= dolnaGranicaRamki;
+      setFestiwalLewy(lewyOdstep);
       setFestiwalPrawy(prawyOdstep);
       setFestiwalObok(miesciSie);
 
@@ -278,14 +304,14 @@ export default function Home() {
       // jedna LUKA. Najniższy element to przycisk ankiety albo — w wariancie
       // OBOK — ramka „O Festiwalu", zależnie od tego, co sięga dalej.
       //
-      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii:
-      // jest wyśrodkowana w sekcji, więc jej dolna krawędź zależy od wysokości
-      // sekcji, a ta od niej — pomiar na żywo zapętliłby się. Przy wyśrodkowaniu
-      // w sekcji o wysokości H ramka o wysokości B kończy się na H/2 + B/2,
-      // więc warunek „LUKA pod ramką" daje H = B + 2·LUKA.
+      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii —
+      // pomiar na żywo zapętliłby się, bo dolna krawędź zależy od wysokości
+      // sekcji, a ta od niej. Ramka zaczyna się GORA_RAMKI_OBOK pod górą sekcji
+      // (tyle co logo) i kończy GORA_RAMKI_OBOK + B, więc warunek „LUKA pod
+      // ramką" daje H = GORA_RAMKI_OBOK + B + LUKA.
       const zPrzycisku = dolPrzycisku + LUKA;
       setWysokoscHero(
-        Math.round(miesciSie ? Math.max(zPrzycisku, wysokosc + 2 * LUKA) : zPrzycisku)
+        Math.round(miesciSie ? Math.max(zPrzycisku, GORA_RAMKI_OBOK + wysokosc + LUKA) : zPrzycisku)
       );
 
       // Wejście z podstrony przez „/#o-festiwalu": przeglądarka sama skoczyła do
@@ -328,9 +354,13 @@ export default function Home() {
           nie przekroczyć, i to względem niego liczy się, czy sekcja mieści się
           obok logo. Zniknięcie paddingu p-8 samo zrównało lewą krawędź tekstu
           z lewą krawędzią nagłówka. */}
-      {/* Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
+      {/* Data doszła tutaj z pola pod logo — stąd też jest pierwsza w wierszu,
+          przed godziną, tak jak w usuniętym miejscu.
+          Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
           patrz AGENTS.md. Sam bieg ma własną godzinę w sekcji „O biegu". */}
       <div className="flex flex-wrap items-center gap-3 pb-5 mb-5 border-b border-sr-line text-sm sm:text-base font-extrabold uppercase tracking-[0.18em] text-[#183153]">
+        <span>12 września 2026</span>
+        <span aria-hidden="true" className="text-sr-red">|</span>
         <span>16:00</span>
         <span aria-hidden="true" className="text-sr-red">|</span>
         <span>Park Ludowy w Lublinie</span>
@@ -377,7 +407,6 @@ export default function Home() {
 
     const measure = () => {
       rafId = 0;
-      const vh = window.innerHeight;
 
       // Dolny pasek zapisów wchodzi dokładnie wtedy, gdy przycisk „Zapisz się"
       // spod logo wyjedzie górą poza ekran. Wcześniej był to próg ułamkowy
@@ -385,22 +414,6 @@ export default function Home() {
       // był jeszcze widoczny — dublował wtedy sam siebie.
       const przycisk = przyciskZapiszRef.current;
       setScrolled(przycisk ? przycisk.getBoundingClientRect().bottom < 0 : false);
-
-      // Gimmick strzalki jest "hidden sm:flex" i bezuzyteczny na dotyku — na
-      // mobile/reduced-motion w ogole nie liczymy jej postepu, zeby nie
-      // wywolywac dodatkowych rerenderow przy kazdym scrollu na telefonie.
-      if (disableDecorativeMotion) return;
-
-      // Postęp 0→1 w obrębie sekcji HERO — steruje animacją "łapiącej" strzałki
-      setHeroProgress(Math.min(1, window.scrollY / (vh * 0.9)));
-
-      // Postęp powrotu strzałki: rośnie, gdy sekcja "Wspomnienia" wjeżdża w ekran.
-      // 0 gdy jej góra jest jeszcze poniżej dołu okna, 1 gdy dojdzie do ~40% wysokości.
-      const el = wspomnieniaRef.current;
-      if (el) {
-        const top = el.getBoundingClientRect().top;
-        setReturnProgress(Math.max(0, Math.min(1, (vh - top) / (vh * 0.6))));
-      }
     };
 
     const onScroll = () => {
@@ -414,50 +427,7 @@ export default function Home() {
       if (rafId) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [disableDecorativeMotion]);
-
-  // FAZA 1 — Strzałka (fixed, przy hamburgerze) próbuje go "złapać": najpierw sięga
-  // w górę i w prawo (reach), a pod koniec sekcji startowej poddaje się i całkowicie
-  // znika (giveUp).
-  const reach = Math.min(1, heroProgress / 0.72);
-  const giveUp = Math.max(0, (heroProgress - 0.72) / 0.28);
-  const heroTx = reach * 70 - giveUp * 24;
-  const heroTy = -reach * 66 + giveUp * 170;
-  const heroRot = reach * 8 + giveUp * 55;
-  const heroScale = 1 + reach * 0.15 - giveUp * 0.3;
-  const heroOpacity = Math.max(0, 1 - giveUp * 1.3); // pełne zniknięcie
-
-  // FAZA 2 — Powrót przy "Wspomnieniach": strzałka zabawnie wpada z góry z obrotem
-  // i znów zachęca do kliknięcia ("obejrzane? to teraz tutaj"). Ląduje w pozycji
-  // BAZOWEJ (0,0) — czyli wskazuje hamburgera z dystansu, dokładnie jak górna poza,
-  // a NIE wsuwa się pod niego. Tylko mniejsza.
-  const ret = returnProgress;
-  const retTx = (1 - ret) * 48;
-  const retTy = (1 - ret) * -120;
-  const retRot = (1 - ret) * 210; // pełen obrót do 0°
-  const retScale = 0.5 + ret * 0.42; // ląduje na ~0.92 — mniejsza niż górna
-  const retOpacity = Math.min(1, ret * 1.6);
-
-  // Wybór aktywnej fazy — powrót ma priorytet, gdy tylko się zaczyna.
-  const inReturn = ret > 0.01;
-  const arrowTx = inReturn ? retTx : heroTx;
-  const arrowTy = inReturn ? retTy : heroTy;
-  const arrowRot = inReturn ? retRot : heroRot;
-  const arrowScale = inReturn ? retScale : heroScale;
-  const arrowOpacity = inReturn ? retOpacity : heroOpacity;
-  const arrowText = pulling
-    ? "zostaw!"
-    : inReturn
-    ? "obejrzane? to teraz tutaj!"
-    : giveUp > 0.32
-    ? "no dobra..."
-    : reach > 0.5
-    ? "prawie!"
-    : "kliknij tutaj!";
-
-  // Drganie: przy "wysilaniu się" (mocno sięga, jeszcze się nie poddała) LUB gdy
-  // ktoś próbuje ją odciągnąć — wtedy magnes nerwowo drga.
-  const isStraining = (!inReturn && reach > 0.7 && giveUp < 0.35) || pulling;
+  }, []);
 
   return (
     <div className="relative bg-sr-sand text-sr-navy overflow-x-hidden">
@@ -529,55 +499,13 @@ export default function Home() {
       <section
         ref={heroSekcjaRef}
         style={{ minHeight: wysokoscHero || undefined }}
-        className="relative z-10 w-full flex flex-col px-8 sm:px-16 md:px-28 text-left select-none"
+        className="relative z-10 w-full flex flex-col pl-[60px] pr-8 sm:pr-16 md:pr-28 text-left select-none"
       >
-        {/* "kliknij tutaj!" — zakrzywiona strzałka, która przy scrollu sięga w stronę
-            hamburgera, próbując go "złapać", a pod koniec sekcji startowej poddaje się.
-            POZYCJA FIXED — zostaje na ekranie zamiast odjeżdżać z sekcją hero. */}
-        <div
-          className="fixed top-24 right-28 hidden sm:flex flex-row items-end pointer-events-none"
-          style={{
-            zIndex: 40,
-            transform: `translate(${arrowTx}px, ${arrowTy}px) rotate(${arrowRot}deg) scale(${arrowScale})`,
-            transformOrigin: "bottom right",
-            opacity: arrowOpacity,
-            transition: "transform 0.12s ease-out, opacity 0.12s ease-out",
-          }}
-        >
-          {/* Warstwa "pull" — łapie wskaźnik i pozwala próbować odciągnąć strzałkę.
-              Rusza się minimalnie (rubber-band), a po puszczeniu sprężyście wraca. */}
-          <div
-            onPointerDown={onArrowPointerDown}
-            onPointerMove={onArrowPointerMove}
-            onPointerUp={endArrowDrag}
-            onPointerCancel={endArrowDrag}
-            style={{
-              pointerEvents: arrowOpacity > 0.05 ? "auto" : "none",
-              cursor: pulling ? "grabbing" : "grab",
-              touchAction: "none",
-              transform: `translate(${pull.x}px, ${pull.y}px)`,
-              transition: pulling
-                ? "none"
-                : "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
-            }}
-          >
-            <div className={`flex flex-row items-end ${isStraining ? "arrow-shake" : ""}`}>
-              <span style={{ fontFamily: "cursive", color: "#CE2F25", fontSize: "1.7rem", fontWeight: 700, transform: "rotate(-8deg)", textShadow: "0 2px 8px rgba(245,241,232,0.8)", whiteSpace: "nowrap" }}>
-                {arrowText}
-              </span>
-              <svg viewBox="0 0 110 100" width={110} height={100} style={{ marginLeft: "-10px", marginBottom: "14px", overflow: "visible" }}>
-                {/* łuk startuje przy wykrzykniku i zakręca w górę, w stronę hamburgera */}
-                <path d="M4,86 C 42,88 76,64 94,16" fill="none" stroke="#CE2F25" strokeWidth="3.2" strokeLinecap="round" opacity="0.95" />
-                <path d="M82,22 L95,13 L96,29" fill="none" stroke="#CE2F25" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24">
+        <div ref={heroTrescRef} className="max-w-4xl pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
-              przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
-              okna, żeby przyciski CTA zostały widoczne bez scrollowania.
+              przesuwa się. Szerokość = zmierzona szerokość kolumny przycisków
+              (patrz efekt wyżej) — zanim pomiar zdąży się wykonać, renderuje się
+              z SZEROKOSC_LOGO jako wartością startową.
               id="hero-logo" — Navbar obserwuje ten element, by wiedzieć, kiedy
               pokazać małe logo w rogu. */}
           <h1 id="hero-logo" className="m-0">
@@ -587,7 +515,7 @@ export default function Home() {
               width={870}
               height={634}
               className="h-auto"
-              style={{ width: SZEROKOSC_LOGO }}
+              style={{ width: szerokoscLogo }}
               draggable={false}
             />
             {/* Logo samo w sobie nie niesie tekstu, a H1 to najważniejszy sygnał
@@ -599,18 +527,14 @@ export default function Home() {
             </span>
           </h1>
 
-          {/* Data odsunięta od logo — wcześniej pt-1, przez co przyklejała się
-              do dolnej krawędzi znaku.
-              Wyśrodkowana względem SAMEGO LOGA, nie kolumny hero: kontener daty
-              dostaje tę samą szerokość co znak (SZEROKOSC_LOGO), więc środek
-              napisu leży dokładnie pod środkiem logo, niezależnie od tego, którą
-              wartość z min() akurat wybiera przeglądarka. */}
-          <div className="pt-6 max-w-full" style={{ width: SZEROKOSC_LOGO }}>
-            <p className="text-center text-2xl sm:text-3xl font-extrabold tracking-widest text-[#183153] uppercase">
-              12 września 2026
-            </p>
-          </div>
-
+          {/* Data zniknęła stąd — przeniesiona do nagłówka „O Festiwalu" (razem
+              z godziną i miejscem, w jednym wierszu).
+              Odstęp od logo to JAWNY pt-8 na tym kontenerze, nie space-y-6/8
+              z heroTrescRef — h1 z logo ma klasę m-0, która (mając wyższą
+              specyficzność niż owinięty w :where() space-y w Tailwind v4)
+              zawsze wygrywa i zeruje margin-bottom loga. Odstęp z space-y
+              wcześniej działał tylko przypadkiem: to USUNIĘTY blok z datą miał
+              własny pt-6, nie logo. Bez tego przyciski dotykały loga. */}
           {/* Przyciski. Zewnętrzny kontener ma szerokość dopasowaną do treści
               (w-fit), więc trzeci przycisk rozciągnięty na w-full ma dokładnie
               taką samą szerokość jak para nad nim — od lewej krawędzi
@@ -618,40 +542,56 @@ export default function Home() {
           {/* Przyciski nie znikają już przy przewijaniu — wcześniej gasły po
               minięciu 38% wysokości okna, więc odjeżdżały z ekranu wygaszone,
               a użytkownik wracający w górę widział je dopiero po chwili. */}
-          <div data-hero-cta className="flex flex-col gap-4 pt-2 w-fit pointer-events-auto">
+          <div data-hero-cta ref={ctaRef} className="flex flex-col gap-4 pt-8 w-fit pointer-events-auto">
             <div className="flex flex-col sm:flex-row gap-4">
               <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
-                className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+                className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
                 Zapisz się
               </a>
               <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-                className="cursor-target cursor-pointer inline-flex items-center justify-center px-12 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+                className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
                 Dowiedz się więcej ↓
               </button>
             </div>
 
-            {/* Ankieta „Skąd o nas usłyszałeś?" — na razie przycisk nic nie robi.
-                Docelowo otworzy okienko z ankietą, gdy ją przygotujemy.
-                Granat #183153 z pomarańczowym tekstem #FE8004 daje 5,2:1, czyli
-                spełnia AA — to jedno z niewielu zestawień, w których pomarańcz
-                wolno użyć jako koloru tekstu (patrz tabela w globals.css). */}
+            {/* Ankieta „Skąd o nas usłyszałaś/eś?" — popup otwiera się TYLKO na
+                kliknięcie tego przycisku (patrz SurveyPopup.tsx — nie ma już
+                samoczynnego wyskakiwania przy scrollu). Po odpowiedzi przycisk
+                się dezaktywuje i blaknie na #3D4D65/#FBBA76.
+                Aktywny wariant: granat #183153 z pomarańczowym tekstem #FE8004
+                daje 5,2:1, czyli spełnia AA — to jedno z niewielu zestawień,
+                w których pomarańcz wolno użyć jako koloru tekstu (patrz tabela
+                w globals.css). */}
             <button
               type="button"
+              disabled={ankietaOdpowiedziana}
               onClick={() => window.dispatchEvent(new Event(OPEN_SURVEY_EVENT))}
-              className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+              className={`inline-flex w-full items-center justify-center px-8 py-5 font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 ${
+                ankietaOdpowiedziana
+                  // cursor-none: bez tego przeglądarka pokazuje domyślny "not-allowed"
+                  // nad zdezaktywowanym przyciskiem, a TargetCursor chowa słonko nad
+                  // KAŻDYM elementem z własnym kursorem systemowym (patrz maWlasnyKursor
+                  // w TargetCursor.tsx) — słonko znikałoby tu bez potrzeby.
+                  ? "cursor-none bg-[#3D4D65] text-[#FBBA76]"
+                  : "cursor-target cursor-pointer bg-sr-navy text-sr-orange shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+              }`}
             >
-              Ankieta - skąd o nas usłyszałeś?
+              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Ankieta - skąd o nas usłyszałaś/eś?"}
             </button>
           </div>
 
-          {/* Wariant OBOK: ramka zajmuje prawą połowę ekranu. Pozycjonowana
+          {/* Wariant OBOK: ramka wypełnia miejsce od prawej krawędzi logo aż po
+              stałe PRAWA_GRANICA (60px) od brzegu ekranu. Pozycjonowana
               bezwzględnie, bo musi wyjść poza padding sekcji — lewa krawędź
-              w połowie okna, prawa zatrzymana na linii LEWEJ krawędzi przycisku
-              Menu (patrz pomiar wyżej), żeby ramka pod niego nie wchodziła. */}
+              tuż za logo (patrz pomiar wyżej, festiwalLewy), prawa niezależna
+              już od pozycji przycisku Menu.
+              Górna krawędź na wysokości GORA_RAMKI_OBOK, czyli tej samej co
+              góra logo — wcześniej ramka była wyśrodkowana w sekcji i jej
+              nagłówek zaczynał się wyraźnie niżej niż logo. */}
           {festiwalObok && (
             <div
-              className="absolute top-1/2 -translate-y-1/2 z-10"
-              style={{ left: "50%", right: festiwalPrawy }}
+              className="absolute z-10"
+              style={{ left: festiwalLewy, right: festiwalPrawy, top: GORA_RAMKI_OBOK }}
             >
               {festiwal}
             </div>
@@ -790,7 +730,7 @@ export default function Home() {
                 </span>
                 <div className="flex items-end gap-3">
                   <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-navy to-sr-red leading-none">
-                    19
+                    14
                   </span>
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
