@@ -5,6 +5,9 @@
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 
+// Współrzędne i kod pocztowy zweryfikowane w OpenStreetMap/Nominatim —
+// poprzednia wersja wskazywała punkt ok. 1,3 km na północ od faktycznego
+// Parku Ludowego (i błędny kod pocztowy centrum zamiast Za Cukrownią/Piaski).
 const PARK_LUDOWY_PLACE = {
   "@type": "Place",
   name: "Park Ludowy w Lublinie",
@@ -13,13 +16,13 @@ const PARK_LUDOWY_PLACE = {
     streetAddress: "al. Józefa Piłsudskiego",
     addressLocality: "Lublin",
     addressRegion: "Lubelskie",
-    postalCode: "20-001",
+    postalCode: "20-407",
     addressCountry: "PL",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 51.2478,
-    longitude: 22.5508,
+    latitude: 51.2359,
+    longitude: 22.5601,
   },
 };
 
@@ -83,6 +86,16 @@ const event2026 = {
   location: PARK_LUDOWY_PLACE,
   organizer: { "@id": `${SITE_URL}/#organization` },
   url: SITE_URL,
+  // Ceny pakietów 2026 nie są jeszcze potwierdzone (patrz placeholder
+  // "[DATA 2026]" w src/components/sections/pricing.tsx) — offers celowo
+  // bez price/priceCurrency, żeby nie publikować zmyślonej ceny w wynikach
+  // wyszukiwania. Dodaj price/priceCurrency tutaj, gdy sztab potwierdzi stawki.
+  offers: {
+    "@type": "Offer",
+    url: "https://frslublin.pl/pl/app/races/sign_up_form/295",
+    availability: "https://schema.org/InStock",
+    validFrom: "2026-01-01T00:00:00+01:00",
+  },
 };
 
 const event2025 = {
