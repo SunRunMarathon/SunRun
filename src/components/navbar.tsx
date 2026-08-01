@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import StaggeredMenu from "./StaggeredMenu";
 import { POKAZ_PARTNEROW } from "@/flagi";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 /**
  * Pozycje menu bocznego.
@@ -102,6 +103,67 @@ export function Navbar({ revealOnScroll = false }) {
   const [logoOpacity, setLogoOpacity] = useState(revealOnScroll ? 0 : 1);
   const rafRef = useRef(0);
 
+  // Chowanie paska na mobile: znika przy scrollu w dol, wraca natychmiast przy
+  // scrollu w gore, zawsze widoczny na samej gorze. Prog 24px na kazdym etapie
+  // ("czy jestesmy na gorze" i "czy ruch byl wystarczajaco duzy") eliminuje
+  // migotanie przy drobnych drganiach palca - klasyczny blad tego wzorca.
+  const isMobile = useIsMobile();
+  const [scrollHidden, setScrollHidden] = useState(false);
+  const [footerVisible, setFooterVisible] = useState(false);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setScrollHidden(false);
+      return;
+    }
+    const THRESHOLD = 24;
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const measure = () => {
+      ticking = false;
+      const currentY = window.scrollY;
+      if (currentY < THRESHOLD) {
+        setScrollHidden(false);
+        lastY = currentY;
+        return;
+      }
+      const diff = currentY - lastY;
+      if (Math.abs(diff) < THRESHOLD) return;
+      setScrollHidden(diff > 0);
+      lastY = currentY;
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(measure);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobile]);
+
+  // Stopka na mobile zajmuje caly ekran i ma wlasne logo - dublowanie paska
+  // nawigacji nie ma sensu, wiec znika calkowicie, dopoki stopka jest widoczna.
+  // IntersectionObserver zamiast sztywnego progu w pikselach, bo wysokosc
+  // stopki zmienia sie wraz z trescia.
+  useEffect(() => {
+    if (!isMobile) {
+      setFooterVisible(false);
+      return;
+    }
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+    const observer = new IntersectionObserver(([entry]) => setFooterVisible(entry.isIntersecting), {
+      threshold: 0,
+    });
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  const headerHidden = isMobile && (footerVisible || scrollHidden);
+
   useEffect(() => {
     if (!revealOnScroll) {
       setLogoOpacity(1);
@@ -142,6 +204,7 @@ export function Navbar({ revealOnScroll = false }) {
     <StaggeredMenu
       position="right"
       isFixed
+      headerHidden={headerHidden}
       items={items.filter((it) => !it.ukryjGdy)}
       socialItems={socialItems}
       displaySocials

@@ -23,6 +23,7 @@ export const StaggeredMenu = ({
   accentColor = '#FE8004',
   changeMenuColorOnOpen = true,
   isFixed = false,
+  headerHidden = false,
   closeOnClickAway = true,
   onMenuOpen,
   onMenuClose
@@ -375,7 +376,10 @@ export const StaggeredMenu = ({
           return arr.map((c, i) => <div key={i} className="sm-prelayer" style={{ background: c }} />);
         })()}
       </div>
-      <header className="staggered-menu-header" aria-label="Main navigation header">
+      <header
+        className={`staggered-menu-header${headerHidden && !open ? ' sm-header-hidden' : ''}`}
+        aria-label="Main navigation header"
+      >
         <a href="/" className="sm-logo" aria-label="Sun Run - strona główna" style={logoStyle}>
           {logoNode ? (
             logoNode

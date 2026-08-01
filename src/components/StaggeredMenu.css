@@ -41,6 +41,14 @@
   background: transparent;
   pointer-events: none;
   z-index: 20;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+/* Chowanie paska przy scrollu w dol / na stopce (tylko mobile, patrz
+   navbar.tsx) - transform, nie top/height, zeby nie wywolywac reflow. */
+.staggered-menu-header.sm-header-hidden {
+  transform: translateY(-100%);
 }
 
 @media (min-width: 768px) {
