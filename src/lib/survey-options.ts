@@ -35,6 +35,7 @@ export const SURVEY_OPTIONS: SurveyOption[] = [
   },
   { value: "friend", label: "Od znajomego" },
   { value: "flyer", label: "Z ulotki" },
+  { value: "tv", label: "Telewizja" },
   { value: OTHER_VALUE, label: "Inne" },
 ];
 
