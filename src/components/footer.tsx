@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import SocialIcon from "./social-icon";
 import ShareModal from "./ShareModal";
+import { resetConsent } from "@/lib/consent";
 
 /**
  * Wspólna stopka serwisu.
@@ -118,9 +121,22 @@ export function Footer() {
           <p className="text-xs text-sr-sand/70">
             © 2026 Sun Run Lublin · Wszelkie prawa zastrzeżone
           </p>
-          <p className="text-xs text-sr-sand/70">
-            Hospicjum Dobrego Samarytanina · KRS 0000026380
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <p className="text-xs text-sr-sand/70">
+              Hospicjum Dobrego Samarytanina · KRS 0000026380
+            </p>
+            {/* Wycofanie zgody na analitykę ma być tak samo łatwe jak jej
+                udzielenie (jedno kliknięcie w banerze) - ten link czyści
+                zapisany wybór i przywraca baner od razu, bez grzebania w
+                ustawieniach przeglądarki. Patrz src/lib/consent.ts. */}
+            <button
+              type="button"
+              onClick={resetConsent}
+              className="text-xs text-sr-sand/70 underline hover:text-sr-orange transition-colors"
+            >
+              Zarządzaj zgodą
+            </button>
+          </div>
         </div>
       </div>
     </footer>

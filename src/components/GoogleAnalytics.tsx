@@ -45,7 +45,18 @@ export function GoogleAnalytics() {
   useEffect(() => {
     if (hasAnalyticsConsent()) loadGtag();
     const off = onConsentChange((value) => {
-      if (value === "granted") loadGtag();
+      if (value === "granted") {
+        loadGtag();
+        return;
+      }
+      // Wycofanie zgody PO tym, jak tag juz sie zaladowal (link "Zarzadzaj
+      // zgoda" w stopce) - samego skryptu nie da sie sciagnac z powrotem, ale
+      // Consent Mode ma na to odpowiedz: po tym sygnale Google faktycznie
+      // przestaje zapisywac/wykorzystywac dane, mimo ze tag technicznie
+      // zostaje wczytany w przegladarce.
+      if (typeof window.gtag === "function") {
+        window.gtag("consent", "update", { analytics_storage: "denied" });
+      }
     });
     return off;
   }, []);

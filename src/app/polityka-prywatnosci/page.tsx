@@ -70,11 +70,20 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
             <strong>Odpowiedź w ankiecie „Skąd się o nas dowiedziałeś?"</strong> - wybrana opcja
-            (np. media społecznościowe, od znajomego, z ulotki).
+            (np. media społecznościowe, od znajomego, z ulotki, telewizja), przy wyborze „media
+            społecznościowe" dodatkowo doprecyzowanie (np. TikTok, Instagram, Facebook), a przy
+            wyborze „Inne" na dowolnym poziomie - opcjonalny, dowolny tekst wpisany przez Ciebie.
+            To pole jest wolnym tekstem, więc jeśli sam(a) wpiszesz w nim dane osobowe (np. swoje
+            imię i nazwisko), zostaną one zapisane razem z resztą odpowiedzi.
           </li>
           <li>
             <strong>Adres IP oraz przybliżona lokalizacja</strong> (miasto, region, kraj) ustalona
-            na podstawie adresu IP w momencie wypełnienia ankiety.
+            na podstawie adresu IP - przy wypełnieniu ankiety.
+          </li>
+          <li>
+            <strong>Adres IP bez geolokalizacji</strong> - osobno, przy każdym wejściu na stronę
+            główną, ale dopiero po wyrażeniu zgody na analitykę w banerze cookies (ten sam licznik,
+            który liczy też wskaźnik „wejścia / wypełnienia ankiety" w panelu administracyjnym).
           </li>
           <li>
             <strong>Źródło ruchu</strong> - informacja, skąd trafiłeś na stronę: wyszukiwarka
@@ -144,7 +153,11 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         </li>
         <li>
           Google Ireland Limited (Google Analytics) - wyłącznie po wyrażeniu zgody w banerze
-          cookies, w celu analizy ruchu na stronie.
+          cookies, w celu analizy ruchu na stronie. Google przetwarza dane w infrastrukturze
+          obejmującej serwery poza Europejskim Obszarem Gospodarczym, w tym w USA. Transfer odbywa
+          się na podstawie mechanizmów przewidzianych przez RODO (m.in. ramy Data Privacy
+          Framework UE-USA lub standardowe klauzule umowne Google) - szczegóły w polityce
+          prywatności Google.
         </li>
       </ul>
     ),
@@ -159,8 +172,13 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           <li>sprostowania (poprawienia) danych,</li>
           <li>usunięcia danych („prawo do bycia zapomnianym"),</li>
           <li>ograniczenia przetwarzania,</li>
+          <li>przenoszenia danych (otrzymania ich w ustrukturyzowanym, powszechnie używanym formacie),</li>
           <li>wniesienia sprzeciwu wobec przetwarzania,</li>
-          <li>cofnięcia zgody w dowolnym momencie (bez wpływu na zgodność z prawem przetwarzania sprzed cofnięcia),</li>
+          <li>
+            cofnięcia zgody w dowolnym momencie (bez wpływu na zgodność z prawem przetwarzania
+            sprzed cofnięcia) - zgodę na analitykę możesz wycofać jednym kliknięciem w stopce
+            strony („Zarządzaj zgodą"), bez grzebania w ustawieniach przeglądarki,
+          </li>
           <li>wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (UODO).</li>
         </ul>
         <p className="mt-3">
@@ -178,8 +196,9 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         Strona korzysta z plików cookie Google Analytics wyłącznie po wyrażeniu zgody w banerze
-        wyświetlanym przy pierwszej wizycie. Możesz w każdej chwili cofnąć zgodę, czyszcząc dane
-        strony w ustawieniach przeglądarki - baner pojawi się ponownie przy kolejnej wizycie.
+        wyświetlanym przy pierwszej wizycie. Zgodę możesz w każdej chwili wycofać linkiem
+        „Zarządzaj zgodą" w stopce strony - baner pojawi się ponownie od razu, na tej samej
+        stronie, bez konieczności czyszczenia czegokolwiek w ustawieniach przeglądarki.
       </p>
     ),
   },

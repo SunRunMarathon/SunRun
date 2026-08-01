@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { getStoredConsent, setConsent } from "@/lib/consent";
+import { getStoredConsent, setConsent, onConsentReset } from "@/lib/consent";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { getBottomBarVariants } from "@/lib/motion-variants";
 
@@ -18,6 +18,9 @@ export function CookieConsent() {
 
   useEffect(() => {
     setVisible(getStoredConsent() === null);
+    // "Zarządzaj zgodą" w stopce czyści zapisany wybór i odpala ten event -
+    // baner ma się pokazać ponownie natychmiast, na tej samej stronie.
+    return onConsentReset(() => setVisible(true));
   }, []);
 
   const choose = (value: "granted" | "denied") => {
