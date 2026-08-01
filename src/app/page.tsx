@@ -41,7 +41,10 @@ const PARTNERS = [
 ];
 
 export default function Home() {
+  // Steruje wyłącznie dolnym paskiem zapisów: true, gdy przycisk „Zapisz się"
+  // spod logo wyjedzie poza górną krawędź ekranu.
   const [scrolled, setScrolled] = useState(false);
+  const przyciskZapiszRef = useRef(null);
   const [ctaDismissed, setCtaDismissed] = useState(false);
   const [heroProgress, setHeroProgress] = useState(0);
 
@@ -337,7 +340,13 @@ export default function Home() {
   useEffect(() => {
     const onScroll = () => {
       const vh = window.innerHeight;
-      setScrolled(window.scrollY > vh * 0.38);
+
+      // Dolny pasek zapisów wchodzi dokładnie wtedy, gdy przycisk „Zapisz się"
+      // spod logo wyjedzie górą poza ekran. Wcześniej był to próg ułamkowy
+      // (38% wysokości okna), przez co pasek potrafił się pojawić, gdy przycisk
+      // był jeszcze widoczny — dublował wtedy sam siebie.
+      const przycisk = przyciskZapiszRef.current;
+      setScrolled(przycisk ? przycisk.getBoundingClientRect().bottom < 0 : false);
       // Postęp 0→1 w obrębie sekcji HERO — steruje animacją "łapiącej" strzałki
       setHeroProgress(Math.min(1, window.scrollY / (vh * 0.9)));
 
@@ -544,9 +553,12 @@ export default function Home() {
               (w-fit), więc trzeci przycisk rozciągnięty na w-full ma dokładnie
               taką samą szerokość jak para nad nim — od lewej krawędzi
               „Zapisz się" do prawej „Dowiedz się więcej". */}
-          <div data-hero-cta className={`flex flex-col gap-4 pt-2 w-fit pointer-events-auto transition-all duration-500 ${scrolled ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+          {/* Przyciski nie znikają już przy przewijaniu — wcześniej gasły po
+              minięciu 38% wysokości okna, więc odjeżdżały z ekranu wygaszone,
+              a użytkownik wracający w górę widział je dopiero po chwili. */}
+          <div data-hero-cta className="flex flex-col gap-4 pt-2 w-fit pointer-events-auto">
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
+              <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
                 className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
                 Zapisz się
               </a>
