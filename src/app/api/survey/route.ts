@@ -1,11 +1,12 @@
-import pool from "@/lib/db";
+import { queryWithRetry } from "@/lib/db";
 import { getClientIp, detectDeviceType, detectTrafficSource } from "@/lib/request-meta";
 import { lookupGeoIp } from "@/lib/geo";
 import { SURVEY_OPTIONS } from "@/lib/survey-options";
 import { isAuthorizedRequest } from "@/lib/admin-session";
+import crypto from "crypto";
 
 async function ensureTable() {
-  await pool.query(`
+  await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS survey_responses (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -26,6 +27,14 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
+  // Kolumna doszla po pierwszym wdrozeniu - ADD COLUMN IF NOT EXISTS bezpiecznie
+  // dogania istniejace tabele na produkcji bez migracji recznej. Unikalny indeks
+  // (a nie ograniczenie w CREATE TABLE) toleruje NULL-e w starych wierszach -
+  // Postgres nie traktuje wielu NULL-i jako duplikatow.
+  await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS client_token UUID`);
+  await queryWithRetry(
+    `CREATE UNIQUE INDEX IF NOT EXISTS survey_responses_client_token_key ON survey_responses (client_token)`
+  );
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -62,12 +71,19 @@ export async function POST(request: Request) {
   const trafficSource = detectTrafficSource({ utmSource, referrer });
   const geo = await lookupGeoIp(ip);
 
+  // Wygenerowany raz, przed retry - jesli pierwsza proba INSERT-a faktycznie
+  // dotrze do bazy, ale odpowiedz zgubi sie po drodze (np. zerwane polaczenie
+  // w trakcie budzenia Postgresa), kolejna proba z tym samym tokenem trafi w
+  // ON CONFLICT DO NOTHING zamiast zdublowac wiersz.
+  const clientToken = crypto.randomUUID();
+
   try {
     await ensureTable();
-    await pool.query(
+    await queryWithRetry(
       `INSERT INTO survey_responses
-        (answer, ip, city, region, country, referrer, traffic_source, utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+        (answer, ip, city, region, country, referrer, traffic_source, utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path, client_token)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+       ON CONFLICT (client_token) DO NOTHING`,
       [
         answer,
         ip,
@@ -84,11 +100,14 @@ export async function POST(request: Request) {
         userAgent,
         deviceType,
         landingPath,
+        clientToken,
       ]
     );
     return Response.json({ ok: true });
   } catch (err) {
-    console.error("DB error:", err);
+    // Zapis sie nie udal nawet po ponowieniach - jawny, grepowalny slad w
+    // logach Railway, zeby dalo sie policzyc utracone ankiety.
+    console.error("[survey] Zapis do bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }
@@ -99,14 +118,14 @@ export async function GET(request: Request) {
   }
   try {
     await ensureTable();
-    const result = await pool.query(
+    const result = await queryWithRetry(
       `SELECT id, created_at, answer, ip, city, region, country, referrer, traffic_source,
               utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path
        FROM survey_responses ORDER BY created_at DESC`
     );
     return Response.json({ responses: result.rows });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[survey] Odczyt z bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
-import pool from "@/lib/db";
+import { queryWithRetry } from "@/lib/db";
 import { getClientIp, detectDeviceType, detectTrafficSource } from "@/lib/request-meta";
 import { isAuthorizedRequest } from "@/lib/admin-session";
+import crypto from "crypto";
 
 // Licznik wejść na stronę główną — pozwala policzyć conversion rate ankiety
 // (wypełnienia / wejścia) w /admin. Odpalany dopiero po zgodzie na analitykę
@@ -8,7 +9,7 @@ import { isAuthorizedRequest } from "@/lib/admin-session";
 // czysto ilościowy licznik, bez dodatkowego zapytania do zewnętrznego API
 // przy każdym wejściu.
 async function ensureTable() {
-  await pool.query(`
+  await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS page_visits (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -23,6 +24,10 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
+  await queryWithRetry(`ALTER TABLE page_visits ADD COLUMN IF NOT EXISTS client_token UUID`);
+  await queryWithRetry(
+    `CREATE UNIQUE INDEX IF NOT EXISTS page_visits_client_token_key ON page_visits (client_token)`
+  );
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -50,16 +55,19 @@ export async function POST(request: Request) {
   const deviceType = detectDeviceType(userAgent);
   const trafficSource = detectTrafficSource({ utmSource, referrer });
 
+  const clientToken = crypto.randomUUID();
+
   try {
     await ensureTable();
-    await pool.query(
-      `INSERT INTO page_visits (ip, referrer, traffic_source, utm_source, utm_medium, utm_campaign, user_agent, device_type, landing_path)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [ip, referrer, trafficSource, utmSource, utmMedium, utmCampaign, userAgent, deviceType, landingPath]
+    await queryWithRetry(
+      `INSERT INTO page_visits (ip, referrer, traffic_source, utm_source, utm_medium, utm_campaign, user_agent, device_type, landing_path, client_token)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+       ON CONFLICT (client_token) DO NOTHING`,
+      [ip, referrer, trafficSource, utmSource, utmMedium, utmCampaign, userAgent, deviceType, landingPath, clientToken]
     );
     return Response.json({ ok: true });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[visit] Zapis do bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }
@@ -70,10 +78,10 @@ export async function GET(request: Request) {
   }
   try {
     await ensureTable();
-    const result = await pool.query(`SELECT COUNT(*)::int AS count FROM page_visits`);
+    const result = await queryWithRetry(`SELECT COUNT(*)::int AS count FROM page_visits`);
     return Response.json({ count: result.rows[0].count });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[visit] Odczyt z bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }

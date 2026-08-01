@@ -1,5 +1,6 @@
-import pool from "@/lib/db";
+import { queryWithRetry } from "@/lib/db";
 import { isAuthorizedRequest } from "@/lib/admin-session";
+import crypto from "crypto";
 
 // Kanały udostępniania — liczone w /admin. Dodanie nowego kanału to jedna
 // wartość tutaj (musi się zgadzać z tym, co wysyła ShareModal.tsx).
@@ -14,7 +15,7 @@ const VALID_CHANNELS = [
 ];
 
 async function ensureTable() {
-  await pool.query(`
+  await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS share_clicks (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -22,6 +23,10 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
+  await queryWithRetry(`ALTER TABLE share_clicks ADD COLUMN IF NOT EXISTS client_token UUID`);
+  await queryWithRetry(
+    `CREATE UNIQUE INDEX IF NOT EXISTS share_clicks_client_token_key ON share_clicks (client_token)`
+  );
 }
 
 export async function POST(request: Request) {
@@ -39,15 +44,18 @@ export async function POST(request: Request) {
   const landingPath =
     typeof body.landingPath === "string" ? body.landingPath.trim().slice(0, 300) : null;
 
+  const clientToken = crypto.randomUUID();
+
   try {
     await ensureTable();
-    await pool.query(`INSERT INTO share_clicks (channel, landing_path) VALUES ($1, $2)`, [
-      channel,
-      landingPath || null,
-    ]);
+    await queryWithRetry(
+      `INSERT INTO share_clicks (channel, landing_path, client_token) VALUES ($1, $2, $3)
+       ON CONFLICT (client_token) DO NOTHING`,
+      [channel, landingPath || null, clientToken]
+    );
     return Response.json({ ok: true });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[share-click] Zapis do bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }
@@ -58,12 +66,12 @@ export async function GET(request: Request) {
   }
   try {
     await ensureTable();
-    const result = await pool.query(
+    const result = await queryWithRetry(
       `SELECT id, created_at, channel, landing_path FROM share_clicks ORDER BY created_at DESC`
     );
     return Response.json({ clicks: result.rows });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[share-click] Odczyt z bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }

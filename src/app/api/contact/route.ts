@@ -1,8 +1,8 @@
-import pool from "@/lib/db";
+import { queryWithRetry } from "@/lib/db";
 import { isAuthorizedRequest } from "@/lib/admin-session";
 
 async function ensureTable() {
-  await pool.query(`
+  await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS submissions (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -33,13 +33,13 @@ export async function POST(request: Request) {
 
   try {
     await ensureTable();
-    await pool.query(
+    await queryWithRetry(
       "INSERT INTO submissions (company, name, phone, message) VALUES ($1, $2, $3, $4)",
       [company, name, phone || null, message]
     );
     return Response.json({ ok: true });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[contact] Zapis do bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }
@@ -50,12 +50,12 @@ export async function GET(request: Request) {
   }
   try {
     await ensureTable();
-    const result = await pool.query(
+    const result = await queryWithRetry(
       "SELECT id, date, company, name, phone, message FROM submissions ORDER BY date DESC"
     );
     return Response.json({ submissions: result.rows });
   } catch (err) {
-    console.error("DB error:", err);
+    console.error("[contact] Odczyt z bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import pool from "@/lib/db";
+import { queryWithRetry } from "@/lib/db";
 import type { WebAuthnCredential } from "@simplewebauthn/server";
 
 export type StoredCredential = {
@@ -15,7 +15,7 @@ export type StoredCredential = {
 };
 
 export async function ensureCredentialsTable() {
-  await pool.query(`
+  await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS admin_credentials (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       credential_id VARCHAR(255) UNIQUE NOT NULL,
@@ -31,9 +31,11 @@ export async function ensureCredentialsTable() {
   `);
 }
 
+type RawCredentialRow = Omit<StoredCredential, "transports"> & { transports: string | null };
+
 export async function listCredentials(): Promise<StoredCredential[]> {
   await ensureCredentialsTable();
-  const result = await pool.query(
+  const result = await queryWithRetry<RawCredentialRow>(
     `SELECT id, credential_id, public_key, counter, device_type, backed_up, transports, device_name, created_at, last_used_at
      FROM admin_credentials ORDER BY created_at ASC`
   );
@@ -42,7 +44,7 @@ export async function listCredentials(): Promise<StoredCredential[]> {
 
 export async function findCredentialById(credentialId: string): Promise<StoredCredential | null> {
   await ensureCredentialsTable();
-  const result = await pool.query(
+  const result = await queryWithRetry<RawCredentialRow>(
     `SELECT id, credential_id, public_key, counter, device_type, backed_up, transports, device_name, created_at, last_used_at
      FROM admin_credentials WHERE credential_id = $1`,
     [credentialId]
@@ -59,7 +61,7 @@ export async function saveCredential(params: {
   deviceName: string;
 }) {
   await ensureCredentialsTable();
-  await pool.query(
+  await queryWithRetry(
     `INSERT INTO admin_credentials (credential_id, public_key, counter, device_type, backed_up, transports, device_name)
      VALUES ($1, $2, $3, $4, $5, $6, $7)`,
     [
@@ -75,14 +77,14 @@ export async function saveCredential(params: {
 }
 
 export async function updateCredentialCounter(credentialId: string, counter: number) {
-  await pool.query(
+  await queryWithRetry(
     `UPDATE admin_credentials SET counter = $2, last_used_at = NOW() WHERE credential_id = $1`,
     [credentialId, counter]
   );
 }
 
 export async function deleteCredential(id: string) {
-  await pool.query(`DELETE FROM admin_credentials WHERE id = $1`, [id]);
+  await queryWithRetry(`DELETE FROM admin_credentials WHERE id = $1`, [id]);
 }
 
 export function toWebAuthnCredential(row: StoredCredential): WebAuthnCredential {
