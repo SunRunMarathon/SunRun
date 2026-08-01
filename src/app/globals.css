@@ -15,6 +15,22 @@
   animation: hand-float 3.5s ease-in-out infinite;
 }
 
+/* Strzałka pod przyciskiem "Dowiedz się więcej" (patrz page.tsx) - translate
+   X na -50% jest TU, w klatkach, a nie osobną klasą Tailwind na elemencie,
+   bo animacja transform nadpisywałaby taką klasę zamiast się z nią składać. */
+@keyframes scroll-hint {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 4px);
+  }
+}
+
+.animate-scroll-hint {
+  animation: scroll-hint 1.6s ease-in-out infinite;
+}
+
 /* Siatka bezpieczenstwa dla prefers-reduced-motion: tnie DLUGOSC animacji i
    przejsc CSS wszedzie, niezaleznie od tego, czy dany komponent sam o to
    zadba. Animacje sterowane bezposrednio z JS (np. gimmick strzalki w hero,
