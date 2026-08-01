@@ -3,6 +3,10 @@ import localFont from "next/font/local";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { StructuredData } from "@/components/StructuredData";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { CookieConsent } from "@/components/CookieConsent";
+import { ScrollDepthTracker } from "@/components/ScrollDepthTracker";
+import { OutboundLinkTracker } from "@/components/OutboundLinkTracker";
 
 /**
  * Montserrat — font tekstowy wg księgi znaku (SemiBold, Bold, ExtraBold, Black
@@ -42,7 +46,6 @@ const lemonMilk = localFont({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
-const GA_ID = "G-13PE0DJ8V6";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -115,8 +118,8 @@ export const metadata: Metadata = {
   other: {
     "geo.region": "PL-LU",
     "geo.placename": "Lublin",
-    "geo.position": "51.2478;22.5508",
-    ICBM: "51.2478, 22.5508",
+    "geo.position": "51.2359;22.5601",
+    ICBM: "51.2359, 22.5601",
   },
 };
 
@@ -130,15 +133,15 @@ export default function RootLayout({
       <head>
         {/* Dane strukturalne schema.org (Organization, WebSite, SportsEvent) */}
         <StructuredData />
-        {/* Google Analytics 4 */}
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`,
-          }}
-        />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F4D8A2]" suppressHydrationWarning>{children}</body>
+      <body className="min-h-full flex flex-col bg-[#F4D8A2]" suppressHydrationWarning>
+        {children}
+        {/* GA4 ładuje się dopiero po zgodzie w banerze — patrz GoogleAnalytics.tsx */}
+        <GoogleAnalytics />
+        <ScrollDepthTracker />
+        <OutboundLinkTracker />
+        <CookieConsent />
+      </body>
     </html>
   );
 }
