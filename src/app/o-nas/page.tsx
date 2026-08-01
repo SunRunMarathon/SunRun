@@ -9,6 +9,10 @@ import TargetCursor from "@/components/TargetCursor";
 // i „Droga komunikacji" — bez nich były już tylko martwym kodem. Gdyby
 // któraś z tych sekcji wracała, dane są w historii gita.
 
+// Ta sama miara odstępu co na stronie głównej: wysokość kafelka „Zapisanych
+// uczestników" z sekcji „O biegu".
+const LUKA = 166;
+
 export default function ONasPage() {
   return (
     <div className="relative min-h-screen bg-sr-sand text-sr-navy overflow-x-hidden">
@@ -24,8 +28,15 @@ export default function ONasPage() {
       />
 
       <main className="relative z-10">
-        {/* Hero */}
-        <section className="min-h-screen flex items-center px-8 sm:px-16 md:px-28 pt-24 pb-16">
+        {/* Hero. Bez min-h-screen: sekcja miała wymuszoną wysokość całego okna,
+            więc zdjęcie ekipy było w niej wyśrodkowane i jego odległość od góry
+            strony zmieniała się razem z wysokością okna (198–258px). Teraz oba
+            odstępy to stała LUKA.
+            items-center załatwia wymaganie sztabu bez ani jednej linii kodu:
+            wyższa kolumna — raz tekst, raz zdjęcie, zależnie od szerokości —
+            rozpina wiersz siatki, więc to ona wyznacza początek i koniec luk,
+            a niższa jest względem niej wyśrodkowana w pionie. */}
+        <section style={{ paddingTop: LUKA, paddingBottom: LUKA }} className="px-8 sm:px-16 md:px-28">
           <div className="w-full grid lg:grid-cols-2 gap-10 xl:gap-16 items-center">
             <div className="max-w-3xl space-y-6">
               {/* Czerwona plakietka — ten sam wariant co na górze /archiwum */}
@@ -63,7 +74,7 @@ export default function ONasPage() {
         </section>
 
         {/* Misja */}
-        <section className="py-12 px-8 sm:px-16 md:px-28">
+        <section className="pb-12 px-8 sm:px-16 md:px-28">
           <div className="relative max-w-5xl mx-auto">
             {/* Słonecznik wystający zza górnej krawędzi ramki.
                 Stoi w NORMALNYM PRZEPŁYWIE, tuż nad ramką, a nie na pozycji
