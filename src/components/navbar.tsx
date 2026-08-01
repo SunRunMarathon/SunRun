@@ -75,6 +75,12 @@ const socialItems = [
 const LOGO_H = 52;
 const LOGO_W = Math.round((LOGO_H * 870.228) / 518.49); // 87px
 
+// Wysokość paska nawigacji - JEDNA stała, którą StaggeredMenu przekazuje dalej
+// jako --sr-navbar-h (patrz navbarHeight w StaggeredMenu.tsx). Ustawia zarówno
+// realną wysokość samego nagłówka, jak i górny padding panelu bocznego, więc
+// nic nie skacze między "zamknięte" a "otwarte" ani między stronami.
+const NAVBAR_H = 100;
+
 // Ile pikseli scrolla zajmuje narastanie logo w rogu, licząc od momentu, w którym
 // duże logo hero całkowicie zniknie z ekranu. Zwiększ, żeby pojawiało się wolniej
 // i później; zmniejsz, żeby szybciej.
@@ -204,6 +210,7 @@ export function Navbar({ revealOnScroll = false }) {
     <StaggeredMenu
       position="right"
       isFixed
+      navbarHeight={NAVBAR_H}
       headerHidden={headerHidden}
       // Tło nagłówka pojawia się dopiero razem z logo w rogu (ten sam
       // logoOpacity) - u góry strony, nad hero, header ma zostać w pełni

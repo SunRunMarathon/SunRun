@@ -22,6 +22,11 @@ export const StaggeredMenu = ({
   menuButtonColor = '#183153',
   openMenuButtonColor = '#183153',
   accentColor = '#FE8004',
+  // Wysokość nagłówka w px. Jedna stała współdzielona przez header (jego
+  // realną wysokość) i górny padding panelu (--sr-navbar-h w CSS) - stąd
+  // prop zamiast osobnych liczb wpisanych w dwóch miejscach. Patrz NAVBAR_H
+  // w navbar.tsx.
+  navbarHeight = 100,
   changeMenuColorOnOpen = true,
   isFixed = false,
   headerHidden = false,
@@ -359,10 +364,49 @@ export const StaggeredMenu = ({
     };
   }, [closeOnClickAway, open, closeMenu]);
 
+  // Blokada scrolla strony pod spodem, gdy panel jest otwarty - scroll ma
+  // działać tylko wewnątrz panelu (ten ma własny overflow-y:auto).
+  // Samo `overflow: hidden` na body NIE wystarcza na iOS Safari (dalej
+  // można "przeciągnąć" tło przez rubber-banding), więc body dostaje
+  // dodatkowo position:fixed z offsetem na zapamiętanym scrollY - to jedyna
+  // kombinacja, która realnie blokuje tło na iOS. Po zamknięciu wracamy
+  // dokładnie do tego samego miejsca scrolla.
+  React.useEffect(() => {
+    if (!open) return;
+    const scrollY = window.scrollY;
+    const { style } = document.body;
+    const prev = {
+      position: style.position,
+      top: style.top,
+      left: style.left,
+      right: style.right,
+      width: style.width,
+      overflow: style.overflow
+    };
+    style.position = 'fixed';
+    style.top = `-${scrollY}px`;
+    style.left = '0';
+    style.right = '0';
+    style.width = '100%';
+    style.overflow = 'hidden';
+    return () => {
+      style.position = prev.position;
+      style.top = prev.top;
+      style.left = prev.left;
+      style.right = prev.right;
+      style.width = prev.width;
+      style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [open]);
+
   return (
     <div
       className={(className ? className + ' ' : '') + 'staggered-menu-wrapper' + (isFixed ? ' fixed-wrapper' : '')}
-      style={accentColor ? { ['--sm-accent']: accentColor } : undefined}
+      style={{
+        ...(accentColor ? { ['--sm-accent']: accentColor } : null),
+        ...(navbarHeight ? { ['--sr-navbar-h']: `${navbarHeight}px` } : null)
+      }}
       data-position={position}
       data-open={open || undefined}
     >
@@ -440,10 +484,21 @@ export const StaggeredMenu = ({
                     style={it.color ? { ['--sm-item-color']: it.color } : undefined}
                     // Odnośniki do sekcji na tej samej stronie (np. "/#stats") nie
                     // powodują przeładowania, więc menu zostałoby otwarte i zasłaniało
-                    // sekcję, do której właśnie przewinęliśmy. Zamykamy je ręcznie.
+                    // sekcję, do której właśnie przewinęliśmy. Zamykamy je ręcznie -
+                    // ale TYLKO animacją, gdy zostajemy na tej samej stronie.
+                    //
+                    // Gdy link prowadzi na inną podstronę, to zwykły <a>, więc
+                    // przeglądarka zaraz zacznie twardą nawigację. Odpalenie wtedy
+                    // 300ms animacji zjeżdżania panelu kończyło się jej urwaniem w
+                    // pół drogi (przeglądarka wyładowuje stronę, zanim gsap dokończy
+                    // klatki) - stąd zgłoszone "przycinanie" navbaru w locie. Zamiast
+                    // tego panel zostaje otwarty, przeglądarka nawiguje natychmiast,
+                    // a nowa strona i tak wystartuje z domyślnie zamkniętym menu.
                     onClick={(e) => {
                       it.onSelect?.(e);
-                      if (!it.external && openRef.current) toggleMenu();
+                      if (it.external || !openRef.current) return;
+                      const samePage = e.currentTarget.pathname === window.location.pathname;
+                      if (samePage) toggleMenu();
                     }}
                   >
                     <span className="sm-panel-itemLabel">{it.label}</span>

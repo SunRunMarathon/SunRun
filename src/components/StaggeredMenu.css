@@ -34,10 +34,15 @@
   top: 0;
   left: 0;
   width: 100%;
+  /* Wysokość na sztywno, nie z paddingu + wysokości dziecka: gdy menu się
+     otwiera, logo znika przez display:none (patrz reguła [data-open] .sm-logo
+     niżej) i w headerze zostaje tylko dużo niższy przycisk. Bez jawnej
+     wysokości cały pasek wtedy realnie się zmniejszał (skakał) - patrz
+     --sr-navbar-h, ta sama zmienna napędza górny padding panelu. */
+  height: var(--sr-navbar-h, 100px);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1.5em 1.5em;
+  padding: 0 1.5em;
   background: transparent;
   pointer-events: none;
   z-index: 20;
@@ -63,7 +68,7 @@
 
 @media (min-width: 768px) {
   .staggered-menu-header {
-    padding: 2em;
+    padding: 0 2em;
   }
 }
 
@@ -106,7 +111,13 @@
      realny obszar klikalny/dotykowy, ale nie rusza wizualnej pozycji napisu
      względem reszty nagłówka (margines znosi dodaną przestrzeń w layoucie). */
   padding: 0.875rem 0.5rem;
-  margin: -0.875rem -0.5rem;
+  /* Nagłówek już nie ma justify-content:space-between - przy otwartym menu
+     logo znika (display:none) i ze space-between jedyne pozostałe dziecko
+     fleksa lądowało na LEWEJ krawędzi, więc przycisk "skakał" na drugą stronę
+     nagłówka. Lewy margines "auto" trzyma go przy prawej krawędzi zawsze,
+     niezależnie od tego, czy logo jest w DOM-ie - reszta marginesu to ten sam
+     zabieg powiększenia celu dotykowego co w komentarzu wyżej. */
+  margin: -0.875rem -0.5rem -0.875rem auto;
 }
 
 .sm-toggle:focus-visible {
@@ -185,7 +196,10 @@
   -webkit-backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  padding: 6em 2em 2em 2em;
+  /* Górny padding = --sr-navbar-h, ta sama zmienna co wysokość headera
+     (patrz .staggered-menu-header) - lista pozycji zaczyna się dokładnie
+     pod paskiem nawigacji, bez osobnej, ręcznie dobranej liczby. */
+  padding: var(--sr-navbar-h, 6em) 2em 2em 2em;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   z-index: 10;
@@ -328,7 +342,13 @@
   font-family: var(--font-lemonmilk), system-ui, sans-serif;
   font-size: 3rem;
   cursor: pointer;
-  line-height: 1.05;
+  /* Było 1.05 - zbyt ciasno dla ogonków polskich znaków (ę, ą - np.
+     "Zapisz się"): tekst wizualnie wychodził poza tak niski line-height
+     (normalne zachowanie przeglądarki - box tekstu nie przycina własnej
+     zawartości), a rodzic .sm-panel-itemWrap (overflow:hidden, potrzebny
+     do animacji wjazdu pozycji) dopasowuje swoją wysokość właśnie do TEJ
+     linii i przycinał wszystko poza nią. */
+  line-height: 1.5;
   letter-spacing: 0;
   text-transform: uppercase;
   transition:
@@ -404,7 +424,7 @@
     width: calc(100% - 2 * var(--sm-stripe));
     left: auto;
     right: 0;
-    padding: 5.5em 1.5em 1.75em 1.5em;
+    padding: var(--sr-navbar-h, 5.5em) 1.5em 1.75em 1.5em;
   }
 
   .sm-prelayers {
