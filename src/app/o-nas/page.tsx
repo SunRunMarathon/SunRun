@@ -47,8 +47,12 @@ export default function ONasPage() {
               </p>
             </div>
 
-            {/* Zdjęcie ekipy — prawa strona hero */}
-            <div className="hidden lg:block relative aspect-[4/3] rounded-3xl overflow-hidden border border-sr-line shadow-2xl">
+            {/* Zdjęcie ekipy — obok tekstu od lg, pod nim na węższych ekranach.
+                Wcześniej miało `hidden lg:block`, więc na telefonach znikało
+                zupełnie: jedyne zdjęcie zespołu na podstronie o zespole nie
+                pokazywało się połowie odwiedzających. Siatka i tak zwija się
+                do jednej kolumny, więc wystarczyło zdjąć ukrycie. */}
+            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-sr-line shadow-2xl">
               <img
                 src="/photos/ekipa.webp"
                 alt="Ekipa Sun Run 2025 — organizatorzy i wolontariusze"
