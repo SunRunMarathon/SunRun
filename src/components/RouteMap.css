@@ -1,10 +1,36 @@
 .route-start-pin {
   width: 22px;
   height: 22px;
-  background: #FE8004;
+  background: #CE2F25;
   border: 3px solid #FFFFFF;
   border-radius: 50%;
-  box-shadow: 0 0 14px rgba(235, 135, 20, 0.7);
+  box-shadow: 0 0 14px rgba(206, 47, 37, 0.7);
+}
+
+.route-medical-pin {
+  width: 20px;
+  height: 20px;
+  background: #FFFFFF;
+  border: 2.5px solid #CE2F25;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #CE2F25;
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.route-water-pin {
+  width: 18px;
+  height: 18px;
+  background: #1E7FCB;
+  border: 2.5px solid #FFFFFF;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(45deg);
+  box-shadow: 0 0 10px rgba(30, 127, 203, 0.6);
 }
 
 .leaflet-container {
