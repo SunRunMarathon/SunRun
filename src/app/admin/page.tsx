@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { SurveyDashboard } from "@/components/admin/SurveyDashboard";
+import { ShareDashboard } from "@/components/admin/ShareDashboard";
 
 type Submission = {
   id: string;
@@ -18,7 +19,7 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [tab, setTab] = useState<"ankieta" | "partnerzy">("ankieta");
+  const [tab, setTab] = useState<"ankieta" | "udostepnienia" | "partnerzy">("ankieta");
 
   const fetchSubmissions = async (pass: string) => {
     setLoading(true);
@@ -112,7 +113,7 @@ export default function AdminPage() {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => (tab === "ankieta" ? window.location.reload() : fetchSubmissions(password))}
+              onClick={() => (tab === "partnerzy" ? fetchSubmissions(password) : window.location.reload())}
               disabled={loading}
               className="px-5 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
             >
@@ -139,6 +140,16 @@ export default function AdminPage() {
             Ankieta „skąd o nas wiesz"
           </button>
           <button
+            onClick={() => setTab("udostepnienia")}
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+              tab === "udostepnienia"
+                ? "border-sr-orange text-[#183153]"
+                : "border-transparent text-[#3D4D65] hover:text-[#183153]"
+            }`}
+          >
+            Udostępnienia
+          </button>
+          <button
             onClick={() => setTab("partnerzy")}
             className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
               tab === "partnerzy"
@@ -151,6 +162,8 @@ export default function AdminPage() {
         </div>
 
         {tab === "ankieta" && <SurveyDashboard password={password} />}
+
+        {tab === "udostepnienia" && <ShareDashboard password={password} />}
 
         {tab === "partnerzy" &&
           (submissions.length === 0 ? (

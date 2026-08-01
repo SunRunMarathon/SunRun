@@ -1,5 +1,6 @@
 import React from "react";
 import SocialIcon from "./social-icon";
+import ShareModal from "./ShareModal";
 
 /**
  * Wspólna stopka serwisu.
@@ -55,6 +56,7 @@ export function Footer() {
               Bieg charytatywny dla Hospicjum Dobrego Samarytanina w Lublinie.
               Inicjatywa lubelskiej młodzieży.
             </p>
+            <ShareModal />
           </div>
 
           {/* Nawigacja */}
