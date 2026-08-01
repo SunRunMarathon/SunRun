@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import Stack from "@/components/Stack";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
@@ -19,6 +18,10 @@ const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
 // (komponent i tak renderuje null na mobile, ale bez tego jego JS nadal by
 // sie pobieral i parsowal).
 const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: false });
+// Stack (przeciagalna talia zdjec) uzywa Framer Motion do fizyki przeciagania
+// i tak dobrze nie widac tego efektu na waskim ekranie - na mobile w ogole
+// nie ladujemy tego komponentu (patrz rendering nizej: prosta siatka zamiast).
+const Stack = dynamic(() => import("@/components/Stack"), { ssr: false });
 
 // Zdjęcia-wspomnienia z I edycji do komponentu Stack (sekcja „Wspomnienia").
 // Karty 1 i 3 były zastępnikami i poszły do kosza: pierwsza to generyczna
@@ -891,16 +894,34 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Stack zdjęć — przeciągalny stos wspomnień */}
-          <div className="flex justify-center md:justify-end py-6">
-            <Stack
-              randomRotation
-              sensitivity={150}
-              sendToBackOnClick
-              cardDimensions={{ width: rozmiarKarty, height: rozmiarKarty }}
-              cardsData={STACK_CARDS}
-            />
-          </div>
+          {/* Stack zdjęć — przeciągalny stos wspomnień. Na telefonie i tak nie
+              widać dobrze efektu przekładania kart (Framer Motion drag), więc
+              tam pokazujemy zamiast tego prostą, czytelną siatkę 2x2 tych
+              samych zdjęć — bez ładowania biblioteki animacji w ogóle. */}
+          {isMobile ? (
+            <div className="grid grid-cols-2 gap-3 w-full max-w-sm mx-auto py-6">
+              {STACK_CARDS.map((card) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={card.id}
+                  src={card.img}
+                  alt={card.alt}
+                  className="w-full aspect-square object-cover rounded-2xl border border-sr-line shadow-md"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex justify-center md:justify-end py-6">
+              <Stack
+                randomRotation
+                sensitivity={150}
+                sendToBackOnClick
+                cardDimensions={{ width: rozmiarKarty, height: rozmiarKarty }}
+                cardsData={STACK_CARDS}
+              />
+            </div>
+          )}
         </div>
       </section>
       </main>
