@@ -194,11 +194,61 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
   {
     title: "8. Pliki cookie",
     body: (
+      <>
+        <p>
+          Strona korzysta z plików cookie Google Analytics wyłącznie po wyrażeniu zgody w banerze
+          wyświetlanym przy pierwszej wizycie. Zgodę możesz w każdej chwili wycofać linkiem
+          „Zarządzaj zgodą" w stopce strony - baner pojawi się ponownie od razu, na tej samej
+          stronie, bez konieczności czyszczenia czegokolwiek w ustawieniach przeglądarki.
+        </p>
+        <div className="overflow-x-auto mt-3">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="text-left border-b border-sr-line">
+                <th className="py-2 pr-4 font-bold">Nazwa</th>
+                <th className="py-2 pr-4 font-bold">Cel</th>
+                <th className="py-2 pr-4 font-bold">Czas życia</th>
+                <th className="py-2 font-bold">Kto ustawia</th>
+              </tr>
+            </thead>
+            <tbody className="text-[#3D4D65]">
+              <tr className="border-b border-sr-line/60">
+                <td className="py-2 pr-4 font-mono text-xs">_ga</td>
+                <td className="py-2 pr-4">Rozróżnianie unikalnych użytkowników w Google Analytics</td>
+                <td className="py-2 pr-4">2 lata</td>
+                <td className="py-2">Google (zewnętrzny), po zgodzie</td>
+              </tr>
+              <tr className="border-b border-sr-line/60">
+                <td className="py-2 pr-4 font-mono text-xs">_ga_&lt;identyfikator&gt;</td>
+                <td className="py-2 pr-4">Utrzymanie stanu sesji w Google Analytics 4</td>
+                <td className="py-2 pr-4">2 lata</td>
+                <td className="py-2">Google (zewnętrzny), po zgodzie</td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-4 font-mono text-xs">sr_consent_analytics i in.</td>
+                <td className="py-2 pr-4">
+                  Zapamiętanie Twojego wyboru w banerze zgody oraz techniczne działanie strony
+                  (np. żeby ankieta nie pokazała się drugi raz) - localStorage, nie cookie w
+                  ścisłym sensie
+                </td>
+                <td className="py-2 pr-4">bezterminowo, do wyczyszczenia danych strony</td>
+                <td className="py-2">Ta strona (własne, techniczne)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </>
+    ),
+  },
+  {
+    title: "9. Zapisy przez zewnętrzny serwis FRS",
+    body: (
       <p>
-        Strona korzysta z plików cookie Google Analytics wyłącznie po wyrażeniu zgody w banerze
-        wyświetlanym przy pierwszej wizycie. Zgodę możesz w każdej chwili wycofać linkiem
-        „Zarządzaj zgodą" w stopce strony - baner pojawi się ponownie od razu, na tej samej
-        stronie, bez konieczności czyszczenia czegokolwiek w ustawieniach przeglądarki.
+        Przycisk „Zapisz się" prowadzi do formularza rejestracji w systemie FRS
+        (frslublin.pl) - to osobny serwis, niezależny od tej strony. Dane podane w
+        formularzu zapisów (np. imię, nazwisko, data urodzenia, dane do kontaktu) trafiają
+        bezpośrednio do FRS i podlegają jego własnej polityce prywatności, a nie niniejszemu
+        dokumentowi - nie mamy wglądu w te dane ani kontroli nad ich przetwarzaniem.
       </p>
     ),
   },

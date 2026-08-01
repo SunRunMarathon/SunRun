@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { SurveyDashboard } from "@/components/admin/SurveyDashboard";
 import { ShareDashboard } from "@/components/admin/ShareDashboard";
 import { SecurityDashboard } from "@/components/admin/SecurityDashboard";
+import { RetentionStatus } from "@/components/admin/RetentionStatus";
 import { browserSupportsWebAuthn, loginWithPasskey } from "@/lib/webauthn-client";
 
 type Submission = {
@@ -306,6 +307,8 @@ export default function AdminPage() {
             </button>
           </div>
         </div>
+
+        <RetentionStatus token={token} />
 
         <div className="flex gap-2 mb-8 border-b border-sr-line flex-wrap">
           <button

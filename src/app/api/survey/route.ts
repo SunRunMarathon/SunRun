@@ -3,6 +3,7 @@ import { getClientIp, detectDeviceType, detectTrafficSource } from "@/lib/reques
 import { lookupGeoIp } from "@/lib/geo";
 import { SURVEY_OPTIONS } from "@/lib/survey-options";
 import { isAuthorizedRequest } from "@/lib/admin-session";
+import { maybeRunRetentionCleanup } from "@/lib/retention";
 import crypto from "crypto";
 
 function findOption(value: string) {
@@ -126,6 +127,12 @@ export async function POST(request: Request) {
         clientToken,
       ]
     );
+    // Leniwe wyzwolenie sprzatania danych starszych niz 24 miesiace (patrz
+    // src/lib/retention.ts) - celowo bez await: serwer Next.js na Railway to
+    // dlugo dzialajacy proces (nie funkcja serverless znikajaca zaraz po
+    // odpowiedzi), wiec dokonczy sie w tle. Throttling i blokada w srodku
+    // sprawiaja, ze w 99% wywolan to i tak tylko jeden szybki SELECT.
+    maybeRunRetentionCleanup().catch(() => {});
     return Response.json({ ok: true });
   } catch (err) {
     // Zapis sie nie udal nawet po ponowieniach - jawny, grepowalny slad w

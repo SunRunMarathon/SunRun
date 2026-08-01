@@ -1,6 +1,7 @@
 import { queryWithRetry } from "@/lib/db";
 import { getClientIp, detectDeviceType, detectTrafficSource } from "@/lib/request-meta";
 import { isAuthorizedRequest } from "@/lib/admin-session";
+import { maybeRunRetentionCleanup } from "@/lib/retention";
 import crypto from "crypto";
 
 // Licznik wejść na stronę główną — pozwala policzyć conversion rate ankiety
@@ -65,6 +66,9 @@ export async function POST(request: Request) {
        ON CONFLICT (client_token) DO NOTHING`,
       [ip, referrer, trafficSource, utmSource, utmMedium, utmCampaign, userAgent, deviceType, landingPath, clientToken]
     );
+    // Patrz komentarz w src/app/api/survey/route.ts - to samo leniwe
+    // wyzwolenie sprzatania danych, bez await.
+    maybeRunRetentionCleanup().catch(() => {});
     return Response.json({ ok: true });
   } catch (err) {
     console.error("[visit] Zapis do bazy nieudany po ponowieniach:", err);
