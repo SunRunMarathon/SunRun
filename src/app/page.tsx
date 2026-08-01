@@ -9,6 +9,8 @@ import { Footer } from "@/components/footer";
 import TargetCursor from "@/components/TargetCursor";
 import Stack from "@/components/Stack";
 import { POKAZ_PARTNEROW } from "@/flagi";
+import SurveyPopup, { OPEN_SURVEY_EVENT } from "@/components/SurveyPopup";
+import VisitTracker from "@/components/VisitTracker";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
 
@@ -482,6 +484,7 @@ export default function Home() {
                 wolno użyć jako koloru tekstu (patrz tabela w globals.css). */}
             <button
               type="button"
+              onClick={() => window.dispatchEvent(new Event(OPEN_SURVEY_EVENT))}
               className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
             >
               Ankieta — skąd o nas usłyszałeś?
@@ -766,6 +769,9 @@ export default function Home() {
           6. FOOTER
       ═══════════════════════════════════════════ */}
       <Footer />
+
+      <VisitTracker />
+      <SurveyPopup />
     </div>
   );
 }
