@@ -141,6 +141,33 @@ export default function Home() {
   const heroSekcjaRef = useRef(null);
   const [wysokoscHero, setWysokoscHero] = useState(0);
 
+  // Mapa w sekcji „O biegu" ma sięgać spodem do spodu ostatniej karty w prawej
+  // kolumnie (Dane / Minimalna wpłata / Licznik zapisanych). Mierzymy kolumnę,
+  // nie na odwrót: karty mają wysokość z treści, mapa nie ma żadnej — więc
+  // pomiar jest jednokierunkowy, bez pętli. Tylko na siatce dwukolumnowej
+  // (lg+) — poniżej mapa i karty stoją jedna pod drugą, dopasowanie nie ma
+  // tam sensu, więc wraca się do zwykłych klas Tailwinda (null).
+  const prawaKolumnaRef = useRef(null);
+  const [wysokoscMapy, setWysokoscMapy] = useState(null);
+  useEffect(() => {
+    const zmierz = () => {
+      const kolumna = prawaKolumnaRef.current;
+      if (!kolumna || window.innerWidth < 1024) {
+        setWysokoscMapy(null);
+        return;
+      }
+      setWysokoscMapy(Math.round(kolumna.getBoundingClientRect().height));
+    };
+    zmierz();
+    const ro = new ResizeObserver(zmierz);
+    if (prawaKolumnaRef.current) ro.observe(prawaKolumnaRef.current);
+    window.addEventListener("resize", zmierz);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", zmierz);
+    };
+  }, []);
+
   // Dolny odstęp sekcji „Wspomnienia". Liczony od przycisku „Odwiedź Archiwum",
   // a nie od dołu sekcji: stos zdjęć obok sięga niżej niż przycisk, więc zwykły
   // padding dałby lukę mierzoną od zdjęć. Sztab chce ją mierzyć od przycisku
@@ -625,8 +652,14 @@ export default function Home() {
               więc odstęp między nimi a mapą został bez zmian. Na telefonie układ
               pozostaje jednokolumnowy, bo podział wchodzi dopiero od breakpointu lg. */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            {/* MAPA — połowa szerokości na desktopie */}
-            <div className="h-96 sm:h-[440px] lg:h-[620px] rounded-3xl overflow-hidden border border-sr-line bg-sr-white shadow-xl relative">
+            {/* MAPA — połowa szerokości na desktopie. Wysokość z klas Tailwinda
+                to tylko fallback (mobile/tablet, przed pomiarem) - na lg+
+                nadpisuje ją wysokoscMapy (patrz efekt wyżej), żeby spód mapy
+                dosięgał spodu ostatniej karty w prawej kolumnie. */}
+            <div
+              className="h-96 sm:h-[440px] lg:h-[620px] rounded-3xl overflow-hidden border border-sr-line bg-sr-white shadow-xl relative"
+              style={wysokoscMapy ? { height: wysokoscMapy } : undefined}
+            >
               <RouteMap />
               <div className="absolute bottom-4 left-4 bg-sr-white border border-sr-line rounded-xl z-[1000] px-4 py-2 text-xs text-[#3D4D65] pointer-events-none">
                 Trasa · Park Ludowy, al. J. Piłsudskiego
@@ -634,7 +667,7 @@ export default function Home() {
             </div>
 
             {/* DANE + LICZNIK — druga połowa szerokości */}
-            <div className="flex flex-col gap-5">
+            <div ref={prawaKolumnaRef} className="flex flex-col gap-5">
               {/* Karta: Dane */}
               <div className="flex-1 rounded-3xl bg-sr-white border border-sr-line p-6 shadow-lg">
                 <span className="text-xs font-bold uppercase tracking-widest text-sr-red mb-4 block">
