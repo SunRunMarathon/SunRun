@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { surveyOptionLabel } from "@/lib/survey-options";
+import { surveyOptionLabel, socialMediaOptionLabel } from "@/lib/survey-options";
 
 type SurveyResponse = {
   id: string;
   created_at: string;
   answer: string;
+  answer_detail: string | null;
+  other_text: string | null;
   ip: string | null;
   city: string | null;
   region: string | null;
@@ -132,6 +134,13 @@ export function SurveyDashboard({ password }: { password: string }) {
     visitCount && visitCount > 0 ? ((total / visitCount) * 100).toFixed(1) : null;
 
   const answerDist = countBy(responses, (r) => surveyOptionLabel(r.answer));
+  const socialResponses = responses.filter((r) => r.answer === "social_media");
+  const socialDetailDist = countBy(socialResponses, (r) =>
+    r.answer_detail ? socialMediaOptionLabel(r.answer_detail) : "nie doprecyzowano"
+  );
+  const otherTexts = responses
+    .filter((r) => r.other_text)
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   const sourceDist = countBy(responses, (r) => r.traffic_source);
   const countryDist = countBy(responses, (r) => r.country).slice(0, 10);
   const cityDist = countBy(responses, (r) => r.city).slice(0, 10);
@@ -167,6 +176,36 @@ export function SurveyDashboard({ password }: { password: string }) {
             Źródło ruchu
           </h3>
           <BarList data={sourceDist} total={total} colorClass="bg-sr-red" />
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">
+          <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-4">
+            Media społecznościowe — szczegóły ({socialResponses.length})
+          </h3>
+          <BarList data={socialDetailDist} total={socialResponses.length} colorClass="bg-sr-orange" />
+        </div>
+        <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">
+          <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-4">
+            Wpisane „Inne" ({otherTexts.length})
+          </h3>
+          {otherTexts.length === 0 ? (
+            <p className="text-sm text-[#3D4D65]">Brak danych</p>
+          ) : (
+            <ul className="space-y-2.5 max-h-64 overflow-y-auto">
+              {otherTexts.map((r) => (
+                <li key={r.id} className="text-sm border-b border-sr-line pb-2 last:border-0">
+                  <span className="text-[#183153]">{r.other_text}</span>
+                  <span className="block text-[10px] text-[#3D4D65] mt-0.5">
+                    {surveyOptionLabel(r.answer)}
+                    {r.answer_detail ? ` → ${socialMediaOptionLabel(r.answer_detail)}` : ""} ·{" "}
+                    {new Date(r.created_at).toLocaleDateString("pl-PL")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
@@ -226,6 +265,7 @@ export function SurveyDashboard({ password }: { password: string }) {
               <tr className="border-t border-sr-line text-left text-[#3D4D65] uppercase tracking-wider">
                 <th className="px-4 py-2.5 whitespace-nowrap">Data</th>
                 <th className="px-4 py-2.5 whitespace-nowrap">Odpowiedź</th>
+                <th className="px-4 py-2.5 whitespace-nowrap">Dopisano</th>
                 <th className="px-4 py-2.5 whitespace-nowrap">Źródło</th>
                 <th className="px-4 py-2.5 whitespace-nowrap">UTM</th>
                 <th className="px-4 py-2.5 whitespace-nowrap">Lokalizacja</th>
@@ -243,6 +283,10 @@ export function SurveyDashboard({ password }: { password: string }) {
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap font-bold text-[#183153]">
                     {surveyOptionLabel(r.answer)}
+                    {r.answer_detail ? ` → ${socialMediaOptionLabel(r.answer_detail)}` : ""}
+                  </td>
+                  <td className="px-4 py-2.5 text-[#3D4D65] max-w-[200px] truncate" title={r.other_text ?? undefined}>
+                    {r.other_text ?? "-"}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#183153]">
                     {r.traffic_source ?? "-"}

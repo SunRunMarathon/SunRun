@@ -5,6 +5,10 @@ import { SURVEY_OPTIONS } from "@/lib/survey-options";
 import { isAuthorizedRequest } from "@/lib/admin-session";
 import crypto from "crypto";
 
+function findOption(value: string) {
+  return SURVEY_OPTIONS.find((o) => o.value === value) || null;
+}
+
 async function ensureTable() {
   await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS survey_responses (
@@ -27,14 +31,20 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
-  // Kolumna doszla po pierwszym wdrozeniu - ADD COLUMN IF NOT EXISTS bezpiecznie
-  // dogania istniejace tabele na produkcji bez migracji recznej. Unikalny indeks
-  // (a nie ograniczenie w CREATE TABLE) toleruje NULL-e w starych wierszach -
-  // Postgres nie traktuje wielu NULL-i jako duplikatow.
+  // Kolumny doszly po pierwszym wdrozeniu - ADD COLUMN IF NOT EXISTS bezpiecznie
+  // dogania istniejace tabele na produkcji bez migracji recznej i bez utraty
+  // juz zebranych odpowiedzi (stare wiersze dostaja po prostu NULL w nowych
+  // kolumnach). Unikalny indeks na client_token toleruje NULL-e w starych
+  // wierszach - Postgres nie traktuje wielu NULL-i jako duplikatow.
   await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS client_token UUID`);
   await queryWithRetry(
     `CREATE UNIQUE INDEX IF NOT EXISTS survey_responses_client_token_key ON survey_responses (client_token)`
   );
+  // answer_detail = doprecyzowanie w ramach odpowiedzi glownej (np. ktore
+  // medium spolecznosciowe). other_text = wolny tekst przy "Inne", na
+  // dowolnym poziomie pytania. Oba opcjonalne.
+  await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS answer_detail VARCHAR(100)`);
+  await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS other_text VARCHAR(200)`);
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -52,10 +62,21 @@ export async function POST(request: Request) {
   }
 
   const answer = String(body.answer ?? "").trim();
-  const validValues = SURVEY_OPTIONS.map((o) => o.value);
-  if (!validValues.includes(answer)) {
+  const mainOption = findOption(answer);
+  if (!mainOption) {
     return Response.json({ error: "Nieprawidłowa odpowiedź" }, { status: 400 });
   }
+
+  // Doprecyzowanie ma sens tylko dla opcji, ktora faktycznie ma podpytanie
+  // (np. "Media spolecznosciowe" -> TikTok/Instagram/Facebook/Inne) - w
+  // kazdym innym przypadku ignorujemy to pole zamiast odrzucac caly request,
+  // zeby nieoczekiwana wartosc z klienta nie zablokowala zapisu reszty.
+  const rawDetail = str(body.answerDetail, 100);
+  const answerDetail =
+    mainOption.subOptions && rawDetail && mainOption.subOptions.some((o) => o.value === rawDetail)
+      ? rawDetail
+      : null;
+  const otherText = str(body.otherText, 200);
 
   const referrer = str(body.referrer, 2000);
   const utmSource = str(body.utmSource, 100);
@@ -81,11 +102,13 @@ export async function POST(request: Request) {
     await ensureTable();
     await queryWithRetry(
       `INSERT INTO survey_responses
-        (answer, ip, city, region, country, referrer, traffic_source, utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path, client_token)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+        (answer, answer_detail, other_text, ip, city, region, country, referrer, traffic_source, utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path, client_token)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
        ON CONFLICT (client_token) DO NOTHING`,
       [
         answer,
+        answerDetail,
+        otherText,
         ip,
         geo.city,
         geo.region,
@@ -119,7 +142,7 @@ export async function GET(request: Request) {
   try {
     await ensureTable();
     const result = await queryWithRetry(
-      `SELECT id, created_at, answer, ip, city, region, country, referrer, traffic_source,
+      `SELECT id, created_at, answer, answer_detail, other_text, ip, city, region, country, referrer, traffic_source,
               utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path
        FROM survey_responses ORDER BY created_at DESC`
     );

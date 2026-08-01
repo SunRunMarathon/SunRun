@@ -36,6 +36,18 @@ export function getModalPanelVariants(reducedMotion: boolean): Variants {
   };
 }
 
+// Przejście między krokami wewnątrz jednego popupu (np. pytanie główne →
+// pytanie doprecyzowujące w ankiecie) — delikatny poziomy slide + fade,
+// krótszy niż wejście/wyjście całego modala, bo to tylko zmiana treści w
+// środku, nie pojawienie się nowego okna.
+export function getStepVariants(reducedMotion: boolean): Variants {
+  return {
+    hidden: { opacity: 0, x: reducedMotion ? 0 : 10 },
+    visible: { opacity: 1, x: 0, transition: { duration: reducedMotion ? 0 : 0.18, ease: "easeOut" } },
+    exit: { opacity: 0, x: reducedMotion ? 0 : -10, transition: { duration: reducedMotion ? 0 : 0.14, ease: "easeIn" } },
+  };
+}
+
 // Pasek przyklejony do dołu ekranu (baner cookies) — wjeżdża z dołu.
 export function getBottomBarVariants(reducedMotion: boolean): Variants {
   return {
