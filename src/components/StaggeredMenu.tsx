@@ -440,6 +440,16 @@ export const StaggeredMenu = ({
             />
           )}
         </a>
+      </header>
+
+      {/* Przycisk poza <header>, nie w środku - header ma teraz niższy z-index
+          niż panel (patrz CSS), żeby otwarty panel go przykrywał, tak samo jak
+          logo w rogu. Sam przycisk musi jednak zostać widoczny NAD panelem,
+          więc żyje we własnej warstwie (.sm-toggle-layer) z wysokim z-index -
+          gdyby został dzieckiem headera, transform na headerze złapałby go
+          we własny kontekst warstwowania i żaden z-index by z niego nie
+          wypuścił, niezależnie od wartości. */}
+      <div className={`sm-toggle-layer${headerHidden && !open ? ' sm-header-hidden' : ''}`}>
         <button
           ref={toggleBtnRef}
           className="sm-toggle"
@@ -463,7 +473,7 @@ export const StaggeredMenu = ({
             <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
           </span>
         </button>
-      </header>
+      </div>
 
       <aside id="staggered-menu-panel" ref={panelRef} className="staggered-menu-panel" aria-hidden={!open} inert={!open ? true : undefined}>
         <div className="sm-panel-inner">

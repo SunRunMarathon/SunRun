@@ -215,12 +215,14 @@ export function Navbar({ revealOnScroll = false }) {
       // Tło nagłówka pojawia się dopiero razem z logo w rogu (ten sam
       // logoOpacity) - u góry strony, nad hero, header ma zostać w pełni
       // przezroczysty jak dotychczas. Gdy logo jest już widoczne (przewinięte
-      // w głąb strony), header dostaje piaskowe, rozmyte tło w tym samym
+      // w głąb strony), header dostaje białe, rozmyte tło w tym samym
       // tempie co samo logo - inaczej przy scrollu w górę nagłówek potrafi
       // wrócić dokładnie nad nagłówkiem sekcji i wizualnie się z nim zlać
-      // (zgłoszone jako "logo nachodzi na O BIEGU").
+      // (zgłoszone jako "logo nachodzi na O BIEGU"). Sama przezroczystość
+      // (logoOpacity * 0.9) zostaje bez zmian - zmienił się tylko kolor,
+      // z piaskowego (244,216,162) na biały.
       headerStyle={{
-        backgroundColor: `rgba(244, 216, 162, ${logoOpacity * 0.9})`,
+        backgroundColor: `rgba(255, 255, 255, ${logoOpacity * 0.9})`,
         backdropFilter: logoOpacity > 0.05 ? "blur(10px)" : "none",
         WebkitBackdropFilter: logoOpacity > 0.05 ? "blur(10px)" : "none",
       }}
