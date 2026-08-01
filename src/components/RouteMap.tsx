@@ -62,56 +62,48 @@ function ScrollZoomIntent() {
   return null;
 }
 
-// Jedno okrążenie po REALNYCH ALEJKACH Parku Ludowego (nie po granicy parku -
-// poprzednia wersja mapy szła po obrysie leisure=park z OSM, co Miłosz słusznie
-// zgłosił jako błędne, bo to nie jest ścieżka do biegania).
+// TRZECIE podejście do tej trasy. Pierwsze szło po obrysie parku z OSM (to
+// nie jest ścieżka do biegania). Drugie łączyło realne alejki, ale użyło
+// niewłaściwego odcinka przy Targach (spoke przez środek zamiast realnej
+// krawędzi) i błędnie zorientowanej "prostej" - dawało to widoczne wystające
+// "ogonki" na mapie. Milosz przysłał wzorzec z Google Maps (żółta trasa) -
+// ta wersja jest zbudowana pod TEN wzorzec: jedna zamknięta pętla po
+// obwodzie parku + jedna wewnętrzna ostroga do fontanny, nic więcej.
 //
-// Trasa złożona z pełnych, zweryfikowanych fragmentów alejek z OpenStreetMap
-// (way id w komentarzach), połączonych w jedną pętlę wg opisu przekazanego
-// przez Miłosza na podstawie planu parku:
+// Każdy odcinek to konkretny, zweryfikowany fragment alejki z OpenStreetMap
+// (Overpass API), połączony w kolejności:
 //
-//  0-9   "Aleja Europejskiej Stolicy Młodzieży Lublin 2023" (way 1005433130) -
-//        jedna z dwóch równoległych alejek tworzących oś trasy, od okrągłego
-//        węzła przy Targach Lublin do fontanny.
-//  9-13  szpilka przy fontannie (way 294448132/1057965793 - schody obok
-//        fontanny, ok. 20 m) - zawrót w miejscu okrągłego zbiornika wodnego.
-//  13-23 druga równoległa alejka (way 294442930) z powrotem do okrągłego
-//        węzła.
-//  23    okrągły węzeł/rondo przy Targach Lublin (way 995319618 - realny,
-//        widoczny na mapie łuk łączący obie alejki - dokładnie to "półkole
-//        przy targach", o którym pisał Miłosz).
-//  24-41 ramię wschodnie/północne, część 1: alejka (way 62364767) biegnąca
-//        od węzła na północ, blisko wschodniej krawędzi parku.
-//  42-64 ramię północne: dalszy ciąg (way 286179378) wzdłuż północnej
-//        krawędzi (od strony Targów Lublin) do narożnika przy al. Piłsudskiego.
-//  65-96 ramię zachodnie: alejka (way 451709904) schodząca z tego narożnika
-//        na południe, blisko cały czas Bystrzycy (średnio ok. 12 m od granicy
-//        parku wg danych OSM) - aż do punktu z wodą.
-//  96    PUNKT Z WODĄ - realne skrzyżowanie alejek w południowo-zachodniej
-//        części parku (na prośbę Miłosza punkty medyczne usunięto, ten punkt
-//        został).
-//  97-120 ramię południowe, część 1 (way 62364771 + 286178730) wzdłuż
-//        południowej krawędzi.
-//  120-158 pętla wokół południowo-wschodniego płata parku (way 1005422292) -
-//        ten "wysunięty w stronę Targów" fragment, o którym pisał Miłosz.
-//  159-170 powrót do okrągłego węzła (way 1306342584 + 1504511226).
+//  0-9    Jedna z dwóch równoległych alejek "Aleja Europejskiej Stolicy
+//         Młodzieży Lublin 2023" (way 1005433130) - START leży na niej,
+//         blisko ronda, po czym trasa dochodzi do fontanny.
+//  9-13   Szpilka przy fontannie (way 294448132/1057965793) - ciasny zawrót
+//         przy okrągłym zbiorniku wodnym.
+//  13-23  Druga równoległa alejka (way 294442930) z powrotem do ronda.
+//  23     Rondo przy Targach Lublin (way 995319618) - węzeł centralny, z
+//         którego odchodzą trzy ramiona.
+//  24-28  Realne połączenie rondo -> narożnik wschodni (way 294442933) -
+//         to jest odcinek, którego brakowało w drugiej wersji (był tam
+//         objazd przez środek parku, stąd "ogonek" na starej mapie).
+//  29-50  Ramię północne wzdłuż al. Piłsudskiego (way 286179378) do
+//         narożnika północnego.
+//  51-83  Ramię zachodnie wzdłuż Bystrzycy (way 451709904) do punktu z wodą.
+//  83     PUNKT Z WODĄ - realne skrzyżowanie alejek w płd-zach części parku
+//         (punkty medyczne usunięte na prośbę Milosza, ten punkt został).
+//  84-109 Ramię południowe (way 62364771 + 286178730) wzdłuż południowej
+//         krawędzi.
+//  109-144 Pętla wokół płata w południowej części parku (way 1005422292) -
+//         to jest "obiega płat", o którym pisał Milosz.
+//  144-149 Powrót skosem na północny wschód do ronda (way 62364768).
 //
-// START/META (punkt 0) leży NA PROSTEJ, ale świadomie bliżej okrągłego węzła
-// niż fontanny (Miłosz: „dalej na prostej, dalej od fontanny, bo nie wiemy
-// dokładnie gdzie będzie start") - ok. 20 m od węzła po alejce, wobec ok.
-// 270 m do fontanny.
+// START/META (punkt 0) leży NA OSTRODZE, bliżej ronda niż fontanny -
+// zgodnie z prośbą Milosza ("dalej na prostej, dalej od fontanny").
 //
-// Zweryfikowany dystans jednego okrążenia (Haversine po punktach poniżej,
-// licząc też zamknięcie pętli z powrotem do startu): ok. 2,88 km.
-// To WIĘCEJ niż orientacyjne „2,5 km" z założenia „5 km = 2 pętle" - różnica
-// bierze się stąd, że opisana trasa nie tylko obiega obwód parku (sam obwód
-// wg granicy z OSM to ok. 2,3 km), ale DODATKOWO robi szpilkę do fontanny w
-// głębi parku. Dwa okrążenia tej pętli to więc ok. 5,76 km, nie 5 km.
-// Zgodnie z prośbą Miłosza - nie naciągnięto tego "na siłę" do 2,5 km, tylko
-// zgłoszono wprost w raporcie; finalny dystans i tak zostanie zmierzony
-// profesjonalnie do certyfikacji PZLA.
+// Zweryfikowany dystans jednego okrążenia (Haversine, z zamknięciem pętli
+// do startu): ok. 2,34 km. Dwa okrążenia (5 km wg założenia) dają ok.
+// 4,68 km - trochę mniej niż 5 km, ale bliżej tego celu niż poprzednie
+// wersje. Ostateczny dystans i tak zmierzy pomiar do certyfikacji PZLA.
 const ROUTE_LOOP = [
-  [51.23596, 22.56218], // 0 - START/META (blisko okragego wezla, na prostej)
+  [51.23596, 22.56218], // 0 - START/META (blisko ronda, na ostrodze)
   [51.2367, 22.56069],
   [51.23704, 22.55998],
   [51.23706, 22.55995],
@@ -134,25 +126,11 @@ const ROUTE_LOOP = [
   [51.23568, 22.56212],
   [51.23577, 22.56228],
   [51.23585, 22.5624],
-  [51.23598, 22.56235],
-  [51.23629, 22.56235],
-  [51.23641, 22.56237],
-  [51.2365, 22.56236],
-  [51.23668, 22.56237],
-  [51.23691, 22.56241],
-  [51.23697, 22.56241],
-  [51.23712, 22.56242],
-  [51.23722, 22.56246],
-  [51.23734, 22.56249],
-  [51.23746, 22.56249],
-  [51.23754, 22.56249],
-  [51.23767, 22.56251],
-  [51.23775, 22.56253],
-  [51.23785, 22.56253],
-  [51.23797, 22.56254],
-  [51.2382, 22.56256],
-  [51.23821, 22.56257],
+  [51.23593, 22.56256],
+  [51.23629, 22.56317],
   [51.23697, 22.5643],
+  [51.23705, 22.56444],
+  [51.23706, 22.56445],
   [51.23712, 22.56407],
   [51.23715, 22.56401],
   [51.23719, 22.56394],
@@ -207,7 +185,7 @@ const ROUTE_LOOP = [
   [51.23608, 22.55851],
   [51.23597, 22.55846],
   [51.23587, 22.55842],
-  [51.23573, 22.55833], // 96 - WODA (poludniowo-zachodnia czesc parku)
+  [51.23573, 22.55833], // 82 - WODA (poludniowo-zachodnia czesc parku)
   [51.23567, 22.55853],
   [51.2356, 22.55853],
   [51.23554, 22.55854],
@@ -269,28 +247,21 @@ const ROUTE_LOOP = [
   [51.23484, 22.56261],
   [51.23485, 22.56248],
   [51.23485, 22.56246],
-  [51.23443, 22.56357],
-  [51.23441, 22.56369],
-  [51.23437, 22.56378],
-  [51.23433, 22.5639],
-  [51.23427, 22.56401],
-  [51.23422, 22.5641],
-  [51.23417, 22.56418],
-  [51.23431, 22.56439],
-  [51.23529, 22.56271],
-  [51.23534, 22.56258],
-  [51.23538, 22.5624],
+  [51.23506, 22.56237],
+  [51.23517, 22.56232],
+  [51.2353, 22.56229],
   [51.2354, 22.5623],
+  [51.23552, 22.56231],
 ];
 
 const START_POINT = ROUTE_LOOP[0];
-const WATER_POINT = ROUTE_LOOP[96];
+const WATER_POINT = ROUTE_LOOP[82];
 
-// Dwa pełne okrążenia (patrz komentarz wyżej ws. realnego dystansu): pętla 1
-// zamknięta powrotem do startu, potem pętla 2 od razu dalej, też zamknięta na mecie.
+// Dwa pełne okrążenia: pętla 1 zamknięta powrotem do startu, potem pętla 2
+// od razu dalej, też zamknięta na mecie.
 const ROUTE = [...ROUTE_LOOP, START_POINT, ...ROUTE_LOOP.slice(1), START_POINT];
 
-const CENTER = [51.23673, 22.56136];
+const CENTER = [51.23672, 22.56139];
 
 export default function RouteMap() {
   const startIcon = L.divIcon({
@@ -333,17 +304,17 @@ export default function RouteMap() {
       <Marker
         position={START_POINT}
         icon={startIcon}
-        title="Start i Meta - Park Ludowy, przy okrągłym węźle od strony Targów Lublin"
-        alt="Start i Meta biegu - Park Ludowy, przy okrągłym węźle od strony Targów Lublin"
+        title="Start i Meta - Park Ludowy, przy rondzie od strony Targów Lublin"
+        alt="Start i Meta biegu - Park Ludowy, przy rondzie od strony Targów Lublin"
         eventHandlers={{
           add: (e) => {
             const el = e.target.getElement();
-            if (el) el.setAttribute('aria-label', 'Start i Meta biegu - Park Ludowy, przy okrągłym węźle od strony Targów Lublin');
+            if (el) el.setAttribute('aria-label', 'Start i Meta biegu - Park Ludowy, przy rondzie od strony Targów Lublin');
           },
         }}
       >
         <Popup className="route-popup">
-          <strong>Start / Meta</strong><br />Park Ludowy, przy okrągłym węźle od strony Targów Lublin
+          <strong>Start / Meta</strong><br />Park Ludowy, przy rondzie od strony Targów Lublin
         </Popup>
       </Marker>
       <Marker
