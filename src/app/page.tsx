@@ -733,7 +733,11 @@ export default function Home() {
         </div>
       </section>
 
-      <PricingSection />
+      {/* PricingSection celowo WYŁĄCZONA - Milosz wstrzymał publikację progów
+          wpłat na stronie do decyzji sztabu (patrz komentarz w
+          PricingSection.tsx). Komponent gotowy, wystarczy odkomentować ten
+          jeden wiersz, gdy decyzja zapadnie. */}
+      {/* <PricingSection /> */}
 
       <FaqSection />
 
