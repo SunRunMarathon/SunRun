@@ -567,13 +567,20 @@ export default function Home() {
           <h1 id="hero-logo" className="m-0">
             <img
               src="/logo/sunrun-pelne.svg"
-              alt="Sun Run - Spotkajmy się dla Hospicjum"
+              alt=""
               width={870}
               height={634}
               className="h-auto"
               style={{ width: SZEROKOSC_LOGO }}
               draggable={false}
             />
+            {/* Logo samo w sobie nie niesie tekstu, a H1 to najważniejszy sygnał
+                tekstowy na stronie dla wyszukiwarek - bez tego jedyny "tekst" H1
+                to alt obrazka. sr-only: niewidoczne wizualnie (branding logo bez
+                zmian), ale czytane przez czytniki ekranu i indeksowane. */}
+            <span className="sr-only">
+              Sun Run Lublin - charytatywny bieg na 5 km w Parku Ludowym, 12 września 2026, na rzecz Hospicjum Dobrego Samarytanina
+            </span>
           </h1>
 
           {/* Data odsunięta od logo — wcześniej pt-1, przez co przyklejała się

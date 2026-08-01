@@ -1,6 +1,8 @@
 // Dane strukturalne (JSON-LD, schema.org) — pomagają Google zrozumieć, że to
 // charytatywny bieg / wydarzenie sportowe w Lublinie i powiązać stronę z zapytaniami
-// o bieganie, maratony, sport w Lublinie, bieg charytatywny i hospicjum.
+// o bieganie, sport w Lublinie, bieg charytatywny i hospicjum. Celowo BEZ "maraton" -
+// to jest bieg na 5 km (2 pętle), nie maraton; nazywanie go tak wprowadzałoby w błąd
+// i szkodziłoby wiarygodności strony w oczach Google (rozjazd frazy i treści).
 // Renderowane server-side w <head>, więc trafia do statycznego HTML (widoczne dla botów).
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
@@ -43,7 +45,6 @@ const organization = {
   knowsAbout: [
     "bieganie",
     "bieg charytatywny",
-    "maraton",
     "bieg na 5 km",
     "sport w Lublinie",
     "wydarzenia biegowe",

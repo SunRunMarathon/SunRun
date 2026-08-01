@@ -56,11 +56,13 @@ export const metadata: Metadata = {
   description:
     "Sun Run to charytatywny bieg w Lublinie (5 km, Park Ludowy) w 100% organizowany przez lubelską młodzież na rzecz Hospicjum Dobrego Samarytanina. Bieganie, sport i pomoc - dołącz do II edycji 2026 lub zostań wolontariuszem albo partnerem.",
   keywords: [
-    // marka
+    // marka - to jest jedyna fraza, ktora ta strona moze "wygrac" bez konkurencji
     "Sun Run", "Sun Run Lublin", "Sun Run 2026",
-    // bieganie / sport w Lublinie
+    // bieganie / sport w Lublinie - realny dystans i format, nie "maraton"
+    // (to jest bieg na 5 km, nie maraton - myląca fraza szkodzi bardziej niż
+    // pomaga, patrz uzasadnienie w raporcie SEO)
     "bieg Lublin", "bieganie Lublin", "biegi Lublin", "zawody biegowe Lublin",
-    "maraton Lublin", "półmaraton Lublin", "bieg 5 km Lublin", "sport Lublin",
+    "bieg 5 km Lublin", "bieg na 5 km Lublin", "sport Lublin",
     "wydarzenia sportowe Lublin", "wydarzenia biegowe Lublin", "impreza biegowa Lublin",
     "bieg Park Ludowy", "bieg al. Piłsudskiego Lublin", "Nordic Walking Lublin",
     // bieg charytatywny
