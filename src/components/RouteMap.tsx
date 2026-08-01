@@ -277,7 +277,53 @@ const WATER_POINT = ROUTE_LOOP[82];
 // od razu dalej, też zamknięta na mecie.
 const ROUTE = [...ROUTE_LOOP, START_POINT, ...ROUTE_LOOP.slice(1), START_POINT];
 
+// Zasięg trasy - jedno okrążenie wystarcza, oba mają te same skrajne punkty.
+// Liczone raz na starcie, bo ROUTE_LOOP jest stałą.
+const ROUTE_BOUNDS = L.latLngBounds(ROUTE_LOOP);
+
+// Środek/zoom startowe - tylko pierwsza klatka, zanim FitRouteBounds (niżej)
+// dopasuje kadr do ROUTE_BOUNDS. Bez tego MapContainer wymaga center+zoom
+// jako propsów startowych.
 const CENTER = [51.23672, 22.56139];
+
+// Dopasowuje kadr mapy do zasięgu całej trasy, zamiast sztywnego center+zoom -
+// inaczej południowa część pętli (albo dowolna inna, zależnie od kształtu
+// kontenera) wychodziła poza widoczny obszar. Przelicza się od nowa przy
+// KAŻDEJ zmianie rozmiaru kontenera (ResizeObserver), nie tylko raz przy
+// montowaniu - kontener mapy ma różną wysokość/szerokość zależnie od
+// breakpointu (h-96/sm:h-[440px]/lg:h-[620px], 1 vs 2 kolumny), więc bez tego
+// trasa mieściłaby się dobrze tylko w rozmiarze, w jakim mapa się zamontowała.
+function FitRouteBounds({ bounds }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const dopasuj = () => {
+      // invalidateSize zanim fitBounds - inaczej Leaflet liczy kadr względem
+      // starego, zapamiętanego rozmiaru kontenera sprzed zmiany.
+      map.invalidateSize();
+      // animate:false - domyślnie fitBounds PRZESUWA i PRZYBLIŻA płynną
+      // animacją (CSS transform napędzany requestAnimationFrame). Przy każdej
+      // zmianie rozmiaru kontenera (ResizeObserver niżej) to zbędne miganie -
+      // wyłączone ustawia docelowy kadr od razu, jedną klatką.
+      map.fitBounds(bounds, { padding: [24, 24], animate: false });
+    };
+    dopasuj();
+
+    // ResizeObserver łapie zmiany kontenera niezwiązane z resize okna (np.
+    // przejście layoutu z 2 kolumn na 1 przy tej samej szerokości okna).
+    // window.resize to uzupełnienie na wypadek, gdyby to akurat ResizeObserver
+    // nie złapał - tak samo jak w efekcie mierzącym logo w page.tsx.
+    const ro = new ResizeObserver(dopasuj);
+    ro.observe(map.getContainer());
+    window.addEventListener('resize', dopasuj);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', dopasuj);
+    };
+  }, [map, bounds]);
+
+  return null;
+}
 
 export default function RouteMap() {
   const startIcon = L.divIcon({
@@ -297,6 +343,14 @@ export default function RouteMap() {
     <MapContainer
       center={CENTER}
       zoom={16}
+      // zoomSnap=0 - domyślne 1 zaokrągla KAŻDY zoom (też ten z fitBounds) do
+      // pełnej liczby - Math.round, więc czasem W GÓRĘ względem idealnego
+      // dopasowania, co dawałoby ciut za mocno przybliżony kadr. Bez
+      // zaokrąglania fitBounds trafia w dokładny, ułamkowy poziom zoomu.
+      // Brak widocznych przycisków zoomu (zoomControl=false) i wyłączony
+      // scroll-zoom - ułamkowy poziom nigdzie się użytkownikowi nie pokazuje
+      // jako "dziwna" liczba.
+      zoomSnap={0}
       style={{ width: '100%', height: '100%' }}
       zoomControl={false}
       scrollWheelZoom={false}
@@ -307,6 +361,7 @@ export default function RouteMap() {
         subdomains="abcd"
         maxZoom={20}
       />
+      <FitRouteBounds bounds={ROUTE_BOUNDS} />
       <Polyline
         positions={ROUTE}
         pathOptions={{
