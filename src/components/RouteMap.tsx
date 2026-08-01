@@ -271,7 +271,7 @@ const ROUTE_LOOP = [
 ];
 
 const START_POINT = ROUTE_LOOP[0];
-const WATER_POINT = ROUTE_LOOP[43];
+// const WATER_POINT = ROUTE_LOOP[43];
 
 // Dwa pełne okrążenia: pętla 1 zamknięta powrotem do startu, potem pętla 2
 // od razu dalej, też zamknięta na mecie.
@@ -286,12 +286,12 @@ export default function RouteMap() {
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   });
-  const waterIcon = L.divIcon({
+  /*const waterIcon = L.divIcon({
     html: '<div class="route-water-pin"></div>',
     className: '',
     iconSize: [18, 18],
     iconAnchor: [9, 9],
-  });
+  });*/
 
   return (
     <MapContainer
@@ -331,16 +331,6 @@ export default function RouteMap() {
       >
         <Popup className="route-popup">
           <strong>Start / Meta</strong><br />Park Ludowy, przy rondzie od strony Targów Lublin
-        </Popup>
-      </Marker>
-      <Marker
-        position={WATER_POINT}
-        icon={waterIcon}
-        title="Punkt z wodą - południowo-zachodnia część parku"
-        alt="Punkt z wodą - południowo-zachodnia część parku"
-      >
-        <Popup className="route-popup">
-          <strong>Punkt z wodą</strong><br />Południowo-zachodnia część Parku Ludowego
         </Popup>
       </Marker>
       <ScrollZoomIntent />
