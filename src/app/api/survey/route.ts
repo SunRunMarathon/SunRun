@@ -2,8 +2,7 @@ import pool from "@/lib/db";
 import { getClientIp, detectDeviceType, detectTrafficSource } from "@/lib/request-meta";
 import { lookupGeoIp } from "@/lib/geo";
 import { SURVEY_OPTIONS } from "@/lib/survey-options";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+import { isAuthorizedRequest } from "@/lib/admin-session";
 
 async function ensureTable() {
   await pool.query(`
@@ -27,11 +26,6 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
-}
-
-function isAuthorized(request: Request) {
-  const header = request.headers.get("authorization") || "";
-  return header === `Bearer ${ADMIN_PASSWORD}`;
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -100,7 +94,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedRequest(request)) {
     return Response.json({ error: "Brak autoryzacji" }, { status: 401 });
   }
   try {

@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { SurveyDashboard } from "@/components/admin/SurveyDashboard";
 import { ShareDashboard } from "@/components/admin/ShareDashboard";
+import { SecurityDashboard } from "@/components/admin/SecurityDashboard";
+import { browserSupportsWebAuthn, loginWithPasskey } from "@/lib/webauthn-client";
 
 type Submission = {
   id: string;
@@ -13,32 +15,62 @@ type Submission = {
   message: string;
 };
 
+const TOKEN_KEY = "admin_session_token";
+
+const COLOR_STYLES: Record<"red" | "green" | "yellow", { label: string; className: string }> = {
+  red: { label: "Czerwony", className: "text-sr-red border-sr-red/40" },
+  green: { label: "Zielony", className: "text-emerald-600 border-emerald-600/40" },
+  yellow: { label: "Żółty", className: "text-amber-600 border-amber-600/40" },
+};
+
+function shuffledColors(): ("red" | "green" | "yellow")[] {
+  const colors: ("red" | "green" | "yellow")[] = ["red", "green", "yellow"];
+  for (let i = colors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [colors[i], colors[j]] = [colors[j], colors[i]];
+  }
+  return colors;
+}
+
 export default function AdminPage() {
-  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
   const [authed, setAuthed] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [tab, setTab] = useState<"ankieta" | "udostepnienia" | "partnerzy">("ankieta");
+  const [tab, setTab] = useState<"ankieta" | "udostepnienia" | "partnerzy" | "bezpieczenstwo">(
+    "ankieta"
+  );
 
-  const fetchSubmissions = async (pass: string) => {
+  const [showSecretsForm, setShowSecretsForm] = useState(false);
+  const [secrets, setSecrets] = useState({ red: "", green: "", yellow: "" });
+  const fieldOrder = useMemo(() => shuffledColors(), [showSecretsForm]);
+  const [webauthnSupported, setWebauthnSupported] = useState(false);
+  const [passkeyLoading, setPasskeyLoading] = useState(false);
+
+  useEffect(() => {
+    setWebauthnSupported(browserSupportsWebAuthn());
+  }, []);
+
+  const verifyAndLoad = async (tok: string) => {
     setLoading(true);
     setError("");
     try {
       const res = await fetch("/api/contact", {
-        headers: { Authorization: `Bearer ${pass}` },
+        headers: { Authorization: `Bearer ${tok}` },
       });
       if (res.status === 401) {
-        setError("Nieprawidłowe hasło");
+        setError("Sesja wygasła, zaloguj się ponownie");
         setAuthed(false);
-        sessionStorage.removeItem("admin_pass");
+        sessionStorage.removeItem(TOKEN_KEY);
         return;
       }
       if (!res.ok) throw new Error();
       const data = await res.json();
       setSubmissions(data.submissions);
       setAuthed(true);
-      sessionStorage.setItem("admin_pass", pass);
+      setToken(tok);
+      sessionStorage.setItem(TOKEN_KEY, tok);
     } catch {
       setError("Błąd połączenia z serwerem");
     } finally {
@@ -48,57 +80,117 @@ export default function AdminPage() {
 
   // przywróć sesję po odświeżeniu strony
   useEffect(() => {
-    const saved = sessionStorage.getItem("admin_pass");
-    if (saved) {
-      setPassword(saved);
-      fetchSubmissions(saved);
-    }
+    const saved = sessionStorage.getItem(TOKEN_KEY);
+    if (saved) verifyAndLoad(saved);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handlePasskeyLogin = async () => {
+    setPasskeyLoading(true);
+    setError("");
+    try {
+      const tok = await loginWithPasskey();
+      await verifyAndLoad(tok);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Logowanie kluczem nie powiodło się");
+    } finally {
+      setPasskeyLoading(false);
+    }
+  };
+
+  const handleSecretsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    fetchSubmissions(password);
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/login-secrets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(secrets),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.token) {
+        setError(data.error || "Nieprawidłowe dane logowania");
+        setLoading(false);
+        return;
+      }
+      await verifyAndLoad(data.token);
+    } catch {
+      setError("Błąd połączenia z serwerem");
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
     setAuthed(false);
-    setPassword("");
+    setToken("");
     setSubmissions([]);
-    sessionStorage.removeItem("admin_pass");
+    sessionStorage.removeItem(TOKEN_KEY);
   };
+
+  const fetchSubmissions = () => verifyAndLoad(token);
 
   if (!authed) {
     return (
-      <div className="min-h-screen bg-[#F4D8A2] text-[#183153] flex items-center justify-center px-6">
-        <form
-          onSubmit={handleLogin}
-          className="w-full max-w-sm bg-white border border-sr-line rounded-3xl p-8 space-y-5 shadow-lg"
-        >
+      <div className="min-h-screen bg-[#F4D8A2] text-[#183153] flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-sm bg-white border border-sr-line rounded-3xl p-8 space-y-6 shadow-lg">
           <div>
             <h1 className="text-2xl font-black uppercase text-sr-red">Panel Admina</h1>
-            <p className="text-xs text-[#3D4D65] mt-1">Sun Run · zgłoszenia i ankieta</p>
+            <p className="text-xs text-[#3D4D65] mt-1">Sun Run</p>
           </div>
-          <div>
-            <label className="block text-xs text-[#3D4D65] uppercase tracking-widest mb-1.5">
-              Hasło
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoFocus
-              className="w-full bg-[#F4D8A2] border border-sr-line focus:border-sr-orange rounded-xl px-4 py-3 text-sm text-[#183153] outline-none transition-colors"
-            />
-          </div>
+
+          {webauthnSupported && (
+            <button
+              type="button"
+              onClick={handlePasskeyLogin}
+              disabled={passkeyLoading}
+              className="w-full py-3.5 bg-sr-navy hover:bg-sr-navy/90 disabled:opacity-50 text-sr-orange font-black rounded-full text-sm tracking-widest uppercase transition-all"
+            >
+              {passkeyLoading ? "Łączenie…" : "Zaloguj kluczem bezpieczeństwa"}
+            </button>
+          )}
+
           {error && <p className="text-sm text-sr-red">{error}</p>}
-          <button
-            type="submit"
-            disabled={loading || !password}
-            className="w-full py-3 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-50 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
-          >
-            {loading ? "Logowanie..." : "Zaloguj"}
-          </button>
-        </form>
+
+          {!showSecretsForm ? (
+            <button
+              type="button"
+              onClick={() => setShowSecretsForm(true)}
+              className="w-full text-center text-xs text-[#3D4D65] underline hover:text-[#183153]"
+            >
+              Nie masz klucza? Zaloguj się trzema hasłami
+            </button>
+          ) : (
+            <form onSubmit={handleSecretsLogin} className="space-y-4 pt-2 border-t border-sr-line">
+              <p className="text-[11px] text-[#3D4D65] pt-4">
+                Kolejność pól jest losowa przy każdym wejściu — wpisz hasło przypisane do koloru,
+                nie do pozycji.
+              </p>
+              {fieldOrder.map((color) => (
+                <div key={color}>
+                  <label
+                    className={`block text-xs font-bold uppercase tracking-widest mb-1.5 border-l-4 pl-2 ${COLOR_STYLES[color].className}`}
+                  >
+                    {COLOR_STYLES[color].label}
+                  </label>
+                  <input
+                    type="password"
+                    value={secrets[color]}
+                    onChange={(e) => setSecrets((s) => ({ ...s, [color]: e.target.value }))}
+                    className="w-full bg-[#F4D8A2] border border-sr-line focus:border-sr-orange rounded-xl px-4 py-2.5 text-sm text-[#183153] outline-none transition-colors"
+                  />
+                </div>
+              ))}
+              <button
+                type="submit"
+                disabled={loading || !secrets.red || !secrets.green || !secrets.yellow}
+                className="w-full py-3 bg-sr-orange hover:bg-sr-orange/90 disabled:opacity-50 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all"
+              >
+                {loading ? "Logowanie..." : "Zaloguj"}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     );
   }
@@ -113,7 +205,7 @@ export default function AdminPage() {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => (tab === "partnerzy" ? fetchSubmissions(password) : window.location.reload())}
+              onClick={() => (tab === "partnerzy" ? fetchSubmissions() : window.location.reload())}
               disabled={loading}
               className="px-5 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
             >
@@ -128,7 +220,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="flex gap-2 mb-8 border-b border-sr-line">
+        <div className="flex gap-2 mb-8 border-b border-sr-line flex-wrap">
           <button
             onClick={() => setTab("ankieta")}
             className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
@@ -159,11 +251,23 @@ export default function AdminPage() {
           >
             Zgłoszenia partnerów ({submissions.length})
           </button>
+          <button
+            onClick={() => setTab("bezpieczenstwo")}
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+              tab === "bezpieczenstwo"
+                ? "border-sr-orange text-[#183153]"
+                : "border-transparent text-[#3D4D65] hover:text-[#183153]"
+            }`}
+          >
+            Bezpieczeństwo
+          </button>
         </div>
 
-        {tab === "ankieta" && <SurveyDashboard password={password} />}
+        {tab === "ankieta" && <SurveyDashboard password={token} />}
 
-        {tab === "udostepnienia" && <ShareDashboard password={password} />}
+        {tab === "udostepnienia" && <ShareDashboard password={token} />}
+
+        {tab === "bezpieczenstwo" && <SecurityDashboard token={token} />}
 
         {tab === "partnerzy" &&
           (submissions.length === 0 ? (

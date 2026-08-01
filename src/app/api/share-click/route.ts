@@ -1,6 +1,5 @@
 import pool from "@/lib/db";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+import { isAuthorizedRequest } from "@/lib/admin-session";
 
 // Kanały udostępniania — liczone w /admin. Dodanie nowego kanału to jedna
 // wartość tutaj (musi się zgadzać z tym, co wysyła ShareModal.tsx).
@@ -23,11 +22,6 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
-}
-
-function isAuthorized(request: Request) {
-  const header = request.headers.get("authorization") || "";
-  return header === `Bearer ${ADMIN_PASSWORD}`;
 }
 
 export async function POST(request: Request) {
@@ -59,7 +53,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedRequest(request)) {
     return Response.json({ error: "Brak autoryzacji" }, { status: 401 });
   }
   try {

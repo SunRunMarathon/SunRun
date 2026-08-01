@@ -1,7 +1,6 @@
 import pool from "@/lib/db";
 import { getClientIp, detectDeviceType, detectTrafficSource } from "@/lib/request-meta";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+import { isAuthorizedRequest } from "@/lib/admin-session";
 
 // Licznik wejść na stronę główną — pozwala policzyć conversion rate ankiety
 // (wypełnienia / wejścia) w /admin. Odpalany dopiero po zgodzie na analitykę
@@ -24,11 +23,6 @@ async function ensureTable() {
       landing_path VARCHAR(300)
     )
   `);
-}
-
-function isAuthorized(request: Request) {
-  const header = request.headers.get("authorization") || "";
-  return header === `Bearer ${ADMIN_PASSWORD}`;
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -71,7 +65,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedRequest(request)) {
     return Response.json({ error: "Brak autoryzacji" }, { status: 401 });
   }
   try {

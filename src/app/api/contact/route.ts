@@ -1,6 +1,5 @@
 import pool from "@/lib/db";
-
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+import { isAuthorizedRequest } from "@/lib/admin-session";
 
 async function ensureTable() {
   await pool.query(`
@@ -13,11 +12,6 @@ async function ensureTable() {
       message TEXT NOT NULL
     )
   `);
-}
-
-function isAuthorized(request: Request) {
-  const header = request.headers.get("authorization") || "";
-  return header === `Bearer ${ADMIN_PASSWORD}`;
 }
 
 export async function POST(request: Request) {
@@ -51,7 +45,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!isAuthorizedRequest(request)) {
     return Response.json({ error: "Brak autoryzacji" }, { status: 401 });
   }
   try {
