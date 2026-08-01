@@ -57,7 +57,10 @@ export default function Home() {
   // tylko chowac gotowy wynik.
   const disableDecorativeMotion = isMobile || prefersReducedMotion;
 
+  // Steruje wyłącznie dolnym paskiem zapisów: true, gdy przycisk „Zapisz się"
+  // spod logo wyjedzie poza górną krawędź ekranu.
   const [scrolled, setScrolled] = useState(false);
+  const przyciskZapiszRef = useRef(null);
   const [ctaDismissed, setCtaDismissed] = useState(false);
   const [heroProgress, setHeroProgress] = useState(0);
 
@@ -125,6 +128,54 @@ export default function Home() {
     };
   }, []);
 
+  // ── Odstępy między sekcjami ──────────────────────────────────────────────
+  // Jedna wartość na całą stronę: wysokość kafelka „Zapisanych uczestników"
+  // z sekcji „O biegu". Kafelek ma 166px niezależnie od szerokości okna
+  // (sprawdzone od 1920 do 390px), więc nadaje się na miarę odniesienia.
+  const LUKA = 166;
+
+  const heroSekcjaRef = useRef(null);
+  const [wysokoscHero, setWysokoscHero] = useState(0);
+
+  // Dolny odstęp sekcji „Wspomnienia". Liczony od przycisku „Odwiedź Archiwum",
+  // a nie od dołu sekcji: stos zdjęć obok sięga niżej niż przycisk, więc zwykły
+  // padding dałby lukę mierzoną od zdjęć. Sztab chce ją mierzyć od przycisku
+  // i zignorować, że zdjęcia podejdą bliżej stopki.
+  const przyciskArchiwumRef = useRef(null);
+  const [dolWspomnien, setDolWspomnien] = useState(LUKA);
+
+  useEffect(() => {
+    const policz = () => {
+      const sekcja = wspomnieniaRef.current;
+      const przycisk = przyciskArchiwumRef.current;
+      const siatka = siatkaWspomnienRef.current;
+      if (!sekcja || !przycisk || !siatka) return;
+
+      // Gdy siatka zwinie się do jednej kolumny, zdjęcia nie stoją już OBOK
+      // przycisku, tylko POD nim — i to one są ostatnim elementem sekcji.
+      // Mierzenie luki od przycisku znaczyłoby wtedy, że stopka wchodzi na
+      // zdjęcia, więc w tym układzie wracamy do zwykłego odstępu od dołu.
+      const kolumn = getComputedStyle(siatka).gridTemplateColumns.split(/\s+/).filter(Boolean).length;
+      if (kolumn < 2) {
+        setDolWspomnien(LUKA);
+        return;
+      }
+
+      const cs = getComputedStyle(sekcja);
+      const dolTresci = sekcja.getBoundingClientRect().bottom - parseFloat(cs.paddingBottom);
+      const nadmiar = dolTresci - przycisk.getBoundingClientRect().bottom;
+      setDolWspomnien(Math.max(0, Math.round(LUKA - nadmiar)));
+    };
+    policz();
+    const ro = new ResizeObserver(policz);
+    if (wspomnieniaRef.current) ro.observe(wspomnieniaRef.current);
+    window.addEventListener("resize", policz);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", policz);
+    };
+  }, []);
+
   // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
   // Warunek ze sztabu: lewa krawędź ramki ma sięgać środka ekranu. Nie da się
   // tego rozstrzygnąć samym progiem szerokości, bo logo ma szerokość
@@ -158,8 +209,19 @@ export default function Home() {
         cta ? cta.getBoundingClientRect().right : 0
       );
       if (!prawa) return;
+
+      // Wysokość sekcji startowej liczymy zawsze — także w wariancie POD, gdzie
+      // funkcja kończy się wcześniej. Wcześniej stała za tym wczesnym `return`
+      // i w tym wariancie w ogóle się nie ustawiała, przez co luka nad sekcją
+      // „O Festiwalu" wynosiła zero zamiast LUKA.
+      const sekcjaHero = heroSekcjaRef.current;
+      const dolPrzycisku = sekcjaHero
+        ? cta.getBoundingClientRect().bottom - sekcjaHero.getBoundingClientRect().top
+        : 0;
+
       if (prawa + ODSTEP > window.innerWidth / 2) {
         setFestiwalObok(false);
+        setWysokoscHero(Math.round(dolPrzycisku + LUKA));
         return;
       }
 
@@ -193,6 +255,20 @@ export default function Home() {
       setFestiwalPrawy(prawyOdstep);
       setFestiwalObok(miesciSie);
 
+      // WYSOKOŚĆ SEKCJI STARTOWEJ. Pod najniższym elementem ma zostać dokładnie
+      // jedna LUKA. Najniższy element to przycisk ankiety albo — w wariancie
+      // OBOK — ramka „O Festiwalu", zależnie od tego, co sięga dalej.
+      //
+      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii:
+      // jest wyśrodkowana w sekcji, więc jej dolna krawędź zależy od wysokości
+      // sekcji, a ta od niej — pomiar na żywo zapętliłby się. Przy wyśrodkowaniu
+      // w sekcji o wysokości H ramka o wysokości B kończy się na H/2 + B/2,
+      // więc warunek „LUKA pod ramką" daje H = B + 2·LUKA.
+      const zPrzycisku = dolPrzycisku + LUKA;
+      setWysokoscHero(
+        Math.round(miesciSie ? Math.max(zPrzycisku, wysokosc + 2 * LUKA) : zPrzycisku)
+      );
+
       // Wejście z podstrony przez „/#o-festiwalu": przeglądarka sama skoczyła do
       // kotwicy, ale w wariancie OBOK ta kotwica jest na górze strony, więc skok
       // tylko zsunął widok o kilkaset pikseli w dół, w puste miejsce. Cofamy to
@@ -225,7 +301,7 @@ export default function Home() {
     // W wariancie OBOK menu w ogóle tu nie przewija — wraca na górę strony.
     <div id="o-festiwalu" className="scroll-mt-28">
       <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5">
-        O Festiwalu
+        O Festiwalu
       </h2>
       {/* Nie ma tu już żadnego kontenera — treść leży wprost na tle strony.
           Prostokąt, który wyznaczała biała karta, istnieje nadal, tylko stał się
@@ -248,28 +324,27 @@ export default function Home() {
           szerokość bloku, a nie na szerokość okna. */}
       <div className="columns-[27rem] gap-10 text-sm sm:text-base text-[#183153] leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:break-inside-avoid">
         <p>
-          Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii.
-          Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie
-          zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie
-          charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego
-          Samarytanina w Lublinie.
+          Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce,
+          gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś
+          dobrego. Tak właśnie wyglądać będzie Sun Run 2026 — wydarzenie charytatywne, którego
+          celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w Lublinie.
         </p>
         <p>
-          Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla
-          dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego
-          spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi
-          i pomaganie połączą się w jedno niezapomniane wydarzenie.
+          Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci,
+          młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu.
+          Chcemy stworzyć miejsce, w którym radość, spotkania z innymi i pomaganie połączą się
+          w jedno niezapomniane wydarzenie.
         </p>
         <p>
-          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla
-          każdego — niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz
-          również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na
-          mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+          Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego —
+          niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz również przejść
+          całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel
+          i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
-          Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem
-          słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych
-          — spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+          Ubierz się na żółto i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
+          nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych — spotkajmy
+          się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
         <p className="font-extrabold text-sr-red">
           Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
@@ -284,7 +359,13 @@ export default function Home() {
     const measure = () => {
       rafId = 0;
       const vh = window.innerHeight;
-      setScrolled(window.scrollY > vh * 0.38);
+
+      // Dolny pasek zapisów wchodzi dokładnie wtedy, gdy przycisk „Zapisz się"
+      // spod logo wyjedzie górą poza ekran. Wcześniej był to próg ułamkowy
+      // (38% wysokości okna), przez co pasek potrafił się pojawić, gdy przycisk
+      // był jeszcze widoczny — dublował wtedy sam siebie.
+      const przycisk = przyciskZapiszRef.current;
+      setScrolled(przycisk ? przycisk.getBoundingClientRect().bottom < 0 : false);
 
       // Gimmick strzalki jest "hidden sm:flex" i bezuzyteczny na dotyku — na
       // mobile/reduced-motion w ogole nie liczymy jej postepu, zeby nie
@@ -421,7 +502,16 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           1. HERO SECTION
       ═══════════════════════════════════════════ */}
-      <section className="relative z-10 w-full min-h-screen flex flex-col justify-center px-8 sm:px-16 md:px-28 text-left select-none">
+      {/* Sekcja startowa NIE ma już min-h-screen. Wcześniej była zawsze wysoka
+          na całe okno niezależnie od treści, przez co pod przyciskami zostawał
+          pas pustki rosnący razem z ekranem. Teraz jej wysokość liczy się
+          z treści (patrz wysokoscHero w efekcie pomiarowym) tak, żeby pod
+          najniższym elementem została dokładnie jedna LUKA. */}
+      <section
+        ref={heroSekcjaRef}
+        style={{ minHeight: wysokoscHero || undefined }}
+        className="relative z-10 w-full flex flex-col px-8 sm:px-16 md:px-28 text-left select-none"
+      >
         {/* "kliknij tutaj!" — zakrzywiona strzałka, która przy scrollu sięga w stronę
             hamburgera, próbując go "złapać", a pod koniec sekcji startowej poddaje się.
             POZYCJA FIXED — zostaje na ekranie zamiast odjeżdżać z sekcją hero. */}
@@ -465,7 +555,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24 pb-16">
+        <div ref={heroTrescRef} className="max-w-4xl space-y-6 pt-24">
           {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
               przesuwa się. Docelowa szerokość 720px, ale ograniczona też wysokością
               okna, żeby przyciski CTA zostały widoczne bez scrollowania.
@@ -499,9 +589,12 @@ export default function Home() {
               (w-fit), więc trzeci przycisk rozciągnięty na w-full ma dokładnie
               taką samą szerokość jak para nad nim — od lewej krawędzi
               „Zapisz się" do prawej „Dowiedz się więcej". */}
-          <div data-hero-cta className={`flex flex-col gap-4 pt-2 w-fit pointer-events-auto transition-all duration-500 ${scrolled ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
+          {/* Przyciski nie znikają już przy przewijaniu — wcześniej gasły po
+              minięciu 38% wysokości okna, więc odjeżdżały z ekranu wygaszone,
+              a użytkownik wracający w górę widział je dopiero po chwili. */}
+          <div data-hero-cta className="flex flex-col gap-4 pt-2 w-fit pointer-events-auto">
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
+              <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
                 className="cursor-target inline-flex items-center justify-center px-12 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
                 Zapisz się
               </a>
@@ -521,7 +614,7 @@ export default function Home() {
               onClick={() => window.dispatchEvent(new Event(OPEN_SURVEY_EVENT))}
               className="cursor-target cursor-pointer inline-flex w-full items-center justify-center px-12 py-5 bg-sr-navy text-sr-orange font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0"
             >
-              Ankieta — skąd o nas usłyszałeś?
+              Ankieta — skąd o nas usłyszałeś?
             </button>
           </div>
 
@@ -543,7 +636,7 @@ export default function Home() {
       {/* Wariant POD SPODEM: gdy kolumna z logo jest za szeroka, żeby ramka
           zmieściła się obok, cała sekcja razem z nagłówkiem spada tutaj. */}
       {!festiwalObok && (
-        <section className="relative z-10 w-full px-6 sm:px-12 pb-20">
+        <section className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}>
           <div className="max-w-[88rem] mx-auto">{festiwal}</div>
         </section>
       )}
@@ -554,12 +647,12 @@ export default function Home() {
       ═══════════════════════════════════════════ */}
       <section
         id="o-biegu"
-        className="relative z-10 w-full min-h-screen flex items-center py-16 px-6 sm:px-12"
+        className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}
       >
         <div className="max-w-[88rem] mx-auto w-full">
           {/* text-[1.75rem] = dokładnie dwukrotność poprzedniego text-sm (14px). */}
           <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-8">
-            O biegu
+            O biegu
           </h2>
           {/* Na desktopie mapa zajmuje dokładnie połowę szerokości (wcześniej 3/5),
               a kolumna z kartami drugą połowę — karty rozszerzyły się ku środkowi,
@@ -598,12 +691,14 @@ export default function Home() {
 
                 {/* Akapit uzupełniający tabelę — w tej samej karcie, oddzielony
                     linią, żeby było widać, że to osobna część. */}
-                <p className="mt-5 pt-5 border-t border-[rgb(24 49 83 / 0.14)] text-sm text-[#3D4D65] leading-relaxed">
-                  Czas biegu będzie mierzony specjalnymi opaskami. Uczestnicy będą
-                  rywalizować ze sobą w ośmiu kategoriach: generalnej kobiet i mężczyzn
-                  oraz wiekowych kobiet i mężczyzn (14+, 30+, 50+). Biegacze będą mieli
-                  zapewnioną wodę pitną.
-                </p>
+                <div className="mt-5 pt-5 border-t border-[rgb(24 49 83 / 0.14)] text-sm text-[#3D4D65] leading-relaxed space-y-2">
+                  <p>Czas biegu będzie mierzony specjalnymi opaskami.</p>
+                  <p>
+                    Uczestnicy będą rywalizować ze sobą w ośmiu kategoriach: generalnej kobiet
+                    i mężczyzn oraz wiekowych kobiet i mężczyzn (14+, 30+, 50+).
+                  </p>
+                  <p>Biegacze będą mieli zapewnioną wodę pitną.</p>
+                </div>
               </div>
 
               {/* Karta: Licznik zapisanych */}
@@ -613,7 +708,7 @@ export default function Home() {
                 </span>
                 <div className="flex items-end gap-3">
                   <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-navy to-sr-red leading-none">
-                    127
+                    19
                   </span>
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
@@ -648,7 +743,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="max-w-[88rem] mx-auto pb-20">
+        <div className="max-w-[88rem] mx-auto" style={{ paddingBottom: LUKA }}>
           <div className="rounded-3xl bg-[#FFFFFF] border border-sr-line text-[#183153] p-8 sm:p-10 shadow-lg">
             {/* Dwie równe kolumny: tekst po lewej, zdjęcie po prawej — każda po
                 połowie szerokości ramki.
@@ -670,7 +765,8 @@ export default function Home() {
                   </h2>
                 </div>
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
-                  Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką paliatywną
+                  Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką
+                  paliatywną
                   ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z chorobami terminalnymi rocznie.
                   Środki zebrane podczas Sun Run przeznaczamy na specjalistyczny sprzęt medyczny
                   oraz doskonalenie warunków opieki.
@@ -722,7 +818,7 @@ export default function Home() {
           <div className="text-center mb-16 space-y-4">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase text-[#183153]">
-              Partnerzy i Sponsorzy
+              Partnerzy i Sponsorzy
             </h2>
           </div>
           {/* Kafelki nie są już odnośnikami — prowadziły na podstronę
@@ -756,12 +852,21 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           5. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
       ═══════════════════════════════════════════ */}
-      <section ref={wspomnieniaRef} className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
+      {/* Bez min-h-screen: sekcja miała wcześniej wymuszoną wysokość całego okna
+          przy 428px treści, więc przy 1920×1080 zostawało w niej 652px pustki.
+          Dolny odstęp liczy się od PRZYCISKU, nie od dołu sekcji — stos zdjęć
+          sięga niżej niż przycisk, a sztab chce mierzyć lukę od przycisku
+          i zignorować zdjęcia. */}
+      <section
+        ref={wspomnieniaRef}
+        style={{ paddingBottom: dolWspomnien }}
+        className="relative z-10 w-full flex items-center px-6 sm:px-12"
+      >
         <div ref={siatkaWspomnienRef} className="max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-12 md:gap-20 items-center">
           {/* Tekst + CTA */}
           <div className="@container space-y-6">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red block">
-              Archiwum · I Edycja 2025
+              Archiwum · I Edycja 2025
             </span>
             {/* Wielkość nagłówka liczona od szerokości KOLUMNY (cqw), nie okna.
                 Na progach text-6xl/7xl/8xl „WSPOMNIENIA" nie mieściło się:
@@ -774,10 +879,11 @@ export default function Home() {
               Wspomnienia
             </h2>
             <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-md">
-              Ponad 350 uczestników, świetna atmosfera i realna pomoc dla hospicjum.
-              Przeciągnij zdjęcia obok, a po podsumowanie edycji i galerię zajrzyj do archiwum.
+              Ponad 350 uczestników, świetna atmosfera i realna pomoc dla hospicjum. Przeciągnij
+              zdjęcia obok, a po podsumowanie edycji i galerię zajrzyj do archiwum.
             </p>
             <Link
+              ref={przyciskArchiwumRef}
               href="/archiwum"
               className="cursor-target inline-flex items-center gap-2 px-9 py-4 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-base tracking-widest uppercase transition-all duration-300 shadow-lg hover:-translate-y-0.5"
             >

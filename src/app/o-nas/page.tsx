@@ -15,6 +15,10 @@ const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: f
 // i „Droga komunikacji" — bez nich były już tylko martwym kodem. Gdyby
 // któraś z tych sekcji wracała, dane są w historii gita.
 
+// Ta sama miara odstępu co na stronie głównej: wysokość kafelka „Zapisanych
+// uczestników" z sekcji „O biegu".
+const LUKA = 166;
+
 export default function ONasPage() {
   const isMobile = useIsMobile();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -35,8 +39,15 @@ export default function ONasPage() {
       )}
 
       <main className="relative z-10">
-        {/* Hero */}
-        <section className="min-h-screen flex items-center px-8 sm:px-16 md:px-28 pt-24 pb-16">
+        {/* Hero. Bez min-h-screen: sekcja miała wymuszoną wysokość całego okna,
+            więc zdjęcie ekipy było w niej wyśrodkowane i jego odległość od góry
+            strony zmieniała się razem z wysokością okna (198–258px). Teraz oba
+            odstępy to stała LUKA.
+            items-center załatwia wymaganie sztabu bez ani jednej linii kodu:
+            wyższa kolumna — raz tekst, raz zdjęcie, zależnie od szerokości —
+            rozpina wiersz siatki, więc to ona wyznacza początek i koniec luk,
+            a niższa jest względem niej wyśrodkowana w pionie. */}
+        <section style={{ paddingTop: LUKA, paddingBottom: LUKA }} className="px-8 sm:px-16 md:px-28">
           <div className="w-full grid lg:grid-cols-2 gap-10 xl:gap-16 items-center">
             <div className="max-w-3xl space-y-6">
               {/* Czerwona plakietka — ten sam wariant co na górze /archiwum */}
@@ -48,18 +59,22 @@ export default function ONasPage() {
                   o krańce dba wysokość, ale bez w-fit nagłówek rozciągałby się
                   na całą kolumnę i gradient miałby zbędny zapas na boki. */}
               <h1 className="w-fit text-5xl sm:text-7xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-b from-[#183153] to-[#FE8004] leading-none">
-                O Nas
+                O Nas
               </h1>
               <p className="text-base sm:text-lg text-[#183153] leading-relaxed max-w-2xl">
-                Jesteśmy zespołem około 60 młodych osób – uczniów szkół średnich i studentów
-                – których połączyła wspólna idea stworzenia wydarzenia z realnym wpływem
-                na innych. Sun Run powstał z pasji, zaangażowania i przekonania, że nawet
+                Jesteśmy zespołem około 60 młodych osób – uczniów szkół średnich i studentów –
+                których połączyła wspólna idea stworzenia wydarzenia z realnym wpływem na
+                innych. Sun Run powstał z pasji, zaangażowania i przekonania, że nawet
                 niewielkie działania mogą zmieniać czyjeś życie.
               </p>
             </div>
 
-            {/* Zdjęcie ekipy — prawa strona hero */}
-            <div className="hidden lg:block relative aspect-[4/3] rounded-3xl overflow-hidden border border-sr-line shadow-2xl">
+            {/* Zdjęcie ekipy — obok tekstu od lg, pod nim na węższych ekranach.
+                Wcześniej miało `hidden lg:block`, więc na telefonach znikało
+                zupełnie: jedyne zdjęcie zespołu na podstronie o zespole nie
+                pokazywało się połowie odwiedzających. Siatka i tak zwija się
+                do jednej kolumny, więc wystarczyło zdjąć ukrycie. */}
+            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden border border-sr-line shadow-2xl">
               <img
                 src="/photos/ekipa.webp"
                 alt="Ekipa Sun Run 2025 — organizatorzy i wolontariusze"
@@ -70,7 +85,7 @@ export default function ONasPage() {
         </section>
 
         {/* Misja */}
-        <section className="py-12 px-8 sm:px-16 md:px-28">
+        <section className="pb-12 px-8 sm:px-16 md:px-28">
           <div className="relative max-w-5xl mx-auto">
             {/* Słonecznik wystający zza górnej krawędzi ramki.
                 Stoi w NORMALNYM PRZEPŁYWIE, tuż nad ramką, a nie na pozycji
@@ -118,13 +133,13 @@ export default function ONasPage() {
                   >
                     Hospicjum Dobrego Samarytanina
                   </a>{" "}
-                  w Lublinie. Chcemy tworzyć wydarzenie, które daje okazję do wspólnego
-                  spędzania czasu, spotkania z przyjaciółmi, poznawania nowych osób
-                  i jednoczesnego pomagania tym, którzy tego potrzebują.
+                  w Lublinie. Chcemy tworzyć wydarzenie, które daje okazję do wspólnego
+                  spędzania czasu, spotkania z przyjaciółmi, poznawania nowych osób
+                  i jednoczesnego pomagania tym, którzy tego potrzebują.
                 </p>
                 <p>
-                  Sun Run powstał z pasji i zaangażowania wielu młodych osób, które
-                  chciały stworzyć inicjatywę łączącą ludzi wokół wspólnego celu.
+                  Sun Run powstał z pasji i zaangażowania wielu młodych osób, które chciały
+                  stworzyć inicjatywę łączącą ludzi wokół wspólnego celu.
                 </p>
               </div>
             </div>
@@ -138,12 +153,12 @@ export default function ONasPage() {
               Dołącz do naszej misji!
             </h2>
             <p className="text-sm text-[#183153]">
-              Jeśli Sun Run Cię zainteresował i chciałbyś wesprzeć nasze działania jako
-              partner, sponsor, wolontariusz lub po prostu osoba, która chce pomóc,
-              będzie nam bardzo miło Cię poznać!
+              Jeśli Sun Run Cię zainteresował i chciałbyś wesprzeć nasze działania jako partner,
+              sponsor, wolontariusz lub po prostu osoba, która chce pomóc, będzie nam bardzo
+              miło Cię poznać!
             </p>
             <p className="text-sm text-[#183153]">
-              Skontaktuj się z nami pod adresem e-mail:
+              Skontaktuj się z nami pod adresem e-mail:
             </p>
             {/* W miejsce dawnego pomarańczowego przycisku wchodzi sam adres.
                 Zostaje odnośnikiem mailto — wygląda jak zwykły tekst, bez
