@@ -443,7 +443,7 @@ export default function Home() {
           i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
-          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
+          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
           nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy
           się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
