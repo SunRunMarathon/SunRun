@@ -788,7 +788,7 @@ export default function Home() {
                 </span>
                 <div className="flex items-end gap-3">
                   <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-navy to-sr-red leading-none">
-                    33
+                    42
                   </span>
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
