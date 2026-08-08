@@ -17,9 +17,26 @@ function loadGtag() {
   document.head.appendChild(script);
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer!.push(args);
-  };
+  // KRYTYCZNE: zwykła `function`, bez `...rest` w parametrach - potrzebujemy
+  // jej WŁASNEGO `arguments`. gtag.js rozpoznaje komendy w dataLayer tylko,
+  // gdy trafiają tam jako `arguments` (Object.prototype.toString.call daje
+  // "[object Arguments]") - to jest to, co robi oficjalny snippet Google:
+  // `function gtag(){ dataLayer.push(arguments); }`. Wcześniejsza wersja
+  // zbierała argumenty przez `...args`, co samo w sobie tworzy zwykłą
+  // TABLICĘ ("[object Array]") i wypychała TĘ tablicę - gtag.js takiego
+  // kształtu nie rozpoznaje jako komendy i po cichu go ignoruje. Efekt:
+  // dataLayer wyglądał poprawnie, skrypt ładował się z 200, ale żaden wpis
+  // nigdy nie został faktycznie przetworzony - stąd zero ruchu w GA4 mimo
+  // pozornie sprawnego kodu.
+  function gtag() {
+    // To WŁAŚNIE reguła "prefer-rest-params" (w poprzedniej wersji: `function
+    // gtag(...args)`) spowodowała, że GA4 nigdy nie odbierał komend - `...rest`
+    // daje zwykłą tablicę, a gtag.js wymaga dokładnie `arguments`. Zamiana
+    // z powrotem na rest params przywróci bug.
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments);
+  }
+  window.gtag = gtag;
   // Oficjalna kolejność Google dla Consent Mode v2: "default" MUSI polecieć
   // przed czymkolwiek innym, nawet tutaj, gdzie i tak ląduje w tej samej
   // klatce co "update" (skrypt i tak ładuje się dopiero po zgodzie - patrz
