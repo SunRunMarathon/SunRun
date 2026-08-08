@@ -91,7 +91,7 @@ export const metadata: Metadata = {
     locale: "pl_PL",
     url: SITE_URL,
     siteName: "Sun Run Lublin",
-    title: "Sun Run Lublin 2026 - Bieg Charytatywny | 5 km, Park Ludowy",
+    title: "Sun Run Lublin 2026 - Festiwal Charytatywny | Bieg 5 km, Park Ludowy",
     description:
       "Charytatywny bieg w Lublinie na rzecz Hospicjum Dobrego Samarytanina. 5 km · Park Ludowy · bieg i Nordic Walking · 350+ uczestników w 2025. Dołącz do II edycji 2026!",
     images: [
@@ -105,7 +105,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sun Run Lublin 2026 - Bieg Charytatywny",
+    title: "Sun Run Lublin 2026 - Festiwal Charytatywny",
     description:
       "Charytatywny bieg 5 km w Parku Ludowym w Lublinie na rzecz Hospicjum Dobrego Samarytanina. Dołącz do II edycji!",
     images: ["/og-image.png"],
