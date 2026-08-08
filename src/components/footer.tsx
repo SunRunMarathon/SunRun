@@ -48,7 +48,7 @@ export function Footer() {
           {/* Znak i opis */}
           <div className="space-y-4">
             <img
-              src="/logo/sunrun-skrocone-biale.svg"
+              src="/logo/sunrun-skrocone-piaskowe.svg"
               alt="Sun Run"
               width={94}
               height={56}

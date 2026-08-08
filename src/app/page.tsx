@@ -443,7 +443,7 @@ export default function Home() {
           i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
-          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem z nami sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
+          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
           nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy
           się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
@@ -788,7 +788,7 @@ export default function Home() {
                 </span>
                 <div className="flex items-end gap-3">
                   <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-navy to-sr-red leading-none">
-                    14
+                    45
                   </span>
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
