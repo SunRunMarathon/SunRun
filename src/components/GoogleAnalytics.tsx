@@ -20,6 +20,17 @@ function loadGtag() {
   window.gtag = function gtag(...args: unknown[]) {
     window.dataLayer!.push(args);
   };
+  // Oficjalna kolejność Google dla Consent Mode v2: "default" MUSI polecieć
+  // przed czymkolwiek innym, nawet tutaj, gdzie i tak ląduje w tej samej
+  // klatce co "update" (skrypt i tak ładuje się dopiero po zgodzie - patrz
+  // komentarz pod funkcją). Bez tego gtag.js dostaje "update" jako pierwszy
+  // sygnał zgody w ogóle, czego oficjalny wzorzec nie przewiduje.
+  window.gtag("consent", "default", {
+    analytics_storage: "denied",
+    ad_storage: "denied",
+    ad_user_data: "denied",
+    ad_personalization: "denied",
+  });
   window.gtag("js", new Date());
   // Consent Mode v2 — ad storage zostaje odrzucony, bo strona nie prowadzi
   // reklam; analytics_storage jest udzielony, skoro w ogóle doszliśmy do
