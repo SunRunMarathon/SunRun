@@ -86,6 +86,27 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // Jawna lista ikon zamiast konwencji plikow w src/app/ (favicon.ico,
+  // icon.svg, apple-icon.png) - te dwa mechanizmy mieszane razem potrafia
+  // dac zdublowane <link> w <head>. Wszystkie pliki lezaja w public/,
+  // wygenerowane z oficjalnego sygnetu (ksiega znaku, folder "LOGO - sygnet"),
+  // wysrodkowane w kwadracie z marginesem - poprzednia wersja SVG dotykala
+  // krawedzi bez zadnego zapasu.
+  // icon-512.png to duzy format dla wynikow wyszukiwania Google (wymog:
+  // kwadrat, wielokrotnosc 48px, min. 48x48 - dajemy z zapasem 512x512).
+  // Google i tak cachuje starą ikonę osobno i odświeża ją wg własnego
+  // harmonogramu (od kilku dni do kilku tygodni) - ta zmiana w kodzie
+  // nie przyspiesza tego samodzielnie.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "pl_PL",
