@@ -45,14 +45,22 @@ const STACK_CARDS = [
 // klatkę, żeby logo nie renderowało się z szerokością 0 ani nie mrugało.
 const SZEROKOSC_LOGO = "min(720px, 88vw, 62vh)";
 
-// Pole `anchor` usunięte razem z podstroną /partnerzy — wskazywało kotwice
-// na niej, a bez niej nie miało już czego adresować.
-const PARTNERS = [
-  { name: "DKMS", desc: "Rejestracja dawców szpiku", color: "#CE2F25" },
-  { name: "VIVO! Lublin", desc: "Partner strategiczny", color: "#183153" },
-  { name: "AS Babuni", desc: "Partner gastronomiczny", color: "#CE2F25" },
-  { name: "Datasport", desc: "Pomiar czasu i klasyfikacje", color: "#183153" },
-  { name: "UP Lublin", desc: "Patronat honorowy", color: "#CE2F25" },
+// Potwierdzeni partnerzy 2026 - wprost z arkusza sztabu "Nasi potwierdzeni
+// sponsorzy". Loga leżą w public/partners/, wszystkie przycięte do tej samej
+// wysokości źródłowej (420px), więc w CSS wystarcza jedna wysokość na
+// wszystkie, żeby wyszły optycznie wyrównane mimo różnych proporcji.
+// Adresy stron - tylko te, co do których nie ma wątpliwości (sprawdzone
+// wyszukiwaniem/bezpośrednim odczytem), nie zgadywane.
+const MEDIA_PATRONI = [
+  { name: "TVP3 Lublin", file: "tvp3-lublin.png", w: 703, h: 420, url: "https://lublin.tvp.pl" },
+  { name: "Radio Lublin", file: "radio-lublin.png", w: 2313, h: 420, url: "https://radio.lublin.pl" },
+  { name: "Radio Free", file: "radio-free.png", w: 714, h: 420, url: "https://radiofreee.pl" },
+  { name: "Dziennik Wschodni", file: "dziennik-wschodni.png", w: 1438, h: 420, url: "https://dziennikwschodni.pl" },
+  { name: "Kurier Lubelski", file: "kurier-lubelski.png", w: 1184, h: 420, url: "https://kurierlubelski.pl" },
+];
+
+const SPONSORZY = [
+  { name: "Lubella", file: "lubella.png", w: 861, h: 420, url: "https://lubella.pl" },
 ];
 
 export default function Home() {
@@ -885,52 +893,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          4. PARTNERZY — UKRYTA
-
-          Sekcja czeka na potwierdzenie kolejnych partnerów; na razie mamy
-          jednego, więc pokazywanie pięciu kafelków wprowadzałoby w błąd.
-          Kod zostaje nietknięty — wystarczy przestawić POKAZ_PARTNEROW
-          w src/flagi.ts na true i wraca razem z pozycją w menu bocznym.
-      ═══════════════════════════════════════════ */}
-      {POKAZ_PARTNEROW && (
-      <section id="partnerzy" className="relative z-10 w-full min-h-screen flex items-center py-20 px-6 sm:px-12">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="text-center mb-16 space-y-4">
-            <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-black uppercase text-[#183153]">
-              Partnerzy i Sponsorzy
-            </h2>
-          </div>
-          {/* Kafelki nie są już odnośnikami — prowadziły na podstronę
-              /partnerzy, której nie ma. Zniknęły razem z nimi: zachęta
-              „kliknij na logo", klasa cursor-target i efekty najechania.
-              Wszystkie trzy obiecywały kliknięcie, które nic by nie robiło.
-              Sama zawartość kafelków czeka na decyzję sztabu. */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-6">
-            {PARTNERS.map((p) => (
-              <div
-                key={p.name}
-                className="flex flex-col items-center justify-center gap-3 p-8 bg-white border border-sr-line rounded-3xl text-center"
-              >
-                <div
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-black text-lg"
-                  style={{ backgroundColor: p.color }}
-                >
-                  {p.name.slice(0, 2).toUpperCase()}
-                </div>
-                <span className="text-sm sm:text-base font-bold text-[#183153]">
-                  {p.name}
-                </span>
-                <span className="text-xs text-[#3D4D65] leading-snug">{p.desc}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      )}
-
-      {/* ═══════════════════════════════════════════
-          5. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
+          4. WSPOMNIENIA — zajawka archiwum + Stack zdjęć
       ═══════════════════════════════════════════ */}
       {/* Bez min-h-screen: sekcja miała wcześniej wymuszoną wysokość całego okna
           przy 428px treści, więc przy 1920×1080 zostawało w niej 652px pustki.
@@ -1003,6 +966,87 @@ export default function Home() {
       </section>
 
       <FaqSection />
+
+      {/* ═══════════════════════════════════════════
+          5. PARTNERZY I PATRONI — tuż nad stopką (na życzenie Wiktora)
+      ═══════════════════════════════════════════ */}
+      {/* Dwie oddzielne grupy - patronat medialny i sponsorzy to różne role
+          i media patronackie oczekują rozdzielenia. Loga NIE są kartami
+          (jak we wcześniejszej, ukrytej wersji tej sekcji) - to cudze znaki
+          towarowe, więc żadnych ramek/teł narzucanych na nie: stała wysokość
+          w CSS (h-8/h-10) wyrównuje je optycznie mimo różnych proporcji
+          źródłowych, a szerokość zostaje naturalna (w-auto + object-contain).
+          width/height na <img> to realne wymiary plików w public/partners -
+          zapobiega skokowi layoutu przed wczytaniem. */}
+      {POKAZ_PARTNEROW && (
+      <section id="partnerzy" className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}>
+        <div className="max-w-5xl mx-auto w-full">
+          <div className="text-center mb-10 space-y-4">
+            <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-[#183153]">
+              Partnerzy i Patroni
+            </h2>
+          </div>
+          <div className="rounded-3xl bg-white border border-sr-line shadow-lg p-8 sm:p-10 space-y-10">
+            <div className="space-y-5">
+              <p className="text-center text-xs font-bold uppercase tracking-[0.25em] text-[#3D4D65]">
+                Patronat medialny
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
+                {MEDIA_PATRONI.map((p) => (
+                  <a
+                    key={p.name}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-target block"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/partners/${p.file}`}
+                      alt={p.name}
+                      width={p.w}
+                      height={p.h}
+                      className="h-8 sm:h-10 w-auto object-contain"
+                      loading="lazy"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-sr-line" />
+
+            <div className="space-y-5">
+              <p className="text-center text-xs font-bold uppercase tracking-[0.25em] text-[#3D4D65]">
+                Sponsorzy
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
+                {SPONSORZY.map((p) => (
+                  <a
+                    key={p.name}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-target block"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/partners/${p.file}`}
+                      alt={p.name}
+                      width={p.w}
+                      height={p.h}
+                      className="h-8 sm:h-10 w-auto object-contain"
+                      loading="lazy"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      )}
       </main>
 
       {/* ═══════════════════════════════════════════

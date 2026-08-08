@@ -4,6 +4,7 @@ import React from "react";
 import SocialIcon from "./social-icon";
 import ShareModal from "./ShareModal";
 import { resetConsent } from "@/lib/consent";
+import { POKAZ_PARTNEROW } from "@/flagi";
 
 /**
  * Wspólna stopka serwisu.
@@ -21,7 +22,9 @@ import { resetConsent } from "@/lib/consent";
  */
 
 // Bez „Dla partnerów" — podstrona /partnerzy została usunięta. Sekcja
-// z partnerami żyje dalej na stronie głównej pod kotwicą #partnerzy.
+// z partnerami żyje dalej na stronie głównej pod kotwicą #partnerzy (patrz
+// POKAZ_PARTNEROW w src/flagi.ts) - stąd link do niej dopisywany warunkowo
+// niżej, nie na sztywno w tej tablicy.
 const STRONY = [
   { label: "O nas", href: "/o-nas" },
   { label: "Archiwum I edycji", href: "/archiwum" },
@@ -65,7 +68,7 @@ export function Footer() {
           {/* Nawigacja */}
           <div className="space-y-3">
             <h4 className="text-[13px] font-bold uppercase tracking-widest">Strony</h4>
-            {STRONY.map((l) => (
+            {(POKAZ_PARTNEROW ? [...STRONY, { label: "Partnerzy", href: "/#partnerzy" }] : STRONY).map((l) => (
               <a
                 key={l.label}
                 href={l.href}

@@ -10,8 +10,10 @@
  */
 
 /**
- * Sekcja „Wsparcie — Partnerzy i Sponsorzy" na stronie głównej wraz z pozycją
- * „Partnerzy" w menu bocznym. Ukryta do czasu, aż sztab potwierdzi więcej niż
- * jednego partnera.
+ * Sekcja „Wsparcie — Partnerzy i Patroni" na stronie głównej (tuż nad stopką)
+ * wraz z pozycją „Partnerzy" w menu bocznym i stopce. Włączona po
+ * potwierdzeniu przez sztab kompletu partnerów 2026 (arkusz "Nasi
+ * potwierdzeni sponsorzy"): patronat medialny (TVP3 Lublin, Radio Lublin,
+ * Radio Free, Dziennik Wschodni, Kurier Lubelski) + sponsor (Lubella).
  */
-export const POKAZ_PARTNEROW = false;
+export const POKAZ_PARTNEROW = true;
