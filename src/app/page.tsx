@@ -11,6 +11,7 @@ import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
 import VisitTracker from "@/components/VisitTracker";
 import { FaqSection } from "@/components/FaqSection";
+import { ReferralPanel } from "@/components/ReferralPanel";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { SECTION_GAP } from "@/lib/layout";
@@ -130,6 +131,16 @@ export default function Home() {
   // sekcji renderowane osobno (np. FaqSection.tsx) używały dokładnie tej
   // samej wartości, a nie własnych, ręcznie dobranych marginesów.
   const LUKA = SECTION_GAP;
+
+  // Licznik "Zapisanych uczestników" - wpisywany ręcznie w /admin (FRS nie ma
+  // publicznego API), strona tylko odczytuje ostatnią wartość.
+  const [registeredCount, setRegisteredCount] = useState<string | null>(null);
+  useEffect(() => {
+    fetch("/api/stats")
+      .then((res) => res.json())
+      .then((data) => setRegisteredCount(data.registeredCount))
+      .catch(() => {});
+  }, []);
 
   // Aktualny próg minimalnej wpłaty (oś czasu w sekcji „O biegu") - liczony z
   // biezacej daty w efekcie, nie przy pierwszym renderze: serwer i klient
@@ -410,15 +421,17 @@ export default function Home() {
                   to alt obrazka. sr-only: niewidoczne wizualnie (branding logo bez
                   zmian), ale czytane przez czytniki ekranu i indeksowane. */}
               <span className="sr-only">
-                Sun Run Lublin - charytatywny bieg na 5 km w Parku Ludowym, 12 września 2026, na rzecz Hospicjum Dobrego Samarytanina
+                Sun Run Lublin - charytatywny festiwal i bieg na 5 km o zachodzie słońca w Parku Ludowym, 12 września 2026, na rzecz Hospicjum Dobrego Samarytanina
               </span>
             </h1>
 
             <p className="flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed">
-              Sun Run to charytatywny bieg i piknik rodzinny w Parku Ludowym w Lublinie.{" "}
-              <span className="font-extrabold">12 września 2026</span> spotykamy się, by wspólnie
-              wesprzeć Hospicjum Dobrego Samarytanina - 5 km dla każdego, niezależnie od kondycji,
-              a do tego muzyka i atrakcje dla całej rodziny.
+              Sun Run to charytatywny festiwal w Parku Ludowym w Lublinie, organizowany na rzecz
+              Hospicjum Dobrego Samarytanina. Głównym punktem wydarzenia będzie{" "}
+              <span className="font-extrabold">5-kilometrowy bieg o zachodzie słońca</span>, który
+              możesz pokonać biegiem lub marszem. Załóż coś żółtego i zabierz ze sobą rodzinę,
+              przyjaciół – tych nowych i tych, z którymi dawno nie rozmawiałeś. Spotkajmy się dla
+              Hospicjum!
             </p>
           </div>
 
@@ -605,12 +618,12 @@ export default function Home() {
                 </span>
                 <div className="flex items-end gap-3">
                   <span className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-sr-navy to-sr-red leading-none">
-                    51
+                    {registeredCount ?? "–"}
                   </span>
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
                 <p className="text-xs text-[#3D4D65] mt-3">
-                  Aktualizowane codziennie
+                  Aktualizowane ręcznie przez organizatorów
                 </p>
               </div>
             </div>
@@ -698,6 +711,15 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          3.5. ZAPROŚ ZNAJOMEGO
+      ═══════════════════════════════════════════ */}
+      <section id="zaproszenie" className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA }}>
+        <div className="max-w-[88rem] mx-auto w-full">
+          <ReferralPanel />
         </div>
       </section>
 

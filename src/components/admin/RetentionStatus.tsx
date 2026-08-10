@@ -8,6 +8,7 @@ type RetentionRun = {
   survey_anonymized: number;
   visits_anonymized: number;
   submissions_deleted: number;
+  referrals_deleted: number;
   error: string | null;
 };
 
@@ -52,6 +53,7 @@ export function RetentionStatus({ token }: { token: string }) {
           <span>Zanonimizowane ankiety: {run.survey_anonymized}</span>
           <span>Zanonimizowane wizyty: {run.visits_anonymized}</span>
           <span>Usunięte zgłoszenia: {run.submissions_deleted}</span>
+          <span>Usunięte zaproszenia: {run.referrals_deleted ?? 0}</span>
         </>
       )}
     </div>

@@ -1,7 +1,7 @@
 import { trackEvent } from "@/lib/analytics";
 import { getVisitorId } from "@/lib/visitor-id";
 
-export type SignupLocation = "navbar" | "sticky_bar" | "hero" | "footer" | "archiwum";
+export type SignupLocation = "navbar" | "sticky_bar" | "hero" | "footer" | "archiwum" | "referral";
 // string, nie unia literałów: MEDIA/socialItems w footer.tsx i navbar.tsx są
 // typowane jak SocialIcon (name: string) - dopasowana literałowa unia
 // wymagałaby "as const" w dwóch miejscach dla zerowej korzyści.

@@ -16,6 +16,7 @@ const SIGNUP_LABELS: Record<string, string> = {
   hero: "Hero (góra strony)",
   footer: "Stopka",
   archiwum: "Strona Archiwum",
+  referral: "Strona zaproszenia",
 };
 
 const SOCIAL_LABELS: Record<string, string> = {

@@ -14,6 +14,7 @@ const VALID_LOCATIONS = [
   "hero",
   "footer",
   "archiwum",
+  "referral",
   // category: social — platforma, w którą kliknięto
   "instagram",
   "facebook",

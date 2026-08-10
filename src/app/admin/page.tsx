@@ -6,6 +6,8 @@ import { ShareDashboard } from "@/components/admin/ShareDashboard";
 import { InteractionDashboard } from "@/components/admin/InteractionDashboard";
 import { VisitsDashboard } from "@/components/admin/VisitsDashboard";
 import { SecurityDashboard } from "@/components/admin/SecurityDashboard";
+import { ReferralsDashboard } from "@/components/admin/ReferralsDashboard";
+import { RegisteredCountEditor } from "@/components/admin/RegisteredCountEditor";
 import { RetentionStatus } from "@/components/admin/RetentionStatus";
 import { browserSupportsWebAuthn, loginWithPasskey } from "@/lib/webauthn-client";
 
@@ -42,7 +44,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [tab, setTab] = useState<
-    "ankieta" | "udostepnienia" | "wizyty" | "klikniecia" | "partnerzy" | "bezpieczenstwo"
+    "ankieta" | "udostepnienia" | "wizyty" | "klikniecia" | "zaproszenia" | "partnerzy" | "bezpieczenstwo"
   >("ankieta");
 
   const [showSecretsForm, setShowSecretsForm] = useState(false);
@@ -310,6 +312,7 @@ export default function AdminPage() {
           </div>
         </div>
 
+        <RegisteredCountEditor token={token} />
         <RetentionStatus token={token} />
 
         <div className="flex gap-2 mb-8 border-b border-sr-line flex-wrap">
@@ -354,6 +357,16 @@ export default function AdminPage() {
             Kliknięcia
           </button>
           <button
+            onClick={() => setTab("zaproszenia")}
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+              tab === "zaproszenia"
+                ? "border-sr-orange text-[#183153]"
+                : "border-transparent text-[#3D4D65] hover:text-[#183153]"
+            }`}
+          >
+            Zaproszenia
+          </button>
+          <button
             onClick={() => setTab("partnerzy")}
             className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
               tab === "partnerzy"
@@ -382,6 +395,8 @@ export default function AdminPage() {
         {tab === "wizyty" && <VisitsDashboard password={token} />}
 
         {tab === "klikniecia" && <InteractionDashboard password={token} />}
+
+        {tab === "zaproszenia" && <ReferralsDashboard password={token} />}
 
         {tab === "bezpieczenstwo" && <SecurityDashboard token={token} />}
 

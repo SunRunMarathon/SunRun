@@ -48,9 +48,11 @@ async function ensureRetentionTable(client: PoolClient) {
       survey_anonymized INT NOT NULL DEFAULT 0,
       visits_anonymized INT NOT NULL DEFAULT 0,
       submissions_deleted INT NOT NULL DEFAULT 0,
+      referrals_deleted INT NOT NULL DEFAULT 0,
       error TEXT
     )
   `);
+  await client.query(`ALTER TABLE retention_runs ADD COLUMN IF NOT EXISTS referrals_deleted INT NOT NULL DEFAULT 0`);
 }
 
 // Wywolywane raz, wewnatrz uzyskanej blokady - liczy kandydatow PRZED
@@ -85,11 +87,27 @@ async function runCleanup(client: PoolClient) {
     [cutoff]
   );
 
+  // referrals: podobnie jak submissions, to dane osobowe (mail/imie/numer
+  // startowy zapraszajacego) bez dalszej wartosci statystycznej po okresie
+  // retencji - usuwamy, nie anonimizujemy. Tabele tworzy /api/referral -
+  // jesli funkcja nigdy nie byla uzyta, tabela moze jeszcze nie istniec,
+  // stad catch zamiast zakladania jej tutaj z niepelnym schematem.
+  const referralsResult = await client
+    .query(`DELETE FROM referrals WHERE created_at < $1 RETURNING id`, [cutoff])
+    .catch(() => ({ rows: [] as { id: string }[] }));
+
+  // referral_hits: samo wejscie na link (kod + pseudonimowy visitor_id) -
+  // sprzatane niezaleznie od tego, czy rodzic w `referrals` juz zniknal.
+  await client
+    .query(`DELETE FROM referral_hits WHERE created_at < $1`, [cutoff])
+    .catch(() => {});
+
   return {
     cutoff,
     surveyAnonymized: surveyResult.rows.length,
     visitsAnonymized: visitsResult.rows.length,
     submissionsDeleted: submissionsResult.rows.length,
+    referralsDeleted: referralsResult.rows.length,
   };
 }
 
@@ -121,15 +139,15 @@ export async function maybeRunRetentionCleanup(): Promise<boolean> {
     }
 
     try {
-      const { cutoff, surveyAnonymized, visitsAnonymized, submissionsDeleted } = await runCleanup(client);
+      const { cutoff, surveyAnonymized, visitsAnonymized, submissionsDeleted, referralsDeleted } = await runCleanup(client);
       await client.query(
-        `INSERT INTO retention_runs (cutoff, survey_anonymized, visits_anonymized, submissions_deleted)
-         VALUES ($1, $2, $3, $4)`,
-        [cutoff, surveyAnonymized, visitsAnonymized, submissionsDeleted]
+        `INSERT INTO retention_runs (cutoff, survey_anonymized, visits_anonymized, submissions_deleted, referrals_deleted)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [cutoff, surveyAnonymized, visitsAnonymized, submissionsDeleted, referralsDeleted]
       );
-      if (surveyAnonymized || visitsAnonymized || submissionsDeleted) {
+      if (surveyAnonymized || visitsAnonymized || submissionsDeleted || referralsDeleted) {
         console.log(
-          `[retention] Przebieg zakonczony: ankiety=${surveyAnonymized}, wizyty=${visitsAnonymized}, zgloszenia usuniete=${submissionsDeleted}`
+          `[retention] Przebieg zakonczony: ankiety=${surveyAnonymized}, wizyty=${visitsAnonymized}, zgloszenia usuniete=${submissionsDeleted}, zaproszenia usuniete=${referralsDeleted}`
         );
       }
       return true;
