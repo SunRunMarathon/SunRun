@@ -28,9 +28,15 @@ export default async function ZaproszeniePage({ params }: Props) {
   if (!inviterName) notFound();
 
   return (
-    <div className="relative bg-sr-sand text-sr-navy overflow-x-hidden min-h-screen">
+    // flex-col + flex-1 na tresci: stopka zawsze na dole ekranu (nie tuz pod
+    // krotka trescia z pustym pasem pod soba) - krotka tresc tej strony
+    // (jeden akapit + przycisk) bez tego ukladu zostawiala na telefonie
+    // dziwna, pusta przestrzen miedzy tekstem a stopka.
+    <div className="relative bg-sr-sand text-sr-navy overflow-x-hidden min-h-screen flex flex-col">
       <Navbar />
-      <ReferralLanding code={code} inviterName={inviterName} />
+      <div className="flex-1 flex flex-col justify-center">
+        <ReferralLanding code={code} inviterName={inviterName} />
+      </div>
       <Footer />
     </div>
   );
