@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { surveyOptionLabel, socialMediaOptionLabel } from "@/lib/survey-options";
+import { dayDistribution } from "@/lib/day-distribution";
 
 type SurveyResponse = {
   id: string;
@@ -213,13 +214,7 @@ export function SurveyDashboard({ password }: { password: string }) {
   const cityDist = countBy(responses, (r) => r.city).slice(0, 10);
   const deviceDist = countBy(responses, (r) => r.device_type);
 
-  const dayDist = countBy(responses, (r) => new Date(r.created_at).toLocaleDateString("pl-PL")).sort(
-    (a, b) => {
-      const da = a.key.split(".").reverse().join("-");
-      const db = b.key.split(".").reverse().join("-");
-      return da.localeCompare(db);
-    }
-  );
+  const dayDist = dayDistribution(responses, (r) => r.created_at);
   const maxDay = Math.max(1, ...dayDist.map((d) => d.count));
 
   return (

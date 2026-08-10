@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { dayDistribution } from "@/lib/day-distribution";
 
 type ShareClick = {
   id: string;
@@ -105,13 +106,7 @@ export function ShareDashboard({ password }: { password: string }) {
   const channelClicks = clicks.filter((c) => c.channel !== "modal_open");
   const channelDist = countBy(channelClicks, (c) => c.channel);
 
-  const dayDist = countBy(clicks, (c) => new Date(c.created_at).toLocaleDateString("pl-PL")).sort(
-    (a, b) => {
-      const da = a.key.split(".").reverse().join("-");
-      const db = b.key.split(".").reverse().join("-");
-      return da.localeCompare(db);
-    }
-  );
+  const dayDist = dayDistribution(clicks, (c) => c.created_at);
   const maxDay = Math.max(1, ...dayDist.map((d) => d.count));
 
   return (

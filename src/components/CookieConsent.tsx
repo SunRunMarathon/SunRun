@@ -62,6 +62,15 @@ export function CookieConsent() {
   const choose = (value: "granted" | "denied") => {
     setConsent(value);
     setVisible(false);
+    // Niezalezne od samej zgody (patrz komentarz w api/consent-choice/route.ts) -
+    // to jedyne miejsce, w ktorym widac, ile osob w ogole widzialo baner i co
+    // wybraly, wliczajac "Odrzuc" (ktorego GA/page_visits z definicji nigdy
+    // nie zobacza).
+    fetch("/api/consent-choice", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ choice: value }),
+    }).catch(() => {});
   };
 
   return (

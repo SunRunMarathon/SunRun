@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { dayDistribution } from "@/lib/day-distribution";
 
 type Visit = {
   id: string;
@@ -11,6 +12,11 @@ type Visit = {
   utm_campaign: string | null;
   device_type: string | null;
   landing_path: string | null;
+};
+
+type ConsentChoice = {
+  choice: "granted" | "denied";
+  created_at: string;
 };
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -68,6 +74,7 @@ function BarList({
 
 export function VisitsDashboard({ password }: { password: string }) {
   const [visits, setVisits] = useState<Visit[]>([]);
+  const [consentChoices, setConsentChoices] = useState<ConsentChoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -77,12 +84,17 @@ export function VisitsDashboard({ password }: { password: string }) {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch("/api/visit", {
-          headers: { Authorization: `Bearer ${password}` },
-        });
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        if (!cancelled) setVisits(data.visits ?? []);
+        const [visitRes, consentRes] = await Promise.all([
+          fetch("/api/visit", { headers: { Authorization: `Bearer ${password}` } }),
+          fetch("/api/consent-choice", { headers: { Authorization: `Bearer ${password}` } }),
+        ]);
+        if (!visitRes.ok || !consentRes.ok) throw new Error();
+        const visitData = await visitRes.json();
+        const consentData = await consentRes.json();
+        if (!cancelled) {
+          setVisits(visitData.visits ?? []);
+          setConsentChoices(consentData.choices ?? []);
+        }
       } catch {
         if (!cancelled) setError("Nie udało się wczytać danych wejść");
       } finally {
@@ -118,14 +130,20 @@ export function VisitsDashboard({ password }: { password: string }) {
   const sourceDist = countBy(visits, (v) => v.traffic_source || "direct");
   const deviceDist = countBy(visits, (v) => v.device_type || "nieznane");
 
-  const dayDist = countBy(visits, (v) => new Date(v.created_at).toLocaleDateString("pl-PL")).sort(
-    (a, b) => {
-      const da = a.key.split(".").reverse().join("-");
-      const db = b.key.split(".").reverse().join("-");
-      return da.localeCompare(db);
-    }
-  );
+  const dayDist = dayDistribution(visits, (v) => v.created_at);
   const maxDay = Math.max(1, ...dayDist.map((d) => d.count));
+
+  const landingDist = countBy(visits, (v) => v.landing_path || "/");
+
+  // Ile osob w ogole widzialo baner i co wybralo - JEDYNE zrodlo, w ktorym
+  // widac "Odrzuc" (wejscia powyzej i tak licza tylko tych, co juz
+  // zaakceptowali - patrz komentarz w api/consent-choice/route.ts). Wysoki
+  // odsetek odrzucen to najbardziej prawdopodobne wyjasnienie "malo danych
+  // w GA/wejsciach", nie blad w trackingu.
+  const consentGranted = consentChoices.filter((c) => c.choice === "granted").length;
+  const consentDenied = consentChoices.filter((c) => c.choice === "denied").length;
+  const consentTotal = consentGranted + consentDenied;
+  const consentRate = consentTotal > 0 ? Math.round((consentGranted / consentTotal) * 100) : null;
 
   return (
     <div className="space-y-8">
@@ -146,6 +164,46 @@ export function VisitsDashboard({ password }: { password: string }) {
         </div>
       </div>
 
+      {/* Wejścia powyżej liczą TYLKO tych, co kliknęli "Akceptuję" (patrz
+          VisitTracker.tsx / GoogleAnalytics.tsx - oba czekają na zgodę). Ta
+          karta pokazuje pełny obraz: ilu w ogóle widziało baner i ilu
+          faktycznie odrzuciło - żeby "mało danych" dało się odróżnić od
+          "coś jest zepsute". */}
+      <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">
+        <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-1.5">
+          Zgoda na analitykę (baner cookies)
+        </h3>
+        <p className="text-[11px] text-[#3D4D65] mb-4 leading-relaxed">
+          Wejścia i GA4 liczą tylko osoby, które kliknęły „Akceptuję" - ta karta pokazuje,
+          ile osób w ogóle widziało baner i co wybrało.
+        </p>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-[#3D4D65] mb-1">Zobaczyło baner</p>
+            <p className="text-2xl font-black text-[#183153]">{consentTotal}</p>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-widest text-[#3D4D65] mb-1">Akceptuję</p>
+            <p className="text-2xl font-black text-[#183153]">{consentGranted}</p>
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-widest text-[#3D4D65] mb-1">Odrzuć</p>
+            <p className="text-2xl font-black text-sr-red">{consentDenied}</p>
+          </div>
+        </div>
+        {consentRate !== null && (
+          <div className="mt-4">
+            <div className="flex justify-between text-xs mb-1">
+              <span className="font-bold text-[#183153]">Wskaźnik zgody</span>
+              <span className="text-[#3D4D65]">{consentRate}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-[#183153]/10 overflow-hidden">
+              <div className="h-full bg-sr-orange rounded-full" style={{ width: `${consentRate}%` }} />
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">
           <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-4">
@@ -159,6 +217,16 @@ export function VisitsDashboard({ password }: { password: string }) {
           </h3>
           <BarList data={deviceDist} total={total} />
         </div>
+      </div>
+
+      {/* Strona wejścia - od kiedy VisitTracker liczy caly serwis (nie tylko
+          "/"), to pokazuje np. ile osob wchodzi bezposrednio na link
+          polecajacy (/zaproszenie/[kod]) zamiast przez strone glowna. */}
+      <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">
+        <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-4">
+          Strona wejścia
+        </h3>
+        <BarList data={landingDist} total={total} />
       </div>
 
       <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">

@@ -9,7 +9,6 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
-import VisitTracker from "@/components/VisitTracker";
 import { FaqSection } from "@/components/FaqSection";
 import { ReferralPanel } from "@/components/ReferralPanel";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -444,7 +443,9 @@ export default function Home() {
               className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
               Zapisz się
             </a>
-            <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
+            <button
+              data-track-event="dowiedz_sie_wiecej_click"
+              onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
               className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
               Dowiedz się więcej
             </button>
@@ -459,6 +460,7 @@ export default function Home() {
                 w globals.css). */}
             <button
               type="button"
+              data-track-event={ankietaOdpowiedziana ? undefined : "ankieta_open"}
               disabled={ankietaOdpowiedziana}
               onClick={() => window.dispatchEvent(new Event(OPEN_SURVEY_EVENT))}
               className={`inline-flex w-full items-center justify-center px-8 py-5 font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 ${
@@ -885,7 +887,6 @@ export default function Home() {
       ═══════════════════════════════════════════ */}
       <Footer />
 
-      <VisitTracker />
       <SurveyPopup />
     </div>
   );

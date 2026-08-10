@@ -7,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { SECTION_GAP } from "@/lib/layout";
+import { trackEvent } from "@/lib/analytics";
 
 // Trzymane jako dane (nie osobne komponenty), żeby dodanie kolejnego pytania
 // bylo jedna pozycja w tej tablicy - patrz podobne podejscie w survey-options.ts.
@@ -58,7 +59,19 @@ export function FaqSection() {
           Najczęściej zadawane pytania
         </h2>
 
-        <Accordion type="single" collapsible className="max-w-3xl mx-auto space-y-3">
+        <Accordion
+          type="single"
+          collapsible
+          className="max-w-3xl mx-auto space-y-3"
+          onValueChange={(value) => {
+            // Puste value = zamkniecie, nie otwarcie - liczymy tylko otwarcia,
+            // zeby widziec ktore pytania realnie interesuja odwiedzajacych.
+            const index = value ? Number(value.replace("item-", "")) : NaN;
+            if (!Number.isNaN(index) && faqs[index]) {
+              trackEvent("faq_open", { question: faqs[index].question });
+            }
+          }}
+        >
           {faqs.map((faq, index) => (
             <AccordionItem
               key={index}

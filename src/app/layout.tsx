@@ -7,6 +7,7 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { CookieConsent } from "@/components/CookieConsent";
 import { ScrollDepthTracker } from "@/components/ScrollDepthTracker";
 import { OutboundLinkTracker } from "@/components/OutboundLinkTracker";
+import { VisitTracker } from "@/components/VisitTracker";
 
 /**
  * Montserrat — font tekstowy wg księgi znaku (SemiBold, Bold, ExtraBold, Black
@@ -167,6 +168,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <ScrollDepthTracker />
         <OutboundLinkTracker />
+        <VisitTracker />
         <CookieConsent />
       </body>
     </html>

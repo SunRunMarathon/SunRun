@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 
@@ -59,6 +60,7 @@ export function ReferralGenerator() {
         setError(data.error || "Nie udało się wygenerować linku");
         return;
       }
+      trackEvent("referral_link_generated", {});
       setCode(data.code);
     } catch {
       setError("Błąd połączenia z serwerem");
@@ -71,6 +73,7 @@ export function ReferralGenerator() {
     try {
       await navigator.clipboard.writeText(link);
       setCopied(true);
+      trackEvent("referral_link_copied", {});
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // brak dostepu do schowka - link i tak jest widoczny na ekranie
@@ -84,6 +87,7 @@ export function ReferralGenerator() {
         text: "Dołącz do mnie na Sun Run 2026 - charytatywnym biegu w Lublinie na rzecz Hospicjum Dobrego Samarytanina!",
         url: link,
       });
+      trackEvent("referral_link_shared", {});
     } catch {
       // uzytkownik anulowal system share
     }

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { getVisitorId } from "@/lib/visitor-id";
 import { trackSignupClick } from "@/lib/track-interaction";
+import { trackEvent } from "@/lib/analytics";
 
 const SIGNUP_URL = "https://frslublin.pl/pl/app/races/sign_up_form/295";
 
@@ -18,6 +19,7 @@ export function ReferralLanding({ code, inviterName }: { code: string; inviterNa
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code, visitorId: getVisitorId() }),
     }).catch(() => {});
+    trackEvent("referral_landing_view", { code });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
