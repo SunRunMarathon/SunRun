@@ -23,6 +23,12 @@ type SurveyResponse = {
   user_agent: string | null;
   device_type: string | null;
   landing_path: string | null;
+  visitor_id: string | null;
+};
+
+type InteractionClick = {
+  category: "signup" | "social";
+  visitor_id: string | null;
 };
 
 function countBy<T>(items: T[], keyFn: (item: T) => string | null): { key: string; count: number }[] {
@@ -82,6 +88,7 @@ function KpiCard({ label, value, accent }: { label: string; value: string; accen
 export function SurveyDashboard({ password }: { password: string }) {
   const [responses, setResponses] = useState<SurveyResponse[]>([]);
   const [visitCount, setVisitCount] = useState<number | null>(null);
+  const [signupClicks, setSignupClicks] = useState<InteractionClick[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [exporting, setExporting] = useState<"json" | "csv" | null>(null);
@@ -123,16 +130,21 @@ export function SurveyDashboard({ password }: { password: string }) {
       setLoading(true);
       setError("");
       try {
-        const [surveyRes, visitRes] = await Promise.all([
+        const [surveyRes, visitRes, clicksRes] = await Promise.all([
           fetch("/api/survey", { headers: { Authorization: `Bearer ${password}` } }),
           fetch("/api/visit", { headers: { Authorization: `Bearer ${password}` } }),
+          fetch("/api/interaction-click", { headers: { Authorization: `Bearer ${password}` } }),
         ]);
-        if (!surveyRes.ok || !visitRes.ok) throw new Error();
+        if (!surveyRes.ok || !visitRes.ok || !clicksRes.ok) throw new Error();
         const surveyData = await surveyRes.json();
         const visitData = await visitRes.json();
+        const clicksData = await clicksRes.json();
         if (!cancelled) {
           setResponses(surveyData.responses);
           setVisitCount(visitData.count);
+          setSignupClicks(
+            (clicksData.clicks as InteractionClick[]).filter((c) => c.category === "signup")
+          );
         }
       } catch {
         if (!cancelled) setError("Nie udało się wczytać danych ankiety");
@@ -166,6 +178,29 @@ export function SurveyDashboard({ password }: { password: string }) {
     visitCount && visitCount > 0 ? ((total / visitCount) * 100).toFixed(1) : null;
 
   const answerDist = countBy(responses, (r) => surveyOptionLabel(r.answer));
+
+  // Łączy odpowiedź w ankiecie z późniejszym kliknięciem "Zapisz się" tej
+  // samej osoby po visitor_id (lib/visitor-id.ts, trwały UUID w
+  // localStorage - INNY niż client_token, patrz komentarz w api/survey).
+  // Pokazuje, które źródło NIE TYLKO odpowiada w ankiecie najczęściej, ale
+  // faktycznie kończy się kliknięciem "Zapisz się".
+  const signupVisitorIds = new Set(
+    signupClicks.map((c) => c.visitor_id).filter((id): id is string => Boolean(id))
+  );
+  const respondentsWithId = responses.filter((r) => r.visitor_id);
+  const conversionByAnswer = Array.from(
+    respondentsWithId.reduce((map, r) => {
+      const label = surveyOptionLabel(r.answer);
+      const entry = map.get(label) ?? { label, ankiety: 0, zapisy: 0 };
+      entry.ankiety += 1;
+      if (signupVisitorIds.has(r.visitor_id as string)) entry.zapisy += 1;
+      map.set(label, entry);
+      return map;
+    }, new Map<string, { label: string; ankiety: number; zapisy: number }>())
+  )
+    .map(([, v]) => v)
+    .sort((a, b) => b.zapisy - a.zapisy);
+  const zapisyRazem = conversionByAnswer.reduce((sum, r) => sum + r.zapisy, 0);
   const socialResponses = responses.filter((r) => r.answer === "social_media");
   const socialDetailDist = countBy(socialResponses, (r) =>
     r.answer_detail ? socialMediaOptionLabel(r.answer_detail) : "nie doprecyzowano"
@@ -209,6 +244,49 @@ export function SurveyDashboard({ password }: { password: string }) {
           </h3>
           <BarList data={sourceDist} total={total} colorClass="bg-sr-red" />
         </div>
+      </div>
+
+      {/* Łączy odpowiedź w ankiecie z kliknięciem "Zapisz się" tej samej osoby
+          (visitor_id) - odpowiada na pytanie "które źródło daje najwięcej
+          odpowiedzi w ankiecie, a które najwięcej realnych zapisów", bo to
+          nie zawsze to samo źródło. */}
+      <div className="bg-white border border-sr-line rounded-2xl p-6 shadow-sm">
+        <h3 className="text-sm font-black uppercase tracking-widest text-[#183153] mb-1.5">
+          Ankieta → „Zapisz się" wg źródła
+        </h3>
+        <p className="text-[11px] text-[#3D4D65] mb-4 leading-relaxed">
+          Ile osób, które odpowiedziały w ankiecie z danego źródła, później kliknęło „Zapisz się"
+          (ta sama przeglądarka). Zapisów razem: {zapisyRazem}.
+        </p>
+        {conversionByAnswer.length === 0 ? (
+          <p className="text-sm text-[#3D4D65]">Brak danych</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-[#3D4D65] uppercase tracking-wider">
+                  <th className="py-2 pr-4">Źródło</th>
+                  <th className="py-2 pr-4">Ankiet</th>
+                  <th className="py-2 pr-4">Zapisów</th>
+                  <th className="py-2">Konwersja</th>
+                </tr>
+              </thead>
+              <tbody>
+                {conversionByAnswer.map((r) => {
+                  const pct = r.ankiety > 0 ? Math.round((r.zapisy / r.ankiety) * 100) : 0;
+                  return (
+                    <tr key={r.label} className="border-t border-sr-line">
+                      <td className="py-2 pr-4 font-bold text-[#183153]">{r.label}</td>
+                      <td className="py-2 pr-4 text-[#183153]">{r.ankiety}</td>
+                      <td className="py-2 pr-4 text-[#183153]">{r.zapisy}</td>
+                      <td className="py-2 text-sr-red font-bold">{pct}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">

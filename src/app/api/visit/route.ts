@@ -82,8 +82,19 @@ export async function GET(request: Request) {
   }
   try {
     await ensureTable();
-    const result = await queryWithRetry(`SELECT COUNT(*)::int AS count FROM page_visits`);
-    return Response.json({ count: result.rows[0].count });
+    // `count` zostaje osobnym polem - SurveyDashboard.tsx liczy z niego
+    // conversion rate ankiety i nie musi znać kształtu `visits`.
+    // `visits` to nowy dodatek dla VisitsDashboard.tsx (rozkład wg
+    // traffic_source/utm_medium, np. wejścia przez QR) - bez ip/user_agent,
+    // bo ten widok ich nie potrzebuje.
+    const [countResult, rowsResult] = await Promise.all([
+      queryWithRetry(`SELECT COUNT(*)::int AS count FROM page_visits`),
+      queryWithRetry(
+        `SELECT id, created_at, traffic_source, utm_source, utm_medium, utm_campaign, device_type, landing_path
+         FROM page_visits ORDER BY created_at DESC`
+      ),
+    ]);
+    return Response.json({ count: countResult.rows[0].count, visits: rowsResult.rows });
   } catch (err) {
     console.error("[visit] Odczyt z bazy nieudany po ponowieniach:", err);
     return Response.json({ error: "Błąd serwera" }, { status: 500 });

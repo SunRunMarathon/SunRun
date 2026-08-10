@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import StaggeredMenu from "./StaggeredMenu";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
 
 /**
  * Pozycje menu bocznego.
@@ -60,13 +61,29 @@ const items = [
     ariaLabel: "Zapisz się na Sun Run 2026 - formularz zapisów FRS",
     external: true,
     color: "#F94C1F",
+    onSelect: () => trackSignupClick("navbar"),
   },
 ];
 
 const socialItems = [
-  { label: "Instagram", link: "https://www.instagram.com/sunrun.lublin/", icon: "instagram" },
-  { label: "Facebook", link: "https://www.facebook.com/sun.run.charytatywny/", icon: "facebook" },
-  { label: "TikTok", link: "https://www.tiktok.com/@sun.run_", icon: "tiktok" },
+  {
+    label: "Instagram",
+    link: "https://www.instagram.com/sunrun.lublin/",
+    icon: "instagram",
+    onClick: () => trackSocialClick("instagram"),
+  },
+  {
+    label: "Facebook",
+    link: "https://www.facebook.com/sun.run.charytatywny/",
+    icon: "facebook",
+    onClick: () => trackSocialClick("facebook"),
+  },
+  {
+    label: "TikTok",
+    link: "https://www.tiktok.com/@sun.run_",
+    icon: "tiktok",
+    onClick: () => trackSocialClick("tiktok"),
+  },
 ];
 
 // Proporcje logo skróconego, zmierzone z wektora (870.228 × 518.490).

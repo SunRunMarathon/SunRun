@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { ChevronDown } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
@@ -14,6 +15,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { SECTION_GAP } from "@/lib/layout";
 import { TIERS, getActiveTierIndex } from "@/lib/pricing";
+import { trackSignupClick } from "@/lib/track-interaction";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap"), { ssr: false });
 // gsap i cala logika sledzenia myszy w TargetCursor sa bezuzyteczne na dotyku —
@@ -38,12 +40,6 @@ const STACK_CARDS = [
   { id: 3, img: "/photos/2025/stos-trasa.webp", alt: "Uczestnicy na trasie w Parku Ludowym" },
   { id: 4, img: "/photos/uniwersytet-jazdy.webp", alt: "Partner Uniwersytet Jazdy" },
 ];
-
-// Startowa szerokość głównego logo w sekcji hero — używana tylko zanim JS
-// zmierzy realną szerokość kolumny przycisków i ją przejmie (patrz
-// szerokoscLogo w komponencie niżej). Zostaje jako wartość na SSR/pierwszą
-// klatkę, żeby logo nie renderowało się z szerokością 0 ani nie mrugało.
-const SZEROKOSC_LOGO = "min(720px, 88vw, 62vh)";
 
 // Potwierdzeni partnerzy 2026 - wprost z arkusza sztabu "Nasi potwierdzeni
 // sponsorzy". Loga leżą w public/partners/, wszystkie przycięte do tej samej
@@ -75,6 +71,11 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const przyciskZapiszRef = useRef(null);
   const [ctaDismissed, setCtaDismissed] = useState(false);
+
+  // Na telefonie tekst „O Festiwalu" startuje przycięty do kilku linijek
+  // (jeden ciąg akapitów w jednej kolumnie, nie siatka 2x2 - ta zostaje tylko
+  // od sm w górę) i rozwija się w całość po kliknięciu „Zobacz więcej".
+  const [festiwalRozwiniety, setFestiwalRozwiniety] = useState(false);
 
   // Stan przycisku ankiety w hero — czyta ten sam klucz localStorage co sam
   // popup, plus nasłuchuje SURVEY_ANSWERED_EVENT, żeby przełączyć się od razu
@@ -130,12 +131,6 @@ export default function Home() {
   // samej wartości, a nie własnych, ręcznie dobranych marginesów.
   const LUKA = SECTION_GAP;
 
-  // Odległość górnej krawędzi logo od góry sekcji hero - odpowiada pt-24 na
-  // heroTrescRef (patrz JSX niżej). Ramka „O Festiwalu" w wariancie OBOK ma
-  // zaczynać się na tej samej wysokości co logo, więc liczba mieszka w jednym
-  // miejscu zamiast żyć osobno w klasie Tailwinda i w matematyce pozycji.
-  const GORA_RAMKI_OBOK = 96;
-
   // Aktualny próg minimalnej wpłaty (oś czasu w sekcji „O biegu") - liczony z
   // biezacej daty w efekcie, nie przy pierwszym renderze: serwer i klient
   // mogłyby przy odrobinie pecha wylosować inny dzień w okolicach północy i
@@ -145,9 +140,6 @@ export default function Home() {
   useEffect(() => {
     setAktualnyProg(getActiveTierIndex(new Date()));
   }, []);
-
-  const heroSekcjaRef = useRef(null);
-  const [wysokoscHero, setWysokoscHero] = useState(0);
 
   // Mapa w sekcji „O biegu" ma sięgać spodem do spodu ostatniej karty w prawej
   // kolumnie (Dane / Minimalna wpłata / Licznik zapisanych). Mierzymy kolumnę,
@@ -215,205 +207,13 @@ export default function Home() {
     };
   }, []);
 
-  // ── Szerokość loga = szerokość kolumny przycisków ────────────────────────
-  // Wcześniej logo miało własną, niezależną formułę (min(720px, 88vw, 62vh)),
-  // przez co na typowych ekranach było WĘŻSZE niż rząd przycisków pod nim
-  // (rozjazd sięgał kilkudziesięciu procent), a na bardzo wysokich oknach —
-  // szersze. Teraz logo dopasowuje się do zmierzonej szerokości przycisku
-  // ankiety (patrz data-hero-cta niżej) — to on, nie logo, jest dziś zwykle
-  // szerszym elementem kolumny, więc to on powinien dyktować rozmiar.
-  // Brak pętli: szerokość przycisków zależy tylko od ich własnego tekstu
-  // i paddingu, więc pomiar jest jednokierunkowy (przycisk → logo).
-  // SZEROKOSC_LOGO zostaje jako wartość startowa (SSR i pierwsza klatka,
-  // zanim JS zdąży zmierzyć przycisk) — bez tego logo mignęłoby w złym
-  // rozmiarze albo miało szerokość 0 przed pierwszym pomiarem.
-  const ctaRef = useRef(null);
-  const [szerokoscLogo, setSzerokoscLogo] = useState(SZEROKOSC_LOGO);
-
-  useEffect(() => {
-    // Naturalne proporcje wektora loga (870×634) - potrzebne, żeby przełożyć
-    // limit wysokości (62vh, jak w starej formule SZEROKOSC_LOGO) na limit
-    // szerokości, bo tu sterujemy tylko szerokością (h-auto dolicza wysokość).
-    const PROPORCJA_LOGO = 870 / 634;
-    const zmierzPrzycisk = () => {
-      const w = ctaRef.current?.getBoundingClientRect().width;
-      if (!w) return;
-      // Szerokość kolumny przycisków to GŁÓWNY wyznacznik, ale bez górnego
-      // ograniczenia logo mogło urosnąć wyżej niż samo okno (i wizualnie
-      // "wychodzić" nad jego górną krawędź) - dokładnie to, przed czym
-      // chroniła stara formuła min(720px, 88vw, 62vh). Te same dwa limity
-      // (88vw, 62vh) wracają tutaj jako sufit, pod który wciąż może się
-      // dopasować do przycisków, gdy tylko starczy miejsca.
-      const limitSzerokosci = Math.min(
-        w,
-        window.innerWidth * 0.88,
-        window.innerHeight * 0.62 * PROPORCJA_LOGO
-      );
-      setSzerokoscLogo(Math.round(limitSzerokosci));
-    };
-    zmierzPrzycisk();
-    const ro = new ResizeObserver(zmierzPrzycisk);
-    if (ctaRef.current) ro.observe(ctaRef.current);
-    window.addEventListener("resize", zmierzPrzycisk);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", zmierzPrzycisk);
-    };
-  }, []);
-
-  // ── Sekcja „O Festiwalu": obok logo czy pod nim? ─────────────────────────
-  // Lewa krawędź ramki nie jest już przypięta do środka okna — to zostawiało
-  // ogromną, niewykorzystaną szczelinę między logo (rzadko sięgającym połowy
-  // ekranu) a ramką, i właśnie dlatego wariant OBOK tak rzadko się mieścił
-  // pionowo (tekst dostawał wąską kolumnę, mimo wolnego miejsca po lewej).
-  // Teraz ramka zaczyna się tuż za prawą krawędzią kolumny z logo/przyciskami,
-  // odsunięta o PADDING_LOGO. Prawa krawędź to stałe PRAWA_GRANICA od brzegu
-  // ekranu — niezależne od PADDING_LOGO i od pozycji przycisku Menu.
-  const heroTrescRef = useRef(null);
-  const kotwicaObsluzona = useRef(false);
-  const [festiwalObok, setFestiwalObok] = useState(false);
-  const [festiwalLewy, setFestiwalLewy] = useState(0);
-  const [festiwalPrawy, setFestiwalPrawy] = useState(60);
-
-  useEffect(() => {
-    const PRAWA_GRANICA = 60; // ramka zawsze kończy się 60px od prawej krawędzi ekranu — bez względu na przycisk Menu
-    const PADDING_LOGO = 64; // odstęp ramki od kolumny logo/przycisków po lewej
-    const ZAPAS_POD_RAMKA = 50; // ile luzu pod przyciskiem ankiety, zanim ramka musi zejść pod logo
-
-    const zmierz = () => {
-      const el = heroTrescRef.current;
-      if (!el) return;
-
-      // UWAGA: mierzymy konkretne elementy treści, a NIE bezpośrednich potomków
-      // kontenera. Te są blokowe i zawsze mają szerokość całego kontenera
-      // (max-w-4xl = 896px) niezależnie od tego, jak szerokie jest logo.
-      const logo = el.querySelector("#hero-logo img");
-      const cta = el.querySelector("[data-hero-cta]");
-      const prawaLogo = Math.max(
-        logo ? logo.getBoundingClientRect().right : 0,
-        cta ? cta.getBoundingClientRect().right : 0
-      );
-      if (!prawaLogo) return;
-
-      // Wysokość sekcji startowej liczymy zawsze — także w wariancie POD, gdzie
-      // funkcja kończy się wcześniej. Wcześniej stała za tym wczesnym `return`
-      // i w tym wariancie w ogóle się nie ustawiała, przez co luka nad sekcją
-      // „O Festiwalu" wynosiła zero zamiast LUKA.
-      const sekcjaHero = heroSekcjaRef.current;
-      const dolPrzycisku = sekcjaHero
-        ? cta.getBoundingClientRect().bottom - sekcjaHero.getBoundingClientRect().top
-        : 0;
-
-      // PRAWA KRAWĘDŹ. Stała odległość od prawej krawędzi ekranu — nie zależy
-      // już od pozycji przycisku Menu. Menu jest wyżej niż GORA_RAMKI_OBOK
-      // (zaczyna się przy samej górze), a ramka zaczyna się dopiero na
-      // wysokości logo, więc i tak nigdy się nie stykają w pionie.
-      const prawyOdstep = PRAWA_GRANICA;
-
-      const lewyOdstep = prawaLogo + PADDING_LOGO;
-      const dostepnaSzerokosc = window.innerWidth - prawyOdstep - lewyOdstep;
-
-      // Gdy logo + Menu zostawiają ramce ujemną albo zerową szerokość (bardzo
-      // wąskie okno), nie ma czego mierzyć — od razu POD SPODEM.
-      if (dostepnaSzerokosc <= 0) {
-        setFestiwalObok(false);
-        setWysokoscHero(Math.round(dolPrzycisku + LUKA));
-        return;
-      }
-
-      // WARUNEK PIONOWY — wysokość mierzymy na KOPII poza ekranem, ustawionej
-      // na docelową szerokość: oryginał ma zawsze szerokość tego wariantu,
-      // w którym akurat stoi, więc decyzja zaczęłaby się zapętlać (pod →
-      // mieści się → obok → nie mieści się → pod → …).
-      const zrodlo = document.getElementById("o-festiwalu");
-      if (!zrodlo) return;
-      const kopia = zrodlo.cloneNode(true);
-      kopia.removeAttribute("id");
-      kopia.setAttribute("aria-hidden", "true");
-      kopia.style.cssText =
-        "position:fixed;top:0;left:-99999px;visibility:hidden;pointer-events:none;" +
-        `width:${dostepnaSzerokosc}px`;
-      document.body.appendChild(kopia);
-      const wysokosc = kopia.getBoundingClientRect().height;
-      kopia.remove();
-
-      // Dolna granica ramki to teraz spód przycisku ankiety + ZAPAS_POD_RAMKA —
-      // NIE wysokość okna. Wcześniej porównanie było z window.innerHeight, co
-      // na wysokich, wąskich ekranach (telefon w pionie) prawie zawsze
-      // wychodziło "mieści się", bo okno miało mnóstwo wysokości do
-      // dyspozycji — ale ramka i tak kończyła się daleko poniżej kolumny
-      // z logo, wizualnie oderwana od niej. Teraz liczy się wyłącznie to,
-      // czy ramka kończy się w rozsądnej odległości od przycisków, a nie
-      // czy w ogóle zmieści się na ekranie.
-      const dolnaGranicaRamki = dolPrzycisku + ZAPAS_POD_RAMKA;
-      const miesciSie = GORA_RAMKI_OBOK + wysokosc <= dolnaGranicaRamki;
-      setFestiwalLewy(lewyOdstep);
-      setFestiwalPrawy(prawyOdstep);
-      setFestiwalObok(miesciSie);
-
-      // WYSOKOŚĆ SEKCJI STARTOWEJ. Pod najniższym elementem ma zostać dokładnie
-      // jedna LUKA. Najniższy element to przycisk ankiety albo — w wariancie
-      // OBOK — ramka „O Festiwalu", zależnie od tego, co sięga dalej.
-      //
-      // Ramki nie mierzymy z jej pozycji na stronie, tylko z wysokości kopii —
-      // pomiar na żywo zapętliłby się, bo dolna krawędź zależy od wysokości
-      // sekcji, a ta od niej. Ramka zaczyna się GORA_RAMKI_OBOK pod górą sekcji
-      // (tyle co logo) i kończy GORA_RAMKI_OBOK + B, więc warunek „LUKA pod
-      // ramką" daje H = GORA_RAMKI_OBOK + B + LUKA.
-      const zPrzycisku = dolPrzycisku + LUKA;
-      setWysokoscHero(
-        Math.round(miesciSie ? Math.max(zPrzycisku, GORA_RAMKI_OBOK + wysokosc + LUKA) : zPrzycisku)
-      );
-
-      // Wejście z podstrony przez „/#o-festiwalu": przeglądarka sama skoczyła do
-      // kotwicy, ale w wariancie OBOK ta kotwica jest na górze strony, więc skok
-      // tylko zsunął widok o kilkaset pikseli w dół, w puste miejsce. Cofamy to
-      // raz, zaraz po pierwszym pomiarze — tak samo jak robi to pozycja menu
-      // klikana już na stronie głównej.
-      if (!kotwicaObsluzona.current) {
-        kotwicaObsluzona.current = true;
-        if (miesciSie && window.location.hash === "#o-festiwalu") {
-          window.scrollTo({ top: 0 });
-        }
-      }
-    };
-
-    zmierz();
-    // ResizeObserver łapie też moment, w którym logo SVG dostanie swoje wymiary
-    // po wczytaniu — sam listener na resize by tego nie wychwycił.
-    const ro = new ResizeObserver(zmierz);
-    if (heroTrescRef.current) ro.observe(heroTrescRef.current);
-    window.addEventListener("resize", zmierz);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", zmierz);
-    };
-    // szerokoscLogo: ten efekt i efekt liczący szerokość loga (wyżej) to dwa
-    // NIEZALEŻNE pomiary DOM-u, które nie czekają na siebie nawzajem - na
-    // pierwszym renderze ten tutaj potrafił zmierzyć hero jeszcze ze STARĄ
-    // (startową, zwykle za dużą) szerokością logo, zanim React zdążył
-    // przemalować logo na docelową. Efekt sam nie wychwytywał tej zmiany
-    // (heroTrescRef ma sztywne max-w-4xl, więc jego własna szerokość się nie
-    // rusza, a ResizeObserver bywał zbyt wolny), co dawało za wysoką sekcję
-    // hero i pustą lukę pod przyciskami. Jawna zależność wymusza ponowny
-    // pomiar dokładnie w momencie, gdy logo dostaje docelową szerokość.
-  }, [szerokoscLogo]);
-
-  // Wspólna treść sekcji — renderowana w jednym z dwóch miejsc, nigdy w obu.
   const festiwal = (
-    // scroll-mt-28 działa tylko w wariancie POD SPODEM: odsuwa nagłówek spod
-    // logo w rogu, żeby po skoku z menu logo było nad nim, a nie na nim.
-    // W wariancie OBOK menu w ogóle tu nie przewija — wraca na górę strony.
+    // scroll-mt-28: odsuwa nagłówek spod logo w rogu, żeby po skoku z menu
+    // logo było nad nim, a nie na nim.
     <div id="o-festiwalu" className="scroll-mt-28">
       <h2 className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5">
         O Festiwalu
       </h2>
-      {/* Nie ma tu już żadnego kontenera — treść leży wprost na tle strony.
-          Prostokąt, który wyznaczała biała karta, istnieje nadal, tylko stał się
-          niewidzialny: to on jest granicą, której tekst może dotknąć, ale jej
-          nie przekroczyć, i to względem niego liczy się, czy sekcja mieści się
-          obok logo. Zniknięcie paddingu p-8 samo zrównało lewą krawędź tekstu
-          z lewą krawędzią nagłówka. */}
       {/* Data doszła tutaj z pola pod logo — stąd też jest pierwsza w wierszu,
           przed godziną, tak jak w usuniętym miejscu.
           Godzina 16:00 to OTWARCIE FESTIWALU, nie start biegu (18:30) —
@@ -426,12 +226,11 @@ export default function Home() {
         <span>Park Ludowy w Lublinie</span>
       </div>
 
-      {/* Łamy. Blok bywa bardzo szeroki (pod spodem to całe 88rem), a wiersz
-          po 140 znaków źle się czyta. Zadajemy więc SZEROKOŚĆ łamu, nie ich
-          liczbę: przeglądarka sama zmieści tyle kolumn, ile wejdzie. Dzięki
-          temu ta sama klasa działa w obu wariantach — reguła patrzy na
-          szerokość bloku, a nie na szerokość okna. */}
-      <div className="columns-[27rem] gap-10 text-sm sm:text-base text-[#183153] leading-relaxed [&>p]:mb-4 [&>p:last-child]:mb-0 [&>p]:break-inside-avoid">
+      {/* Kostka 2x2: zawsze dokladnie dwie kolumny (grid-cols-2, nie auto-fit) -
+          gora: wstep + atmosfera, dol: Glowny punkt + Ubierz sie na zolto.
+          Wypelnia cala szerokosc rodzica (max-w-[88rem] mx-auto, ten sam
+          kontener co reszta sekcji strony) - od lewego do prawego marginesu. */}
+      <div className="hidden sm:grid grid-cols-2 gap-x-10 gap-y-5 text-sm sm:text-base text-[#183153] leading-relaxed">
         <p>
           Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce,
           gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś
@@ -455,10 +254,38 @@ export default function Home() {
           nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy
           się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
-        <p className="font-extrabold text-sr-red">
-          Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
-        </p>
       </div>
+
+      <div className="sm:hidden text-sm text-[#183153] leading-relaxed">
+        <div className={festiwalRozwiniety ? "space-y-4" : "space-y-4 line-clamp-6"}>
+          <p>
+            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 - wydarzenie charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w Lublinie.
+          </p>
+          <p>
+            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi i pomaganie połączą się w jedno niezapomniane wydarzenie.
+          </p>
+          <p>
+            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego - niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+          </p>
+          <p>
+            <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+          </p>
+        </div>
+        {!festiwalRozwiniety && (
+          <button
+            type="button"
+            onClick={() => setFestiwalRozwiniety(true)}
+            className="cursor-target cursor-pointer mt-3 flex flex-col items-center gap-0.5 mx-auto font-extrabold text-sr-red"
+          >
+            Zobacz więcej
+            <ChevronDown className="w-6 h-6 animate-nudge-down" strokeWidth={2.5} />
+          </button>
+        )}
+      </div>
+
+      <p className="mt-5 text-sm sm:text-base font-extrabold text-sr-red">
+        Spotkajmy się dla Hospicjum! Razem możemy rozświetlić czyjś świat.
+      </p>
     </div>
   );
 
@@ -511,6 +338,11 @@ export default function Home() {
           STICKY CTA — "Zapisz się" (pojawia się po scrollowaniu)
       ═══════════════════════════════════════════ */}
       <div
+        // id obserwowany przez CookieConsent.tsx (IntersectionObserver): baner
+        // cookies podnosi się TYLKO wtedy, gdy ten pasek faktycznie wjechał na
+        // ekran (translate-y-0), zamiast mieć na stałe zarezerwowane miejsce
+        // na wypadek scrolla - patrz komentarz w CookieConsent.tsx.
+        id="sticky-signup-bar"
         className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-500 ${
           scrolled && !ctaDismissed ? "translate-y-0" : "translate-y-full"
         }`}
@@ -532,6 +364,7 @@ export default function Home() {
             href="https://frslublin.pl/pl/app/races/sign_up_form/295"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackSignupClick("sticky_bar")}
             className="cursor-target inline-flex items-center justify-center px-6 sm:px-12 py-[0.9375rem] bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-[1.3125rem]/[1.875rem] tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-sr-orange/30"
           >
             Zapisz się →
@@ -551,68 +384,57 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           1. HERO SECTION
       ═══════════════════════════════════════════ */}
-      {/* Sekcja startowa NIE ma już min-h-screen. Wcześniej była zawsze wysoka
-          na całe okno niezależnie od treści, przez co pod przyciskami zostawał
-          pas pustki rosnący razem z ekranem. Teraz jej wysokość liczy się
-          z treści (patrz wysokoscHero w efekcie pomiarowym) tak, żeby pod
-          najniższym elementem została dokładnie jedna LUKA. */}
       <section
-        ref={heroSekcjaRef}
-        style={{ minHeight: wysokoscHero || undefined }}
-        className="relative z-10 w-full flex flex-col pl-8 sm:pl-[60px] pr-8 sm:pr-16 md:pr-28 text-left select-none"
+        className="relative z-10 w-full px-6 sm:px-12 text-left select-none"
+        style={{ paddingBottom: LUKA }}
       >
-        <div ref={heroTrescRef} className="max-w-4xl pt-24">
-          {/* Główne logo (pozycja nr 2) — nigdy nie znika ze strony głównej i nie
-              przesuwa się. Szerokość = zmierzona szerokość kolumny przycisków
-              (patrz efekt wyżej) — zanim pomiar zdąży się wykonać, renderuje się
-              z SZEROKOSC_LOGO jako wartością startową.
+        <div className="max-w-[88rem] mx-auto w-full pt-24">
+          {/* Logo obok tekstu, oba w jednym rzędzie od lewego do prawego
+              marginesu (zamiast wąskiej kolumny z pustą przestrzenią po
+              prawej) — czysty CSS flex, bez JS mierzącego sąsiada, więc bez
+              migotania przy pierwszym renderze.
               id="hero-logo" — Navbar obserwuje ten element, by wiedzieć, kiedy
               pokazać małe logo w rogu. */}
-          <h1 id="hero-logo" className="m-0">
-            <img
-              src="/logo/sunrun-pelne.svg"
-              alt=""
-              width={870}
-              height={634}
-              className="h-auto"
-              style={{ width: szerokoscLogo }}
-              draggable={false}
-            />
-            {/* Logo samo w sobie nie niesie tekstu, a H1 to najważniejszy sygnał
-                tekstowy na stronie dla wyszukiwarek - bez tego jedyny "tekst" H1
-                to alt obrazka. sr-only: niewidoczne wizualnie (branding logo bez
-                zmian), ale czytane przez czytniki ekranu i indeksowane. */}
-            <span className="sr-only">
-              Sun Run Lublin - charytatywny bieg na 5 km w Parku Ludowym, 12 września 2026, na rzecz Hospicjum Dobrego Samarytanina
-            </span>
-          </h1>
+          <div className="flex flex-col lg:flex-row lg:items-center gap-x-16 gap-y-10 w-full">
+            <h1 id="hero-logo" className="m-0 shrink-0">
+              <img
+                src="/logo/sunrun-pelne.svg"
+                alt=""
+                width={870}
+                height={634}
+                className="h-auto w-full max-w-[480px]"
+                draggable={false}
+              />
+              {/* Logo samo w sobie nie niesie tekstu, a H1 to najważniejszy sygnał
+                  tekstowy na stronie dla wyszukiwarek - bez tego jedyny "tekst" H1
+                  to alt obrazka. sr-only: niewidoczne wizualnie (branding logo bez
+                  zmian), ale czytane przez czytniki ekranu i indeksowane. */}
+              <span className="sr-only">
+                Sun Run Lublin - charytatywny bieg na 5 km w Parku Ludowym, 12 września 2026, na rzecz Hospicjum Dobrego Samarytanina
+              </span>
+            </h1>
 
-          {/* Data zniknęła stąd — przeniesiona do nagłówka „O Festiwalu" (razem
-              z godziną i miejscem, w jednym wierszu).
-              Odstęp od logo to JAWNY pt-8 na tym kontenerze, nie space-y-6/8
-              z heroTrescRef — h1 z logo ma klasę m-0, która (mając wyższą
-              specyficzność niż owinięty w :where() space-y w Tailwind v4)
-              zawsze wygrywa i zeruje margin-bottom loga. Odstęp z space-y
-              wcześniej działał tylko przypadkiem: to USUNIĘTY blok z datą miał
-              własny pt-6, nie logo. Bez tego przyciski dotykały loga. */}
-          {/* Przyciski. Zewnętrzny kontener ma szerokość dopasowaną do treści
-              (w-fit), więc trzeci przycisk rozciągnięty na w-full ma dokładnie
-              taką samą szerokość jak para nad nim — od lewej krawędzi
-              „Zapisz się" do prawej „Dowiedz się więcej". */}
-          {/* Przyciski nie znikają już przy przewijaniu — wcześniej gasły po
-              minięciu 38% wysokości okna, więc odjeżdżały z ekranu wygaszone,
-              a użytkownik wracający w górę widział je dopiero po chwili. */}
-          <div data-hero-cta ref={ctaRef} className="flex flex-col gap-4 pt-8 w-fit pointer-events-auto">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
-                className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
-                Zapisz się
-              </a>
-              <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
-                className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
-                Dowiedz się więcej
-              </button>
-            </div>
+            <p className="flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed">
+              Sun Run to charytatywny bieg i piknik rodzinny w Parku Ludowym w Lublinie.{" "}
+              <span className="font-extrabold">12 września 2026</span> spotykamy się, by wspólnie
+              wesprzeć Hospicjum Dobrego Samarytanina - 5 km dla każdego, niezależnie od kondycji,
+              a do tego muzyka i atrakcje dla całej rodziny.
+            </p>
+          </div>
+
+          {/* Przyciski w jednym rzędzie na tej samej szerokości co logo+tekst
+              nad nimi (grid-cols-3, wysokość komórek wyrównana automatycznie
+              przez grid) zamiast wąskiej kolumny pod logo. */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 w-full pointer-events-auto">
+            <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
+              onClick={() => trackSignupClick("hero")}
+              className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
+              Zapisz się
+            </a>
+            <button onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
+              className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
+              Dowiedz się więcej
+            </button>
 
             {/* Ankieta „Skąd o nas usłyszałaś/eś?" — popup otwiera się TYLKO na
                 kliknięcie tego przycisku (patrz SurveyPopup.tsx — nie ma już
@@ -639,33 +461,20 @@ export default function Home() {
               {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Skąd o nas usłyszałaś/eś?"}
             </button>
           </div>
-
-          {/* Wariant OBOK: ramka wypełnia miejsce od prawej krawędzi logo aż po
-              stałe PRAWA_GRANICA (60px) od brzegu ekranu. Pozycjonowana
-              bezwzględnie, bo musi wyjść poza padding sekcji — lewa krawędź
-              tuż za logo (patrz pomiar wyżej, festiwalLewy), prawa niezależna
-              już od pozycji przycisku Menu.
-              Górna krawędź na wysokości GORA_RAMKI_OBOK, czyli tej samej co
-              góra logo — wcześniej ramka była wyśrodkowana w sekcji i jej
-              nagłówek zaczynał się wyraźnie niżej niż logo. */}
-          {festiwalObok && (
-            <div
-              className="absolute z-10"
-              style={{ left: festiwalLewy, right: festiwalPrawy, top: GORA_RAMKI_OBOK }}
-            >
-              {festiwal}
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Wariant POD SPODEM: gdy kolumna z logo jest za szeroka, żeby ramka
-          zmieściła się obok, cała sekcja razem z nagłówkiem spada tutaj. */}
-      {!festiwalObok && (
-        <section className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}>
-          <div className="max-w-[88rem] mx-auto">{festiwal}</div>
-        </section>
-      )}
+      {/* Sekcja „O Festiwalu" - ten sam wzorzec marginesów co reszta strony
+          (px-6 sm:px-12 + max-w-[88rem] mx-auto, patrz "O biegu" niżej), a nie
+          osobny wzorzec tylko dla hero. Ujednolicone, żeby cała strona - hero,
+          festiwal, o biegu, partnerzy itd. - trzymała się dokładnie tego
+          samego marginesu na każdej szerokości okna. */}
+      <section
+        className="relative z-10 w-full px-6 sm:px-12"
+        style={{ paddingBottom: LUKA }}
+      >
+        <div className="max-w-[88rem] mx-auto w-full">{festiwal}</div>
+      </section>
 
       {/* ═══════════════════════════════════════════
           2. STATS DASHBOARD — Mapa + Dane + Licznik

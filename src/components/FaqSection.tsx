@@ -53,12 +53,12 @@ export function FaqSection() {
       <div className="max-w-[88rem] mx-auto">
         <h2
           id="faq-heading"
-          className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-8"
+          className="max-w-3xl mx-auto text-center text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-8"
         >
           Najczęściej zadawane pytania
         </h2>
 
-        <Accordion type="single" collapsible className="max-w-3xl space-y-3">
+        <Accordion type="single" collapsible className="max-w-3xl mx-auto space-y-3">
           {faqs.map((faq, index) => (
             <AccordionItem
               key={index}

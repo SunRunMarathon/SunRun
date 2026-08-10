@@ -260,9 +260,6 @@ export default function PolitykaPrywatnosciPage() {
       <Navbar />
 
       <main className="relative z-10 px-6 sm:px-12 md:px-20 pt-28 pb-20 max-w-3xl mx-auto">
-        <span className="inline-block text-xs font-bold uppercase tracking-[0.25em] text-sr-red px-3 py-1.5 bg-sr-red/10 rounded-full border border-sr-red/30 mb-6">
-          RODO
-        </span>
         <h1 className="text-4xl sm:text-5xl font-black uppercase text-[#183153] leading-tight mb-3">
           Polityka prywatności
         </h1>

@@ -46,6 +46,13 @@ async function ensureTable() {
   // dowolnym poziomie pytania. Oba opcjonalne.
   await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS answer_detail VARCHAR(100)`);
   await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS other_text VARCHAR(200)`);
+  // visitor_id = trwały UUID z localStorage przeglądarki (lib/visitor-id.ts),
+  // INNY niż client_token wyżej (ten jest świeży przy każdym requeście, tylko
+  // do deduplikacji). Pozwala w /admin połączyć tę odpowiedź z późniejszym
+  // kliknięciem "Zapisz się" (interaction_clicks.visitor_id) tej samej osoby.
+  // Bez unikalnego indeksu - to zwykła kolumna do JOIN-a po stronie klienta,
+  // nie klucz deduplikacji.
+  await queryWithRetry(`ALTER TABLE survey_responses ADD COLUMN IF NOT EXISTS visitor_id VARCHAR(100)`);
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -86,6 +93,7 @@ export async function POST(request: Request) {
   const utmContent = str(body.utmContent, 150);
   const utmTerm = str(body.utmTerm, 150);
   const landingPath = str(body.landingPath, 300);
+  const visitorId = str(body.visitorId, 100);
 
   const ip = getClientIp(request);
   const userAgent = request.headers.get("user-agent") || "";
@@ -103,8 +111,8 @@ export async function POST(request: Request) {
     await ensureTable();
     await queryWithRetry(
       `INSERT INTO survey_responses
-        (answer, answer_detail, other_text, ip, city, region, country, referrer, traffic_source, utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path, client_token)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
+        (answer, answer_detail, other_text, ip, city, region, country, referrer, traffic_source, utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path, client_token, visitor_id)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
        ON CONFLICT (client_token) DO NOTHING`,
       [
         answer,
@@ -125,6 +133,7 @@ export async function POST(request: Request) {
         deviceType,
         landingPath,
         clientToken,
+        visitorId,
       ]
     );
     // Leniwe wyzwolenie sprzatania danych starszych niz 24 miesiace (patrz
@@ -150,7 +159,7 @@ export async function GET(request: Request) {
     await ensureTable();
     const result = await queryWithRetry(
       `SELECT id, created_at, answer, answer_detail, other_text, ip, city, region, country, referrer, traffic_source,
-              utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path
+              utm_source, utm_medium, utm_campaign, utm_content, utm_term, user_agent, device_type, landing_path, visitor_id
        FROM survey_responses ORDER BY created_at DESC`
     );
     return Response.json({ responses: result.rows });

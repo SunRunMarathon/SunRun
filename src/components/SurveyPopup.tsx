@@ -11,6 +11,7 @@ import {
 } from "@/lib/survey-options";
 import { collectClientMeta } from "@/lib/client-meta";
 import { trackEvent } from "@/lib/analytics";
+import { getVisitorId } from "@/lib/visitor-id";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { getBackdropVariants, getModalPanelVariants, getStepVariants } from "@/lib/motion-variants";
 
@@ -78,7 +79,13 @@ export function SurveyPopup() {
       await fetch("/api/survey", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answer, answerDetail, otherText: freeText, ...meta }),
+        body: JSON.stringify({
+          answer,
+          answerDetail,
+          otherText: freeText,
+          visitorId: getVisitorId(),
+          ...meta,
+        }),
       });
     } catch {
       // brak zapisu nie może zepsuć UI-a użytkownikowi — po prostu logujemy w konsoli

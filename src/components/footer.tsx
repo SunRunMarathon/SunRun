@@ -5,6 +5,7 @@ import SocialIcon from "./social-icon";
 import ShareModal from "./ShareModal";
 import { resetConsent } from "@/lib/consent";
 import { POKAZ_PARTNEROW } from "@/flagi";
+import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
 
 /**
  * Wspólna stopka serwisu.
@@ -74,6 +75,7 @@ export function Footer() {
                 href={l.href}
                 target={l.href.startsWith("http") ? "_blank" : undefined}
                 rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                onClick={l.href.includes("frslublin.pl") ? () => trackSignupClick("footer") : undefined}
                 className="block text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
               >
                 {l.label}
@@ -105,6 +107,7 @@ export function Footer() {
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackSocialClick(s.icon)}
                   className="group flex items-center gap-3 text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
                 >
                   {/* Ramka zostaje — daje równy rytm i większy cel kliknięcia.

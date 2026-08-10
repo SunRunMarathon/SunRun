@@ -538,6 +538,7 @@ export const StaggeredMenu = ({
                       rel="noopener noreferrer"
                       className={'sm-socials-link' + (s.icon ? ' sm-socials-link--icon' : '')}
                       aria-label={s.icon ? s.label : undefined}
+                      onClick={s.onClick}
                     >
                       {s.icon ? <SocialIcon name={s.icon} size={40} tone="black" /> : s.label}
                     </a>
