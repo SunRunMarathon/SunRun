@@ -130,9 +130,35 @@ export function checkAndConsumeRateLimit(ip: string): boolean {
   return true;
 }
 
-// RP ID / origin wyliczone z realnego requestu - dziala identycznie na
-// localhost (dev) i na sunrun.pl (prod), bez osobnych zmiennych srodowiskowych.
+// RP ID / origin dla WebAuthn - TO BYL BLAD: request.url w Route Handlerze
+// Next.js odzwierciedla adres, na ktorym proces faktycznie nasluchuje
+// (np. "localhost:3001" w Dockerze, wewnetrzny adres kontenera na Railway),
+// a NIE domene, ktorej naprawde uzywa przegladarka uzytkownika - potwierdzone
+// eksperymentalnie: zmiana naglowka Host/X-Forwarded-Host nie miala zadnego
+// wplywu na wynik. Skutek: rpID wysylany do przegladarki (np. "localhost" albo
+// wewnetrzny host kontenera) nigdy nie zgadzal sie z prawdziwa domena strony
+// (np. "sunrun.pl"), wiec navigator.credentials.create()/get() odrzucaly
+// operacje NATYCHMIAST (SecurityError), zanim doszlo do jakiegokolwiek okna
+// Windows Hello / Touch ID - to widac jako "anulowane" tuz po kliknieciu,
+// dokladnie objaw zgloszony przez admina.
+//
+// Poprawka: naglowek Origin, ktory przegladarka SAMA dolacza do kazdego
+// fetch() typu POST i ktorego JS nie moze podrobic - naprawde odzwierciedla
+// domene otwartej strony, dziala identycznie na localhost (dev) i na
+// sunrun.pl (prod) bez zadnej zmiennej srodowiskowej. NEXT_PUBLIC_SITE_URL
+// (ten sam wzorzec co w layout.tsx/sitemap.ts/ShareModal.tsx) zostaje jako
+// awaryjny fallback na wypadek requestu bez naglowka Origin.
 export function getRpInfo(request: Request): { rpID: string; origin: string } {
-  const url = new URL(request.url);
+  const originHeader = request.headers.get("origin");
+  if (originHeader) {
+    try {
+      const url = new URL(originHeader);
+      return { rpID: url.hostname, origin: url.origin };
+    } catch {
+      // nieprawidlowy naglowek Origin - spadamy do fallbacku ponizej
+    }
+  }
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
+  const url = new URL(site);
   return { rpID: url.hostname, origin: url.origin };
 }

@@ -13,7 +13,13 @@ export async function loginWithPasskey(): Promise<string> {
   let response;
   try {
     response = await startAuthentication({ optionsJSON: options });
-  } catch {
+  } catch (err) {
+    // Prawdziwy blad (np. SecurityError przy niezgodnym rpID) trafial dotad
+    // wylacznie do generycznego komunikatu ponizej, bez sladu w konsoli - stad
+    // trudno bylo odroznic realne "anulowane przez uzytkownika" od bledu
+    // konfiguracji. console.error nie zmienia zachowania dla uzytkownika,
+    // tylko zostawia slad do diagnozy.
+    console.error("WebAuthn logowanie - blad przegladarki:", err);
     throw new Error("Logowanie kluczem anulowane lub nieudane");
   }
 
@@ -41,7 +47,8 @@ export async function registerPasskey(sessionToken: string, deviceName: string):
   let response;
   try {
     response = await startRegistration({ optionsJSON: options });
-  } catch {
+  } catch (err) {
+    console.error("WebAuthn rejestracja - blad przegladarki:", err);
     throw new Error("Rejestracja klucza anulowana lub nieudana");
   }
 
