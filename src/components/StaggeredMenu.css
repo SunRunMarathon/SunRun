@@ -374,7 +374,13 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  /* Bylo 0.5rem, potem 0.25rem - z siedmioma pozycjami (doszlo "Zaproś
+     znajomych") lista robila sie bardziej rozlazla, niz trzeba. Teraz 0 -
+     caly odstep miedzy pozycjami zostaje wylacznie z line-height (1.5) na
+     .sm-panel-item, celowo podniesionego wczesniej, zeby ogonki polskich
+     liter sie nie przycinaly - tu ruszamy tylko dodatkowy odstep MIEDZY
+     pozycjami, nie wysokosc kazdej z osobna. */
+  gap: 0;
 }
 
 .sm-panel-item {

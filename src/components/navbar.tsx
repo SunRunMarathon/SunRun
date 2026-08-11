@@ -23,37 +23,68 @@ import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
  */
 
 /**
- * „O Festiwalu" prowadzi w dwa różne miejsca, zależnie od tego, gdzie akurat
- * stoi ta sekcja.
+ * Kliknięcie w boczne menu zamyka panel (patrz toggleMenu w onClick niżej).
+ * StaggeredMenu na czas otwarcia panelu blokuje scroll strony przez
+ * `position: fixed` na body, a przy zamknięciu PRZYWRACA dokładnie scrollY
+ * sprzed otwarcia (StaggeredMenu.tsx, blokada scrolla pod panelem) - scroll
+ * wywołany tutaj SYNCHRONICZNIE ginąłby więc natychmiast, nadpisany przez to
+ * przywrócenie. Podwójny rAF odkłada faktyczne przewinięcie na klatkę PO tym,
+ * jak efekt zamykający panel zdąży odpalić.
  *
- * Na szerokich ekranach jest ona OBOK logo hero, czyli na samej górze strony —
- * przewijanie do niej przesuwałoby stronę o kilkaset pikseli w dół i lądowało
- * w pustym miejscu. W tym wariancie zachowujemy się jak „Strona główna"
- * i wracamy na sam początek.
- *
- * Gdy sekcja spadła POD logo, przewijamy do niej normalnie; odstęp spod logo
- * w rogu daje jej scroll-margin-top (patrz #o-festiwalu w page.tsx).
- *
- * Sprawdzamy realny układ DOM, a nie szerokość okna, bo o wariancie decyduje
- * pomiar zrobiony na stronie głównej — próg zależy też od wysokości okna.
+ * `sekcjaId` to id elementu na stronie głównej; `null` oznacza scroll do
+ * samej góry (dla "Strona główna" - tam nie ma jednego elementu docelowego).
+ * Na innych podstronach element/scenariusz "juz na gorze" nie zachodzi, wiec
+ * funkcja po prostu nie robi nic i zwykly href (np. "/") załatwia nawigację.
  */
-const przejdzDoFestiwalu = (e) => {
-  const el = document.getElementById("o-festiwalu");
-  if (!el) return; // inna podstrona — zwykły odnośnik "/#o-festiwalu" załatwi sprawę
-  e.preventDefault();
-  const obokLoga = !!el.closest("section")?.querySelector("#hero-logo");
-  if (obokLoga) window.scrollTo({ top: 0, behavior: "smooth" });
-  else el.scrollIntoView({ behavior: "smooth" });
+const stworzPrzewinDoSekcji = (sekcjaId) => (e) => {
+  if (sekcjaId) {
+    const el = document.getElementById(sekcjaId);
+    if (!el) return; // inna podstrona — zwykły odnośnik "/#..." załatwi sprawę
+    e.preventDefault();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.scrollIntoView({ behavior: "smooth" });
+      });
+    });
+  } else {
+    if (window.location.pathname !== "/") return; // inna podstrona — zwykła nawigacja na "/"
+    e.preventDefault();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  }
 };
 
+const przejdzDoGory = stworzPrzewinDoSekcji(null);
+const przejdzDoFestiwalu = stworzPrzewinDoSekcji("o-festiwalu");
+const przejdzDoBiegu = stworzPrzewinDoSekcji("o-biegu");
+const przejdzDoPartnerow = stworzPrzewinDoSekcji("partnerzy");
+
 const items = [
-  { label: "Strona główna", link: "/", ariaLabel: "Przejdź na stronę główną" },
+  { label: "Strona główna", link: "/", ariaLabel: "Przejdź na stronę główną", onSelect: przejdzDoGory },
   { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026", onSelect: przejdzDoFestiwalu },
-  { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu - dystans, trasa, limit czasu" },
+  { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu - dystans, trasa, limit czasu", onSelect: przejdzDoBiegu },
+  {
+    label: "Zaproś znajomych",
+    link: "/zaproszenie",
+    ariaLabel: "Zaproś znajomych na Sun Run 2026",
+    // Jedyna pozycja w menu, ktora zwykle lamie sie na dwie linie - a przy
+    // wspolnym line-height:1.5 (patrz StaggeredMenu.css, potrzebne dla
+    // ogonka "ę" w "Zapisz się") odstep miedzy "Zaproś" i "znajomych" wyglada
+    // nieproporcjonalnie duzo. Zmierzone metrykami czcionki LEMON MILK: ten
+    // konkretny tekst (bez ogonkow - jedyny diakrytyk to akcent NAD "Ś") ma
+    // margines nawet przy line-height 1.2 (limitujacy czynnik to miejsce nad
+    // "Ś", nie pod zadna litera - w LEMON MILK "j"/"y" nie schodza ponizej
+    // linii bazowej). 1.3 zostawia bezpieczny zapas (~3px) zamiast schodzic
+    // do granicy.
+    tightLineHeight: 1.3,
+  },
   { label: "Archiwum", link: "/archiwum", ariaLabel: "Archiwum I edycji Sun Run 2025" },
   // Odfiltrowana razem z ukrytą sekcją — patrz POKAZ_PARTNEROW w src/flagi.ts.
   // Bez tego pozycja zostałaby w menu i prowadziła do kotwicy, której nie ma.
-  { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu", ukryjGdy: !POKAZ_PARTNEROW },
+  { label: "Partnerzy", link: "/#partnerzy", ariaLabel: "Partnerzy i sponsorzy biegu", ukryjGdy: !POKAZ_PARTNEROW, onSelect: przejdzDoPartnerow },
   { label: "O nas", link: "/o-nas", ariaLabel: "O nas - organizatorzy Sun Run" },
   {
     label: "Zapisz się",

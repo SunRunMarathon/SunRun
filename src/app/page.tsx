@@ -445,7 +445,7 @@ export default function Home() {
             </a>
             <button
               data-track-event="dowiedz_sie_wiecej_click"
-              onClick={() => document.getElementById("o-biegu")?.scrollIntoView({ behavior: "smooth" })}
+              onClick={() => document.getElementById("o-festiwalu")?.scrollIntoView({ behavior: "smooth" })}
               className="cursor-target cursor-pointer inline-flex items-center justify-center px-8 py-5 border border-sr-line hover:border-sr-orange/60 bg-sr-white text-[#183153] font-black rounded-full text-lg tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5">
               Dowiedz się więcej
             </button>
@@ -812,7 +812,7 @@ export default function Home() {
           width/height na <img> to realne wymiary plików w public/partners -
           zapobiega skokowi layoutu przed wczytaniem. */}
       {POKAZ_PARTNEROW && (
-      <section id="partnerzy" className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}>
+      <section id="partnerzy" className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA }}>
         <div className="max-w-5xl mx-auto w-full">
           <div className="text-center mb-10 space-y-4">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>

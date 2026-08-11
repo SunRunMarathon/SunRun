@@ -96,7 +96,7 @@ export function ReferralGenerator() {
             Biegnij razem ze znajomymi
           </h1>
           <p className="text-base sm:text-lg text-[#3D4D65] leading-relaxed max-w-2xl mx-auto">
-            Masz już numer startowy? Dzięki tobie ktoś inny zapisał się na bieg Sun Run? Znaczy to,
+            Masz już numer startowy? Dzięki tobie ktoś inny zapisał się na bieg? Znaczy to,
             że jesteś o krok od otrzymania gadżetów Sun Run! Wypełnij poniższy formularz, a w dniu
             biegu będziesz mógł odebrać swój prezent. Dla TOP 10 zapraszających przewidziane są
             specjalne Mystery Boxy Sun Run.

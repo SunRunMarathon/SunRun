@@ -89,7 +89,7 @@ export function ReferralPanel() {
             // przycisku), więc bez tego szerokość obcinała się do jego
             // rozmiaru, a wysokość - bez analogicznego max-height - już nie.
             // Efekt: grafika renderowała się rozciągnięta, nie kwadratowa.
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 max-w-none opacity-50 pointer-events-none select-none"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 max-w-none opacity-40 pointer-events-none select-none"
           />
         )}
         <Link
