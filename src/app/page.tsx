@@ -479,6 +479,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══════════════════════════════════════════
+          1.5. ZAPROŚ ZNAJOMEGO
+      ═══════════════════════════════════════════ */}
+      <section id="zaproszenie" className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA }}>
+        <div className="max-w-[88rem] mx-auto w-full">
+          <ReferralPanel />
+        </div>
+      </section>
+
       {/* Sekcja „O Festiwalu" - ten sam wzorzec marginesów co reszta strony
           (px-6 sm:px-12 + max-w-[88rem] mx-auto, patrz "O biegu" niżej), a nie
           osobny wzorzec tylko dla hero. Ujednolicone, żeby cała strona - hero,
@@ -713,15 +722,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          3.5. ZAPROŚ ZNAJOMEGO
-      ═══════════════════════════════════════════ */}
-      <section id="zaproszenie" className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA }}>
-        <div className="max-w-[88rem] mx-auto w-full">
-          <ReferralPanel />
         </div>
       </section>
 
