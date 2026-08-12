@@ -14,15 +14,27 @@ import { useEffect, useRef, useState } from "react";
 // w przybliżeniu okrągła, więc u góry/dołu luzu jest więcej niż po bokach).
 const ODSTEP_OD_PLATKOW = 16;
 
-// Zmierzone piksel po pikselu na public/slonecznik-duzy-transparent.png:
-// przezroczysta dziura na środku nie jest idealnym kołem (promień waha się
-// 192-208px po całym obwodzie przy szerokości obrazka 745px) - bierzemy
-// najmniejszy zmierzony promień, żeby żaden płatek nigdy nie wszedł w lukę,
-// niezależnie od kąta. Proporcja promień/szerokość wyszła niemal identyczna
-// jak w poprzednim pliku (0,258 vs 0,258), więc wyświetlany rozmiar na
-// stronie zostaje praktycznie ten sam - to tylko jakość źródła się zmienia.
+// Zmierzone dokladnie (flood-fill po kanale alfa) na
+// public/slonecznik-duzy-transparent.png: prawdziwy SRODEK dziury (liczony
+// jako centroid wszystkich przezroczystych pikseli w niej) wypada w
+// (369,9; 379,0) - NIE dokladnie w geometrycznym srodku calego obrazka
+// (372,5; 371,5), jak zakladala wczesniejsza wersja tego pliku. Ta roznica
+// (~2,6px w poziomie, ~7,5px w pionie w skali natywnej) to byla realna
+// przyczyna zgloszonej asymetrii odstepu lewo/prawo od przycisku - obrazek
+// centrowal sie na WLASNYM srodku, nie na srodku dziury. Liczac promien od
+// poprawnego centroidu (nie od geometrycznego srodka), dziura okazuje sie
+// niemal idealnym kolem (promien 198,0-201,4px, wczesniejszy odczyt
+// 192-208px byl artefaktem liczenia z blednego punktu) - stad bezpieczny
+// promien (198) tez sie zmienil.
 const SLONECZNIK_SZEROKOSC = 745;
-const SLONECZNIK_PROMIEN_DZIURY = 192;
+const SLONECZNIK_WYSOKOSC = 743;
+const SLONECZNIK_PROMIEN_DZIURY = 198;
+const SLONECZNIK_SRODEK_DZIURY_X = 369.9;
+const SLONECZNIK_SRODEK_DZIURY_Y = 379.0;
+
+// "Powiekszenie o 5%" - proste skalowanie koncowego rozmiaru, niezalezne od
+// wyliczenia opartego na szerokosci przycisku + stalym odstepie ponizej.
+const POWIEKSZENIE = 1.05;
 
 export function ReferralPanel() {
   // Grafika ma być wyśrodkowana na SAMYM PRZYCISKU (nie na całej karcie) i
@@ -38,7 +50,7 @@ export function ReferralPanel() {
       if (!w) return;
       const docelowaSrednicaDziury = w + 2 * ODSTEP_OD_PLATKOW;
       setSzerokoscSlonecznika(
-        Math.round(docelowaSrednicaDziury * (SLONECZNIK_SZEROKOSC / (2 * SLONECZNIK_PROMIEN_DZIURY)))
+        Math.round(docelowaSrednicaDziury * (SLONECZNIK_SZEROKOSC / (2 * SLONECZNIK_PROMIEN_DZIURY)) * POWIEKSZENIE)
       );
     };
     zmierz();
@@ -83,13 +95,21 @@ export function ReferralPanel() {
             alt=""
             aria-hidden="true"
             draggable={false}
-            style={{ width: szerokoscSlonecznika, height: szerokoscSlonecznika }}
+            style={{
+              width: szerokoscSlonecznika,
+              height: szerokoscSlonecznika,
+              // -50% centruje GEOMETRYCZNY srodek obrazka na przycisku; dodatkowy
+              // px-owy przesuw doklada roznice miedzy tym srodkiem a prawdziwym
+              // srodkiem dziury (patrz stale SLONECZNIK_SRODEK_DZIURY_* wyzej),
+              // skalowana razem z wyswietlanym rozmiarem obrazka.
+              transform: `translate(calc(-50% + ${(SLONECZNIK_SZEROKOSC / 2 - SLONECZNIK_SRODEK_DZIURY_X) * (szerokoscSlonecznika / SLONECZNIK_SZEROKOSC)}px), calc(-50% + ${(SLONECZNIK_WYSOKOSC / 2 - SLONECZNIK_SRODEK_DZIURY_Y) * (szerokoscSlonecznika / SLONECZNIK_SZEROKOSC)}px))`,
+            }}
             // max-w-none: Tailwind daje wszystkim <img> domyślnie max-width:100%
             // liczone od kontenera (tu: wąskiego, mierzonego na szerokość
             // przycisku), więc bez tego szerokość obcinała się do jego
             // rozmiaru, a wysokość - bez analogicznego max-height - już nie.
             // Efekt: grafika renderowała się rozciągnięta, nie kwadratowa.
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 max-w-none opacity-40 pointer-events-none select-none"
+            className="absolute top-1/2 left-1/2 -z-10 max-w-none opacity-30 pointer-events-none select-none"
           />
         )}
         <Link

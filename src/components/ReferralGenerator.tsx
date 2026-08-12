@@ -162,7 +162,7 @@ export function ReferralGenerator() {
               {submitting ? "Wysyłanie…" : "Wyślij formularz"}
             </button>
             {sukces && (
-              <p className="text-sm text-emerald-600 font-bold sm:col-span-2">
+              <p className="text-sm text-sr-red font-bold sm:col-span-2">
                 Wysłano! Możesz zaprosić kolejną osobę.
               </p>
             )}

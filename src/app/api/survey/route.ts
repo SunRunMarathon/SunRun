@@ -95,11 +95,19 @@ export async function POST(request: Request) {
   const landingPath = str(body.landingPath, 300);
   const visitorId = str(body.visitorId, 100);
 
-  const ip = getClientIp(request);
-  const userAgent = request.headers.get("user-agent") || "";
-  const deviceType = detectDeviceType(userAgent);
+  // Sama odpowiedz zapisuje sie zawsze (patrz reszta funkcji) - ale IP,
+  // geolokalizacja, user-agent i typ urzadzenia to dane, ktore baner zgody
+  // (CookieConsent.tsx) obiecuje uzytkownikowi zbierac dopiero po jego
+  // zgodzie. Bez tego warunku byly zbierane bezwarunkowo, mimo ze przychodza
+  // z samego requestu (klient nie musi nic wysylac) - rozjazd miedzy tym, co
+  // baner deklaruje, a tym, co faktycznie sie dzieje.
+  const consent = body.consent === true;
+  const userAgentHeader = request.headers.get("user-agent") || "";
+  const ip = consent ? getClientIp(request) : null;
+  const userAgent = consent ? userAgentHeader : null;
+  const deviceType = consent ? detectDeviceType(userAgentHeader) : null;
   const trafficSource = detectTrafficSource({ utmSource, referrer });
-  const geo = await lookupGeoIp(ip);
+  const geo = consent ? await lookupGeoIp(ip) : { city: null, region: null, country: null };
 
   // Wygenerowany raz, przed retry - jesli pierwsza proba INSERT-a faktycznie
   // dotrze do bazy, ale odpowiedz zgubi sie po drodze (np. zerwane polaczenie

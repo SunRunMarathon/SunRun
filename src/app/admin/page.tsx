@@ -7,18 +7,10 @@ import { InteractionDashboard } from "@/components/admin/InteractionDashboard";
 import { VisitsDashboard } from "@/components/admin/VisitsDashboard";
 import { SecurityDashboard } from "@/components/admin/SecurityDashboard";
 import { ReferralsDashboard } from "@/components/admin/ReferralsDashboard";
+import { TimelineDashboard } from "@/components/admin/TimelineDashboard";
 import { RegisteredCountEditor } from "@/components/admin/RegisteredCountEditor";
 import { RetentionStatus } from "@/components/admin/RetentionStatus";
 import { browserSupportsWebAuthn, loginWithPasskey } from "@/lib/webauthn-client";
-
-type Submission = {
-  id: string;
-  date: string;
-  company: string;
-  name: string;
-  phone: string;
-  message: string;
-};
 
 const TOKEN_KEY = "admin_session_token";
 
@@ -42,9 +34,8 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [tab, setTab] = useState<
-    "ankieta" | "udostepnienia" | "wizyty" | "klikniecia" | "zaproszenia" | "partnerzy" | "bezpieczenstwo"
+    "ankieta" | "udostepnienia" | "wizyty" | "klikniecia" | "zaproszenia" | "os-czasu" | "bezpieczenstwo"
   >("ankieta");
 
   const [showSecretsForm, setShowSecretsForm] = useState(false);
@@ -88,8 +79,6 @@ export default function AdminPage() {
         return;
       }
       if (!res.ok) throw new Error();
-      const data = await res.json();
-      setSubmissions(data.submissions);
       setAuthed(true);
       setToken(tok);
       sessionStorage.setItem(TOKEN_KEY, tok);
@@ -171,11 +160,8 @@ export default function AdminPage() {
   const handleLogout = () => {
     setAuthed(false);
     setToken("");
-    setSubmissions([]);
     sessionStorage.removeItem(TOKEN_KEY);
   };
-
-  const fetchSubmissions = () => verifyAndLoad(token);
 
   if (!authed) {
     return (
@@ -297,7 +283,7 @@ export default function AdminPage() {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => (tab === "partnerzy" ? fetchSubmissions() : window.location.reload())}
+              onClick={() => window.location.reload()}
               disabled={loading}
               className="px-5 py-2 border border-sr-line hover:border-sr-orange rounded-full text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
             >
@@ -367,14 +353,14 @@ export default function AdminPage() {
             Zaproszenia
           </button>
           <button
-            onClick={() => setTab("partnerzy")}
+            onClick={() => setTab("os-czasu")}
             className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
-              tab === "partnerzy"
+              tab === "os-czasu"
                 ? "border-sr-orange text-[#183153]"
                 : "border-transparent text-[#3D4D65] hover:text-[#183153]"
             }`}
           >
-            Zgłoszenia partnerów ({submissions.length})
+            Oś czasu
           </button>
           <button
             onClick={() => setTab("bezpieczenstwo")}
@@ -398,44 +384,9 @@ export default function AdminPage() {
 
         {tab === "zaproszenia" && <ReferralsDashboard password={token} />}
 
-        {tab === "bezpieczenstwo" && <SecurityDashboard token={token} />}
+        {tab === "os-czasu" && <TimelineDashboard password={token} />}
 
-        {tab === "partnerzy" &&
-          (submissions.length === 0 ? (
-            <div className="bg-white border border-sr-line rounded-3xl p-12 text-center text-[#3D4D65] text-sm shadow-sm">
-              Brak zgłoszeń - gdy ktoś wypełni formularz na stronie „Dla Partnerów”, pojawi się tutaj.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {submissions.map((s) => (
-                <div
-                  key={s.id}
-                  className="bg-white border border-sr-line rounded-2xl p-6 space-y-3 shadow-sm"
-                >
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <div>
-                      <span className="font-black text-[#183153]">{s.company}</span>
-                      <span className="text-[#3D4D65] text-sm"> · {s.name}</span>
-                    </div>
-                    <span className="text-xs text-[#3D4D65]">
-                      {new Date(s.date).toLocaleString("pl-PL")}
-                    </span>
-                  </div>
-                  {s.phone && (
-                    <p className="text-sm text-[#3D4D65]">
-                      <span className="text-[#3D4D65] uppercase text-xs tracking-widest mr-2">
-                        Tel:
-                      </span>
-                      {s.phone}
-                    </p>
-                  )}
-                  <p className="text-sm text-[#183153] leading-relaxed whitespace-pre-wrap border-t border-[rgb(24 49 83 / 0.14)] pt-3">
-                    {s.message}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ))}
+        {tab === "bezpieczenstwo" && <SecurityDashboard token={token} />}
       </div>
     </div>
   );

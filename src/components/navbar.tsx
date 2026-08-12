@@ -96,6 +96,26 @@ const items = [
   },
 ];
 
+// Kolor przycisku "Menu" + symbolu "+" musi dzialac na DWOCH roznych tlach w
+// stanie zamknietym: piaskowym tle strony (gora, header w pelni przezroczysty)
+// i granatowym tle headera (po przescrollowaniu, patrz headerStyle nizej) - a
+// zaden pojedynczy kolor z palety nie ma dobrego kontrastu na obu naraz
+// (zmierzone: granat na piasku 9,5:1 - dobrze, ale granat na granacie to ~1:1;
+// piasek na granacie 9,5:1 - dobrze, ale piasek na piasku to ~1:1). Kolor
+// wiec PLYNNIE przechodzi granat->piasek w tym samym tempie co samo tlo
+// headera (logoOpacity), zamiast przeskakiwac skokowo.
+function mieszajKolory(hexA: string, hexB: string, t: number) {
+  const parsuj = (hex: string) => {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const [r1, g1, b1] = parsuj(hexA);
+  const [r2, g2, b2] = parsuj(hexB);
+  const mieszaj = (a: number, b: number) => Math.round(a + (b - a) * t);
+  const skladowa = (v: number) => v.toString(16).padStart(2, "0");
+  return `#${skladowa(mieszaj(r1, r2))}${skladowa(mieszaj(g1, g2))}${skladowa(mieszaj(b1, b2))}`;
+}
+
 const socialItems = [
   {
     label: "Instagram",
@@ -263,14 +283,15 @@ export function Navbar({ revealOnScroll = false }) {
       // Tło nagłówka pojawia się dopiero razem z logo w rogu (ten sam
       // logoOpacity) - u góry strony, nad hero, header ma zostać w pełni
       // przezroczysty jak dotychczas. Gdy logo jest już widoczne (przewinięte
-      // w głąb strony), header dostaje białe, rozmyte tło w tym samym
+      // w głąb strony), header dostaje granatowe, rozmyte tło w tym samym
       // tempie co samo logo - inaczej przy scrollu w górę nagłówek potrafi
       // wrócić dokładnie nad nagłówkiem sekcji i wizualnie się z nim zlać
-      // (zgłoszone jako "logo nachodzi na O BIEGU"). Sama przezroczystość
-      // (logoOpacity * 0.9) zostaje bez zmian - zmienił się tylko kolor,
-      // z piaskowego (244,216,162) na biały.
+      // (zgłoszone jako "logo nachodzi na O BIEGU"). Granat (#183153) to ten
+      // sam kolor co tło stopki - stąd też piaskowy wariant logo i piaskowy
+      // (nie granatowy) kolor przycisku menu poniżej, żeby całość czytała się
+      // jak ten sam, spójny motyw co stopka.
       headerStyle={{
-        backgroundColor: `rgba(255, 255, 255, ${logoOpacity * 0.9})`,
+        backgroundColor: `rgba(24, 49, 83, ${logoOpacity * 0.9})`,
         backdropFilter: logoOpacity > 0.05 ? "blur(10px)" : "none",
         WebkitBackdropFilter: logoOpacity > 0.05 ? "blur(10px)" : "none",
       }}
@@ -280,9 +301,13 @@ export function Navbar({ revealOnScroll = false }) {
       displayItemNumbering={false}
       colors={["#F94C1F", "#183153"]}
       accentColor="#FE8004"
-      menuButtonColor="#183153"
+      // Zamkniete: granat->piasek razem z logoOpacity (patrz komentarz przy
+      // mieszajKolory). Otwarte: zawsze granat - panel ma biale tlo (13,1:1),
+      // gdzie ani granat u gory strony, ani piasek po przescrollowaniu nie
+      // maja szans wygrac z tym jednym, stalym wyborem.
+      menuButtonColor={mieszajKolory("#183153", "#F4D8A2", logoOpacity)}
       openMenuButtonColor="#183153"
-      changeMenuColorOnOpen={false}
+      changeMenuColorOnOpen
       // Gdy logo jest niewidoczne, wyłączamy też klikalność — inaczej w rogu strony
       // głównej zostawałby niewidoczny odnośnik przechwytujący kliknięcia.
       logoStyle={{
@@ -293,7 +318,7 @@ export function Navbar({ revealOnScroll = false }) {
         // <img> w <a> daje prostokątny obszar klikalny, więc kliknięcie
         // w przezroczyste miejsca między literami też prowadzi na stronę główną.
         <img
-          src="/logo/sunrun-skrocone.svg"
+          src="/logo/sunrun-skrocone-piaskowe.svg"
           alt="Sun Run"
           width={LOGO_W}
           height={LOGO_H}

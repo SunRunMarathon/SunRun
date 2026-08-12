@@ -704,7 +704,7 @@ export default function Home() {
                   href="https://hospicjum-samarytanin.pl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 border border-sr-red/40 hover:border-sr-red text-sr-red hover:text-sr-red font-semibold rounded-full text-sm tracking-wide transition-all duration-200 w-fit"
+                  className="cursor-target inline-flex items-center gap-2 px-5 py-2.5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-sm tracking-wide uppercase transition-all duration-200 w-fit shadow-lg hover:-translate-y-0.5"
                 >
                   Odwiedź stronę hospicjum →
                 </a>

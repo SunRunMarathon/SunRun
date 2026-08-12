@@ -78,12 +78,20 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           </li>
           <li>
             <strong>Adres IP oraz przybliżona lokalizacja</strong> (miasto, region, kraj) ustalona
-            na podstawie adresu IP - przy wypełnieniu ankiety.
+            na podstawie adresu IP, a także typ urządzenia - przy wypełnieniu ankiety, ale dopiero
+            po wyrażeniu zgody na analitykę w banerze cookies. Sama odpowiedź w ankiecie zapisuje
+            się niezależnie od tej zgody - patrz punkt wyżej.
           </li>
           <li>
             <strong>Adres IP bez geolokalizacji</strong> - osobno, przy każdym wejściu na stronę
             główną, ale dopiero po wyrażeniu zgody na analitykę w banerze cookies (ten sam licznik,
             który liczy też wskaźnik „wejścia / wypełnienia ankiety" w panelu administracyjnym).
+          </li>
+          <li>
+            <strong>Sam fakt wejścia na stronę</strong> - bez adresu IP, urządzenia ani żadnego
+            innego identyfikatora - zbierany zawsze, niezależnie od zgody w banerze cookies. To
+            wyłącznie anonimowy licznik odwiedzin (do ilu osób w ogóle dociera strona), który nie
+            pozwala zidentyfikować żadnej konkretnej osoby ani urządzenia.
           </li>
           <li>
             <strong>Źródło ruchu</strong> - informacja, skąd trafiłeś na stronę: wyszukiwarka
@@ -120,14 +128,21 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <ul className="list-disc pl-5 space-y-1.5">
         <li>
-          Art. 6 ust. 1 lit. a) RODO - <strong>zgoda</strong>: dla odpowiedzi w ankiecie (wyrażana
-          przez wybranie opcji) oraz dla plików cookie Google Analytics (wyrażana w banerze
-          zgody).
+          Art. 6 ust. 1 lit. a) RODO - <strong>zgoda</strong>: dla treści odpowiedzi w ankiecie
+          (wyrażana przez wybranie opcji), dla adresu IP/geolokalizacji/urządzenia towarzyszących
+          tej odpowiedzi oraz dla licznika wejść na stronę i plików cookie Google Analytics
+          (wszystkie trzy wyrażane w banerze zgody).
         </li>
         <li>
           Art. 6 ust. 1 lit. f) RODO - <strong>prawnie uzasadniony interes</strong> administratora:
           podstawowe logi techniczne (np. adres IP) niezbędne do zabezpieczenia i utrzymania
           strony.
+        </li>
+        <li>
+          <strong>Poza zakresem RODO</strong>: anonimowy licznik samego faktu wejścia na stronę
+          (bez IP, urządzenia czy jakiegokolwiek identyfikatora) nie pozwala zidentyfikować żadnej
+          osoby, więc nie stanowi przetwarzania danych osobowych w rozumieniu art. 4 ust. 1 RODO -
+          zbieramy go niezależnie od zgody.
         </li>
       </ul>
     ),
