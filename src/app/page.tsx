@@ -47,6 +47,10 @@ const STACK_CARDS = [
 // wszystkie, żeby wyszły optycznie wyrównane mimo różnych proporcji.
 // Adresy stron - tylko te, co do których nie ma wątpliwości (sprawdzone
 // wyszukiwaniem/bezpośrednim odczytem), nie zgadywane.
+const PATRONAT_HONOROWY = [
+  { name: "Prezydent Miasta Lublin", file: "patronat_prezydenta_lublin-scaled.jpg", w: 2560, h: 667, url: "https://lublin.eu" },
+];
+
 const MEDIA_PATRONI = [
   { name: "TVP3 Lublin", file: "tvp3-lublin.png", w: 703, h: 420, url: "https://lublin.tvp.pl" },
   { name: "Radio Lublin", file: "radio-lublin.png", w: 2313, h: 420, url: "https://radio.lublin.pl" },
@@ -624,8 +628,12 @@ export default function Home() {
                   </span>
                   <span className="text-[#3D4D65] text-sm pb-2">i rośnie!</span>
                 </div>
-                <p className="text-xs text-[#3D4D65] mt-3">
-                  Aktualizowane ręcznie przez organizatorów
+                <p className="text-xs text-[#3D4D65] mt-3 flex items-center gap-1.5">
+                  <span className="relative flex size-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sr-red opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-sr-red" />
+                  </span>
+                  Na żywo
                 </p>
               </div>
             </div>
@@ -821,6 +829,35 @@ export default function Home() {
             </h2>
           </div>
           <div className="rounded-3xl bg-white border border-sr-line shadow-lg p-8 sm:p-10 space-y-10">
+            <div className="space-y-5">
+              <p className="text-center text-xs font-bold uppercase tracking-[0.25em] text-[#3D4D65]">
+                Patronat honorowy
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
+                {PATRONAT_HONOROWY.map((p) => (
+                  <a
+                    key={p.name}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-target block"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/partners/${p.file}`}
+                      alt={p.name}
+                      width={p.w}
+                      height={p.h}
+                      className="h-8 sm:h-10 w-auto object-contain"
+                      loading="lazy"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-sr-line" />
+
             <div className="space-y-5">
               <p className="text-center text-xs font-bold uppercase tracking-[0.25em] text-[#3D4D65]">
                 Patronat medialny
