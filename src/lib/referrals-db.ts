@@ -8,6 +8,7 @@ export type Referral = {
   inviter_name: string;
   inviter_email: string;
   inviter_start_number: string;
+  invited_email: string;
   verified: boolean;
 };
 
@@ -31,6 +32,10 @@ export async function ensureReferralTables() {
       verified BOOLEAN NOT NULL DEFAULT false
     )
   `);
+  // Formularz na /zaproszenie od niedawna zbiera tez e-mail osoby zaproszonej -
+  // ADD COLUMN IF NOT EXISTS, bo tabela `referrals` na produkcji juz istnieje
+  // (samo CREATE TABLE IF NOT EXISTS wyzej nie dotknie istniejacej tabeli).
+  await queryWithRetry(`ALTER TABLE referrals ADD COLUMN IF NOT EXISTS invited_email VARCHAR(200) NOT NULL DEFAULT ''`);
   await queryWithRetry(`
     CREATE TABLE IF NOT EXISTS referral_hits (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -53,6 +58,7 @@ export async function createReferral(params: {
   name: string;
   email: string;
   startNumber: string;
+  invitedEmail: string;
 }): Promise<string> {
   await ensureReferralTables();
   // Kilka prob na wypadek (bardzo malo prawdopodobnej) kolizji kodu -
@@ -61,9 +67,9 @@ export async function createReferral(params: {
     const code = generateCode();
     try {
       await queryWithRetry(
-        `INSERT INTO referrals (code, inviter_name, inviter_email, inviter_start_number)
-         VALUES ($1, $2, $3, $4)`,
-        [code, params.name, params.email, params.startNumber]
+        `INSERT INTO referrals (code, inviter_name, inviter_email, inviter_start_number, invited_email)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [code, params.name, params.email, params.startNumber, params.invitedEmail]
       );
       return code;
     } catch (err) {

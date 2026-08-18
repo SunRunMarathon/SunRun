@@ -491,7 +491,10 @@ export const StaggeredMenu = ({
                     // Kolor przez zmienną CSS, a nie przez style inline: inline
                     // wygrałby z regułą :hover i pozycja nie zmieniałaby barwy
                     // po najechaniu.
-                    style={it.color ? { ['--sm-item-color']: it.color } : undefined}
+                    style={{
+                      ...(it.color ? { ['--sm-item-color']: it.color } : null),
+                      ...(it.tightLineHeight ? { lineHeight: it.tightLineHeight } : null),
+                    }}
                     // Odnośniki do sekcji na tej samej stronie (np. "/#stats") nie
                     // powodują przeładowania, więc menu zostałoby otwarte i zasłaniało
                     // sekcję, do której właśnie przewinęliśmy. Zamykamy je ręcznie -

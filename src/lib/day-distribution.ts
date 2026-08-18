@@ -22,3 +22,31 @@ export function dayDistribution<T>(
     .map(([key, count]) => ({ key, count }))
     .sort((a, b) => sortKeys.get(a.key)! - sortKeys.get(b.key)!);
 }
+
+// Jak wyzej, ale dla KILKU serii naraz (np. wejscia + klikniecia + ankiety +
+// zaproszenia w jednym wierszu na dzien - patrz TimelineDashboard.tsx). Kazde
+// zrodlo dostaje juz same daty (stringi created_at), nie calego itemu -
+// upraszcza to typy przy laczeniu kilku roznych ksztaltow danych naraz.
+export function mergedDayDistribution(
+  sources: { name: string; dates: string[] }[]
+): { key: string; counts: Record<string, number> }[] {
+  const sortKeys = new Map<string, number>();
+  const perDay = new Map<string, Record<string, number>>();
+
+  for (const { name, dates } of sources) {
+    for (const dateStr of dates) {
+      const d = new Date(dateStr);
+      const key = d.toLocaleDateString("pl-PL");
+      if (!sortKeys.has(key)) {
+        sortKeys.set(key, new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime());
+      }
+      const bucket = perDay.get(key) ?? {};
+      bucket[name] = (bucket[name] ?? 0) + 1;
+      perDay.set(key, bucket);
+    }
+  }
+
+  return Array.from(sortKeys.keys())
+    .map((key) => ({ key, counts: perDay.get(key) ?? {} }))
+    .sort((a, b) => sortKeys.get(a.key)! - sortKeys.get(b.key)!);
+}

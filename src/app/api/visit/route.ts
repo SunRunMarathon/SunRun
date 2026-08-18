@@ -29,6 +29,11 @@ async function ensureTable() {
   await queryWithRetry(
     `CREATE UNIQUE INDEX IF NOT EXISTS page_visits_client_token_key ON page_visits (client_token)`
   );
+  // Inny cel niz client_token: ten jest trwaly w przegladarce (lib/visitor-id.ts,
+  // localStorage), wiec pozwala policzyc UNIKALNYCH odwiedzajacych danego dnia
+  // (TimelineDashboard.tsx) - client_token jest swiezy przy kazdym requescie
+  // wylacznie do ON CONFLICT DO NOTHING wyzej i do tego celu sie nie nadaje.
+  await queryWithRetry(`ALTER TABLE page_visits ADD COLUMN IF NOT EXISTS visitor_id VARCHAR(100)`);
 }
 
 function str(value: unknown, maxLen: number): string | null {
@@ -50,6 +55,7 @@ export async function POST(request: Request) {
   const utmMedium = str(body.utmMedium, 100);
   const utmCampaign = str(body.utmCampaign, 150);
   const landingPath = str(body.landingPath, 300);
+  const visitorId = str(body.visitorId, 100);
 
   const ip = getClientIp(request);
   const userAgent = request.headers.get("user-agent") || "";
@@ -61,10 +67,10 @@ export async function POST(request: Request) {
   try {
     await ensureTable();
     await queryWithRetry(
-      `INSERT INTO page_visits (ip, referrer, traffic_source, utm_source, utm_medium, utm_campaign, user_agent, device_type, landing_path, client_token)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      `INSERT INTO page_visits (ip, referrer, traffic_source, utm_source, utm_medium, utm_campaign, user_agent, device_type, landing_path, client_token, visitor_id)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        ON CONFLICT (client_token) DO NOTHING`,
-      [ip, referrer, trafficSource, utmSource, utmMedium, utmCampaign, userAgent, deviceType, landingPath, clientToken]
+      [ip, referrer, trafficSource, utmSource, utmMedium, utmCampaign, userAgent, deviceType, landingPath, clientToken, visitorId]
     );
     // Patrz komentarz w src/app/api/survey/route.ts - to samo leniwe
     // wyzwolenie sprzatania danych, bez await.
@@ -86,11 +92,14 @@ export async function GET(request: Request) {
     // conversion rate ankiety i nie musi znać kształtu `visits`.
     // `visits` to nowy dodatek dla VisitsDashboard.tsx (rozkład wg
     // traffic_source/utm_medium, np. wejścia przez QR) - bez ip/user_agent,
-    // bo ten widok ich nie potrzebuje.
+    // bo ten widok ich nie potrzebuje. visitor_id jedzie tu tylko po to,
+    // żeby TimelineDashboard.tsx mógł policzyć unikalnych odwiedzających
+    // dnia (dedup po tym samym trwałym ID z przeglądarki) obok samej
+    // liczby wejść.
     const [countResult, rowsResult] = await Promise.all([
       queryWithRetry(`SELECT COUNT(*)::int AS count FROM page_visits`),
       queryWithRetry(
-        `SELECT id, created_at, traffic_source, utm_source, utm_medium, utm_campaign, device_type, landing_path
+        `SELECT id, created_at, traffic_source, utm_source, utm_medium, utm_campaign, device_type, landing_path, visitor_id
          FROM page_visits ORDER BY created_at DESC`
       ),
     ]);

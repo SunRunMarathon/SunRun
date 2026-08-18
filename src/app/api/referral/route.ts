@@ -56,16 +56,17 @@ export async function POST(request: Request) {
   const name = String(body.name ?? "").trim().slice(0, 200);
   const email = String(body.email ?? "").trim().slice(0, 200);
   const startNumber = String(body.startNumber ?? "").trim().slice(0, 50);
+  const invitedEmail = String(body.invitedEmail ?? "").trim().slice(0, 200);
 
-  if (!name || !email || !startNumber) {
+  if (!name || !email || !startNumber || !invitedEmail) {
     return Response.json({ error: "Wypełnij wszystkie pola" }, { status: 400 });
   }
-  if (!EMAIL_RE.test(email)) {
+  if (!EMAIL_RE.test(email) || !EMAIL_RE.test(invitedEmail)) {
     return Response.json({ error: "Nieprawidłowy adres e-mail" }, { status: 400 });
   }
 
   try {
-    const code = await createReferral({ name, email, startNumber });
+    const code = await createReferral({ name, email, startNumber, invitedEmail });
     // Fire-and-forget: brak/blad maila nie moze opoznic ani zepsuc odpowiedzi -
     // link juz istnieje w bazie i dziala, mail to tylko dodatkowe potwierdzenie.
     sendConfirmationEmail({ email, name, code }).catch(() => {});
@@ -84,7 +85,7 @@ export async function GET(request: Request) {
   try {
     await ensureReferralTables();
     const result = await queryWithRetry<Referral>(
-      `SELECT id, created_at, code, inviter_name, inviter_email, inviter_start_number, verified
+      `SELECT id, created_at, code, inviter_name, inviter_email, inviter_start_number, invited_email, verified
        FROM referrals ORDER BY created_at DESC`
     );
     return Response.json({ referrals: result.rows });

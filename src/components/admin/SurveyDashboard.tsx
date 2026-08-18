@@ -133,7 +133,12 @@ export function SurveyDashboard({ password }: { password: string }) {
       try {
         const [surveyRes, visitRes, clicksRes] = await Promise.all([
           fetch("/api/survey", { headers: { Authorization: `Bearer ${password}` } }),
-          fetch("/api/visit", { headers: { Authorization: `Bearer ${password}` } }),
+          // visit-total (nie visit): licznik bezwarunkowy, niezalezny od
+          // zgody na analityke - sama ankieta tez zapisuje sie bezwarunkowo,
+          // wiec to on daje realny mianownik dla conversion rate nizej.
+          // page_visits (konsentowy) liczy sie osobno w Osi czasu jako
+          // "Unikalni odwiedzajacy".
+          fetch("/api/visit-total", { headers: { Authorization: `Bearer ${password}` } }),
           fetch("/api/interaction-click", { headers: { Authorization: `Bearer ${password}` } }),
         ]);
         if (!surveyRes.ok || !visitRes.ok || !clicksRes.ok) throw new Error();

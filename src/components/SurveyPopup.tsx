@@ -12,6 +12,7 @@ import {
 import { collectClientMeta } from "@/lib/client-meta";
 import { trackEvent } from "@/lib/analytics";
 import { getVisitorId } from "@/lib/visitor-id";
+import { hasAnalyticsConsent } from "@/lib/consent";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { getBackdropVariants, getModalPanelVariants, getStepVariants } from "@/lib/motion-variants";
 
@@ -84,6 +85,10 @@ export function SurveyPopup() {
           answerDetail,
           otherText: freeText,
           visitorId: getVisitorId(),
+          // IP/geolokalizacja/user-agent/typ urzadzenia w /api/survey zapisuja
+          // sie TYLKO gdy to true - sama odpowiedz idzie zawsze, niezaleznie
+          // od zgody (patrz komentarz w api/survey/route.ts).
+          consent: hasAnalyticsConsent(),
           ...meta,
         }),
       });
