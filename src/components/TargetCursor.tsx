@@ -194,6 +194,18 @@ const TargetCursor = ({
         return;
       }
 
+      // Cel mógł zniknąć z DOM bez naturalnego mouseleave (np. modal, który
+      // się zamyka pod nieruchomym kursorem, jak przycisk "X" w ShareModal) -
+      // przeglądarka wysyła mouseleave tylko przy realnym ruchu myszy, NIE
+      // przy usunięciu elementu spod niej. Bez tej kontroli celownik zostawał
+      // zamrożony w starym miejscu, dopóki ktoś nie najechał na kolejny
+      // .cursor-target (co przypadkiem resetowało stan przy okazji nowego
+      // enterHandlera).
+      if (activeTarget && !document.contains(activeTarget)) {
+        currentLeaveHandler?.();
+        return;
+      }
+
       const strength = activeStrengthRef.current;
       if (strength === 0) return;
 
