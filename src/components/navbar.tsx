@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import StaggeredMenu from "./StaggeredMenu";
+import { ShareModal, ShareIcon } from "./ShareModal";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
@@ -298,6 +299,25 @@ export function Navbar({ revealOnScroll = false }) {
       items={items.filter((it) => !it.ukryjGdy)}
       socialItems={socialItems}
       displaySocials
+      // Ten sam <ShareModal/> co w stopce (patrz footer.tsx) - inny wyzwalacz
+      // (4. ikona w rzedzie Znajdz nas zamiast napisu z ikonka), ale
+      // identyczne zachowanie po kliknieciu, bo to dokladnie ten sam
+      // komponent. Klasy jak przy pozostalych ikonach (--icon: padding/cel
+      // dotykowy), --share nadpisuje tylko kolor na czarny.
+      shareNode={
+        <ShareModal
+          trigger={({ onClick }) => (
+            <button
+              type="button"
+              onClick={onClick}
+              aria-label="Udostępnij Sun Run"
+              className="sm-socials-link sm-socials-link--icon sm-socials-link--share"
+            >
+              <ShareIcon size={40} />
+            </button>
+          )}
+        />
+      }
       displayItemNumbering={false}
       colors={["#F94C1F", "#183153"]}
       accentColor="#FE8004"
