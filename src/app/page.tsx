@@ -47,8 +47,10 @@ const STACK_CARDS = [
 // wszystkie, żeby wyszły optycznie wyrównane mimo różnych proporcji.
 // Adresy stron - tylko te, co do których nie ma wątpliwości (sprawdzone
 // wyszukiwaniem/bezpośrednim odczytem), nie zgadywane.
+// "Miasto Lublin" (marka "Lublin. Miasto Inspiracji") zastąpiło wcześniejszy
+// baner "Patronat Honorowy Prezydenta" - ten sam link, nowe, oficjalne logo.
 const PATRONAT_HONOROWY = [
-  { name: "Prezydent Miasta Lublin", file: "patronat_prezydenta_lublin-scaled.jpg", w: 2560, h: 667, url: "https://lublin.eu" },
+  { name: "Miasto Lublin", file: "miasto-lublin.png", w: 1515, h: 420, url: "https://lublin.eu" },
 ];
 
 const MEDIA_PATRONI = [
@@ -57,10 +59,19 @@ const MEDIA_PATRONI = [
   { name: "Radio Free", file: "radio-free.png", w: 714, h: 420, url: "https://radiofreee.pl" },
   { name: "Dziennik Wschodni", file: "dziennik-wschodni.png", w: 1438, h: 420, url: "https://dziennikwschodni.pl" },
   { name: "Kurier Lubelski", file: "kurier-lubelski.png", w: 1184, h: 420, url: "https://kurierlubelski.pl" },
+  { name: "Akademickie Radio Centrum", file: "radio-centrum.png", w: 1186, h: 420, url: "https://centrum.fm/" },
 ];
 
 const SPONSORZY = [
   { name: "Lubella", file: "lubella.png", w: 861, h: 420, url: "https://lubella.pl" },
+  { name: "Uniwersytet Jazdy", file: "uniwersytet-jazdy.png", w: 1481, h: 420, url: "https://uniwersytet-jazdy.pl/" },
+  { name: "Alfa Aluminium", file: "alfa-aluminium.png", w: 770, h: 420, url: "https://alfa-aluminium.com/" },
+  // Herb, nie wordmark jak reszta - przy tej samej wysokosci co inni (h-8/h-10)
+  // zakrzywiony napis i detale korony gubily sie calkowicie. hClass nadpisuje
+  // wysplna wysokosc tylko dla tej jednej pozycji - "wystaje" troche ponad
+  // reszte rzedu, ale zostaje czytelny.
+  { name: "Hotel Lwów", file: "hotel-lwow.png", w: 369, h: 420, url: "https://www.hotel-lwow.pl/", hClass: "h-12 sm:h-16" },
+  { name: "Pryzmet", file: "pryzmet.png", w: 1320, h: 420, url: "https://pryzmet.pl/" },
 ];
 
 export default function Home() {
@@ -906,7 +917,7 @@ export default function Home() {
                       alt={p.name}
                       width={p.w}
                       height={p.h}
-                      className="h-8 sm:h-10 w-auto object-contain"
+                      className={`${p.hClass || "h-8 sm:h-10"} w-auto object-contain`}
                       loading="lazy"
                     />
                   </a>
