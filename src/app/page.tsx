@@ -848,7 +848,7 @@ export default function Home() {
                       alt={p.name}
                       width={p.w}
                       height={p.h}
-                      className="h-8 sm:h-10 w-auto object-contain"
+                      className="h-14 sm:h-20 w-auto object-contain"
                       loading="lazy"
                     />
                   </a>

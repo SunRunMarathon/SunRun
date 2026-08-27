@@ -354,12 +354,12 @@ export default function RouteMap() {
       style={{ width: '100%', height: '100%' }}
       zoomControl={false}
       scrollWheelZoom={false}
-      attributionControl={false}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key=cb1_2e0y_1_902e0e6a2a2964d9d741a45a"
         subdomains="abcd"
         maxZoom={20}
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
       <FitRouteBounds bounds={ROUTE_BOUNDS} />
       <Polyline
