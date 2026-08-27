@@ -98,11 +98,21 @@ export const metadata: Metadata = {
   // Google i tak cachuje starą ikonę osobno i odświeża ją wg własnego
   // harmonogramu (od kilku dni do kilku tygodni) - ta zmiana w kodzie
   // nie przyspiesza tego samodzielnie.
+  //
+  // Kazdy plik ma teraz dwie wersje - kolorowa (podstawa) dla jasnego
+  // motywu i biala (noir) dla ciemnego, wybierane przez przegladarke na
+  // podstawie media, bez zadnego JS. Oba warianty wyciete z tego samego
+  // wycinku zrodlowej grafiki (382,369,481x516 w platnie 1254x1254),
+  // wiec pozycja/skala jest piksel w piksel identyczna - przy przelaczeniu
+  // motywu znak nie "skacze".
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any", media: "(prefers-color-scheme: light)" },
+      { url: "/icon.svg", type: "image/svg+xml", media: "(prefers-color-scheme: light)" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon-dark.ico", sizes: "any", media: "(prefers-color-scheme: dark)" },
+      { url: "/icon-dark.svg", type: "image/svg+xml", media: "(prefers-color-scheme: dark)" },
+      { url: "/icon-512-dark.png", sizes: "512x512", type: "image/png", media: "(prefers-color-scheme: dark)" },
     ],
     apple: [
       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },

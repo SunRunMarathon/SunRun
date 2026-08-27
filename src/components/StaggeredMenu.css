@@ -364,8 +364,32 @@
     opacity 0.3s ease;
 }
 
+/* Przycisk "Udostępnij" - 4. pozycja w sm-socials-list, dziedziczy padding/
+   rozmiar celu dotykowego po .sm-socials-link--icon. Jedyna roznica: znak
+   rysowany przez stroke="currentColor" (nie maska jak SocialIcon), wiec
+   kolor trzeba nadpisac jawnie na czarny, zeby pasowal do reszty ikon
+   (domyslny .sm-socials-link jest granatowy) - MUSI byc PO .sm-socials-link
+   w kaskadzie, bo obie klasy maja ta sama specyficznosc. */
+.sm-socials-link--share {
+  color: #000000;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
 .sm-socials-link:hover {
   color: var(--sm-accent, #FE8004);
+}
+
+/* Udostepnij ma zostac czarny na najechanie tak samo jak Instagram/Facebook/
+   TikTok obok - te sa niewrazliwe na .sm-socials-link:hover (renderuja sie
+   jako maska z background-color, nie currentColor), ale znak "Udostepnij"
+   rysuje sie przez stroke="currentColor", wiec bez tego nadpisania jako
+   jedyny realnie zmienialby kolor na pomaranczowy. Specyficznosc rowna
+   :hover wyzej (klasa+pseudoklasa), wiec o wygranej decyduje kolejnosc -
+   MUSI byc PONIZEJ. */
+.sm-socials-link--share:hover {
+  color: #000000;
 }
 
 .sm-panel-list {

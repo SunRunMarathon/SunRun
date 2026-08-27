@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import QRCode from "qrcode";
 import { AnimatePresence, motion } from "framer-motion";
 import { trackShare } from "@/lib/track-share";
@@ -9,6 +10,22 @@ import { getBackdropVariants, getModalPanelVariants } from "@/lib/motion-variant
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://sunrun.pl";
 
+// Sam ksztalt znaku "udostepnij" (trzy kropki + dwie linie) - wydzielony,
+// zeby navbar.tsx mogl uzyc DOKLADNIE tego samego ksztaltu we wlasnym,
+// niestandardowym przycisku w menu bocznym (patrz prop `trigger` nizej),
+// zamiast kopiowac markup SVG w drugim miejscu.
+export function ShareIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
+      <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
+    </svg>
+  );
+}
+
 function buildUrl(medium: string) {
   const url = new URL(SITE_URL);
   url.searchParams.set("utm_source", "share");
@@ -16,7 +33,11 @@ function buildUrl(medium: string) {
   return url.toString();
 }
 
-export function ShareModal() {
+// `trigger` opcjonalnie podmienia domyslny przycisk (uzywany w stopce) na
+// wlasny - reszta (modal, QR, kanaly udostepniania) zostaje dokladnie taka
+// sama, wiec zachowanie po kliknieciu jest identyczne niezaleznie od tego,
+// skad przycisk zostal otwarty (patrz menu boczne w navbar.tsx).
+export function ShareModal({ trigger }: { trigger?: (props: { onClick: () => void }) => ReactNode } = {}) {
   const reducedMotion = usePrefersReducedMotion();
   const [open, setOpen] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
@@ -110,32 +131,40 @@ export function ShareModal() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={openModal}
-        className="cursor-target flex items-center gap-2 text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="18" cy="5" r="3" />
-          <circle cx="6" cy="12" r="3" />
-          <circle cx="18" cy="19" r="3" />
-          <line x1="8.6" y1="10.5" x2="15.4" y2="6.5" />
-          <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
-        </svg>
-        Udostępnij
-      </button>
+      {trigger ? (
+        trigger({ onClick: openModal })
+      ) : (
+        <button
+          type="button"
+          onClick={openModal}
+          className="cursor-target flex items-center gap-2 text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
+        >
+          <ShareIcon size={16} />
+          Udostępnij
+        </button>
+      )}
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-4 sm:p-6"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Udostępnij Sun Run"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
+      {/* Portal do document.body: wywolywane z menu bocznego, ten trigger
+          siedzi w drzewie .staggered-menu-panel, ktory GSAP animuje przez
+          transform - a KAZDY transform na przodku (nawet "zerowy") tworzy
+          nowy containing block dla position:fixed potomkow, wiec bez
+          portalu "fixed inset-0" centrowalby sie wzgledem PANELU, nie
+          calego viewportu. typeof document !== 'undefined' bezpiecznie
+          omija SSR (open i tak zaczyna jako false po obu stronach, wiec
+          nie ma tu ryzyka niezgodnosci przy hydracji). */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                className="fixed inset-0 z-[150] flex items-end sm:items-center justify-center p-4 sm:p-6"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Udostępnij Sun Run"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+              >
           <motion.div
             variants={getBackdropVariants(reducedMotion)}
             className="absolute inset-0 bg-[#183153]/60 backdrop-blur-sm"
@@ -223,10 +252,12 @@ export function ShareModal() {
                 {copied === "link" ? "Link skopiowany ✓" : "Kopiuj link"}
               </button>
             </div>
-          </motion.div>
-          </motion.div>
+              </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </>
   );
 }

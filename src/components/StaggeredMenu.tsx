@@ -13,6 +13,11 @@ export const StaggeredMenu = ({
   socialItems = [],
   socialsTitle = 'Znajdź nas',
   displaySocials = true,
+  // Dodatkowa pozycja na końcu listy sm-socials-list (np. przycisk
+  // "Udostępnij") - gotowy węzeł renderowany przez navbar.tsx, StaggeredMenu
+  // tylko go umieszcza jako ostatni <li>, żeby wyglądał jak zwykła ikona
+  // social media (ten sam rząd, to samo zawijanie na wąskich ekranach).
+  shareNode,
   displayItemNumbering = true,
   className,
   logoUrl,
@@ -526,7 +531,7 @@ export const StaggeredMenu = ({
               </li>
             )}
           </ul>
-          {displaySocials && socialItems && socialItems.length > 0 && (
+          {((displaySocials && socialItems && socialItems.length > 0) || shareNode) && (
             <div className="sm-socials" aria-label="Media społecznościowe">
               <h3 className="sm-socials-title">{socialsTitle}</h3>
               <ul className="sm-socials-list" role="list">
@@ -547,6 +552,9 @@ export const StaggeredMenu = ({
                     </a>
                   </li>
                 ))}
+                {/* Udostepnij - 4. pozycja w tym samym rzedzie co Instagram/
+                    Facebook/TikTok, nie osobna sekcja - patrz navbar.tsx. */}
+                {shareNode && <li className="sm-socials-item">{shareNode}</li>}
               </ul>
             </div>
           )}
