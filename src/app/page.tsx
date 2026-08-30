@@ -145,6 +145,11 @@ export default function Home() {
   // sekcji renderowane osobno (np. FaqSection.tsx) używały dokładnie tej
   // samej wartości, a nie własnych, ręcznie dobranych marginesów.
   const LUKA = SECTION_GAP;
+  // Odstęp między ramką "Zaproś znajomych" a ramką "Ubierz się na żółto" -
+  // celowo dużo mniejszy niż LUKA, żeby te dwie ramki stały jedna nad drugą
+  // jak karty w sekcji "O biegu" (tam dokładnie ten sam odstęp - gap-5, czyli
+  // 1.25rem/20px - dzieli kartę "Dane" od karty "Minimalna wpłata").
+  const LUKA_MALA = 20;
 
   // Licznik "Zapisanych uczestników" - wpisywany ręcznie w /admin (FRS nie ma
   // publicznego API), strona tylko odczytuje ostatnią wartość.
@@ -497,9 +502,86 @@ export default function Home() {
       {/* ═══════════════════════════════════════════
           1.5. ZAPROŚ ZNAJOMEGO
       ═══════════════════════════════════════════ */}
-      <section id="zaproszenie" className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA }}>
+      {/* paddingBottom: LUKA_MALA (nie LUKA) - ta ramka i "Ubierz się na żółto"
+          poniżej mają stać ciasno jedna nad drugą, standardowy odstęp wraca
+          dopiero pod tamtą (patrz jej paddingBottom: LUKA niżej). */}
+      <section id="zaproszenie" className="relative z-10 w-full px-6 sm:px-12 scroll-mt-28" style={{ paddingBottom: LUKA_MALA }}>
         <div className="max-w-[88rem] mx-auto w-full">
           <ReferralPanel />
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          1.6. UBIERZ SIĘ NA ŻÓŁTO
+      ═══════════════════════════════════════════ */}
+      <section className="relative z-10 w-full px-6 sm:px-12" style={{ paddingBottom: LUKA }}>
+        <div className="max-w-[88rem] mx-auto w-full">
+          {/* overflow-hidden + relative: grafiki w rogach są bezwzględnie
+              pozycjonowane względem tej ramki i mają zostać przycięte do jej
+              zaokrąglonych krawędzi, nie wystawać poza nią (ten sam wzorzec co
+              w ReferralPanel.tsx). Dolny padding w tekście rezerwuje miejsce
+              POD nim na obie grafiki, żeby akapit się z nimi nie zderzał - to
+              jedyny powód, czemu tekst i obrazki nie są zwykłym flexem: obie
+              grafiki mają różne proporcje/wysokości, więc wspólny odstęp od
+              dołu jest prostszy i pewniejszy niż liczenie dwóch osobnych.
+              Wartości px (nie ze skali Tailwinda), bo licza sie z realnego
+              wzoru: grafiki maja bottom-0 wzgledem TEJ ramki, ktora ma wlasny
+              padding (p-6/p-8) - dla elementu position:absolute "bottom:0"
+              liczy sie od PADDING BOX rodzica, wiec grafiki i tak siadaja
+              scisle na krawedzi karty, ignorujac jej padding. Realny odstep
+              miedzy tekstem a gorna krawedzia grafiki to
+              pb - wysokoscGrafiki + paddingRamki(p-6/p-8) - std pb tutaj to
+              docelowy_odstep + wysokoscGrafiki - paddingRamki, nie sama
+              wysokosc grafiki + zapas (to dawalo dużo wiekszy rzeczywisty
+              odstep, niz zaklada wartosc pb).
+
+              Lewa grafika (slonecznik, proporcja 302x349) jest teraz
+              przeskalowana tak, zeby jej wysokosc DOKLADNIE odpowiadala
+              wysokosci prawej (lisc, 654x308) na kazdym progu - obie maja
+              bottom-0 wzgledem tej samej krawedzi, wiec rowna wysokosc =
+              rowny szczyt. std to prawa grafika (nie zmieniana) wyznacza
+              teraz wspolna wysokosc, od ktorej liczy sie tez pb powyzej. */}
+          <div className="relative overflow-hidden rounded-3xl bg-sr-navy-dark shadow-lg p-6 sm:p-8">
+            <div className="pb-[62px] sm:pb-[61px] md:pb-[76px]">
+              <span className="text-base sm:text-lg font-bold uppercase tracking-[0.18em] text-sr-orange-warm mb-2 block">
+                Ubierz się na żółto!
+              </span>
+              <div className="space-y-3 text-sm sm:text-base text-sr-yellow leading-relaxed">
+                <p>
+                  Motywem przewodnim Sun Run są słoneczniki, których ciepłe barwy budują pozytywny
+                  nastrój oraz kojarzone są z energią do działania. To właśnie dlatego kolor żółty
+                  będzie wszechobecny na terenie festiwalu. Zachęcamy do pomocy nam w uczynieniu
+                  tego wydarzenia najżółciejszym w Lublinie poprzez założenie na siebie czegoś w
+                  tym kolorze! Koszulka, czapka, bransoletka — wszystko się nada.
+                </p>
+                <p>
+                  Jeśli nie macie w szafie niczego żółtego, nie przejmujcie się — będziecie mogli
+                  zaopatrzyć się w koszulki oraz gadżety Sun Run na miejscu w dniu wydarzenia,
+                  nawet jeśli nie będziecie biegaczami!
+                </p>
+              </div>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/sunrun-kolor-lewy.png"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              width={302}
+              height={349}
+              className="absolute bottom-0 left-0 w-[59px] sm:w-[65px] md:w-[78px] h-auto max-w-none pointer-events-none select-none"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/sunrun-kolor-prawy.png"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              width={654}
+              height={308}
+              className="absolute bottom-0 right-0 w-36 sm:w-40 md:w-48 h-auto max-w-none pointer-events-none select-none"
+            />
+          </div>
         </div>
       </section>
 
