@@ -549,13 +549,12 @@ export default function Home() {
               <div className="space-y-3 text-sm sm:text-base text-sr-yellow leading-relaxed">
                 <p>
                   Motywem przewodnim Sun Run są słoneczniki, których ciepłe barwy budują pozytywny
-                  nastrój oraz kojarzone są z energią do działania. To właśnie dlatego kolor żółty
-                  będzie wszechobecny na terenie festiwalu. Zachęcamy do pomocy nam w uczynieniu
+                  nastrój oraz kojarzone są z energią do działania. Zachęcamy do pomocy nam w uczynieniu
                   tego wydarzenia najżółciejszym w Lublinie poprzez założenie na siebie czegoś w
-                  tym kolorze! Koszulka, czapka, bransoletka — wszystko się nada.
+                  tym kolorze! Koszulka, czapka, bransoletka – wszystko się nada.
                 </p>
                 <p>
-                  Jeśli nie macie w szafie niczego żółtego, nie przejmujcie się — będziecie mogli
+                  Jeśli nie macie w szafie niczego żółtego, nie przejmujcie się – będziecie mogli
                   zaopatrzyć się w koszulki oraz gadżety Sun Run na miejscu w dniu wydarzenia,
                   nawet jeśli nie będziecie biegaczami!
                 </p>
