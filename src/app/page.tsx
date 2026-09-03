@@ -550,7 +550,7 @@ export default function Home() {
                 <p>
                   Motywem przewodnim Sun Run są słoneczniki, których ciepłe barwy budują pozytywny
                   nastrój oraz kojarzone są z energią do działania. Zachęcamy do pomocy nam w uczynieniu
-                  tego wydarzenia najżółciejszym w Lublinie poprzez założenie na siebie czegoś w
+                  tego festiwalu najżółciejszym w Lublinie poprzez założenie na siebie czegoś w
                   tym kolorze! Koszulka, czapka, bransoletka – wszystko się nada.
                 </p>
                 <p>
