@@ -10,6 +10,7 @@ import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
 import { FaqSection } from "@/components/FaqSection";
+import { HarmonogramSection } from "@/components/HarmonogramSection";
 import { ReferralPanel } from "@/components/ReferralPanel";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
@@ -595,6 +596,8 @@ export default function Home() {
       >
         <div className="max-w-[88rem] mx-auto w-full">{festiwal}</div>
       </section>
+
+      <HarmonogramSection />
 
       {/* ═══════════════════════════════════════════
           2. STATS DASHBOARD — Mapa + Dane + Licznik
