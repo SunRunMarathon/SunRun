@@ -4,7 +4,7 @@ import crypto from "crypto";
 // tokeny sa nie do zweryfikowania - "fail closed", nie "fail open": brak
 // zmiennej oznacza, ze NIKT sie nie zaloguje, a nie ze logowanie jest otwarte.
 //
-// Zeby wdrozenie tego systemu logowania NIE zablokowalo dostepu do /admin,
+// Zeby wdrozenie tego systemu logowania NIE zablokowalo dostepu do panelu admina,
 // zanim ktos recznie doda ADMIN_SESSION_SECRET w Railway, sekret spada do
 // pochodnej z JUZ istniejacego ADMIN_PASSWORD (jest tajny i juz skonfigurowany
 // na produkcji) zamiast pustego stringa. To wciaz prawdziwy, nieprzewidywalny

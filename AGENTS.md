@@ -78,10 +78,10 @@ When generating pages, navigation, or copywriting, focus on recruiting participa
 
 ### Current page inventory (as of 2026-07-31)
 
-`/` (home), `/o-nas`, `/archiwum`, plus `/admin`. **There is no `/partnerzy` subpage** — it was deleted. Partners now live only as a section on the home page under the `#partnerzy` anchor, and those tiles are no longer links. Two consequences worth knowing:
+`/` (home), `/o-nas`, `/archiwum`, plus the admin panel at `/9874t3qbiufghs894q3bf98SGE843` (renamed from `/admin` on 2026-09-04 — deliberately obscure path as its only front-line protection, on top of the existing login. **Never list this path in `robots.txt`, sitemaps, or any other publicly-served file** — that would defeat the obscurity.). **There is no `/partnerzy` subpage** — it was deleted. Partners now live only as a section on the home page under the `#partnerzy` anchor, and those tiles are no longer links. Two consequences worth knowing:
 
-* Nothing posts to `/api/contact` any more — the partner form lived on the deleted page. The endpoint and the `/admin` panel that reads it still exist, so past submissions remain viewable.
-* The empty-state text in `/admin` still refers to a "Dla Partnerów" page. Reword it once the staff decides where partner enquiries go.
+* Nothing posts to `/api/contact` any more — the partner form lived on the deleted page. The endpoint and the admin panel that reads it still exist, so past submissions remain viewable.
+* The empty-state text in the admin panel still refers to a "Dla Partnerów" page. Reword it once the staff decides where partner enquiries go.
 
 ### Registration link
 

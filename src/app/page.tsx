@@ -152,8 +152,8 @@ export default function Home() {
   // 1.25rem/20px - dzieli kartę "Dane" od karty "Minimalna wpłata").
   const LUKA_MALA = 20;
 
-  // Licznik "Zapisanych uczestników" - wpisywany ręcznie w /admin (FRS nie ma
-  // publicznego API), strona tylko odczytuje ostatnią wartość.
+  // Licznik "Zapisanych uczestników" - wpisywany ręcznie w panelu admina
+  // (FRS nie ma publicznego API), strona tylko odczytuje ostatnią wartość.
   const [registeredCount, setRegisteredCount] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/stats")
