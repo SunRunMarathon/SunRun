@@ -1,5 +1,6 @@
 "use client";
 
+import { MapPin } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -61,27 +62,48 @@ const HARMONOGRAM: BlokHarmonogramu[] = [
       { godzina: "21:50–22:00", punkt: "Oficjalne zamknięcie festiwalu" },
     ],
   },
-  {
-    id: "blok-5",
-    tytul: "Stoiska i atrakcje",
-    zakres: "16:00–22:00",
-    pozycje: [
-      { godzina: "16:00–22:00", punkt: "Malowanie twarzy i warkoczyki" },
-      { godzina: "16:00–22:00", punkt: "Ludzkie warcaby" },
-      { godzina: "16:00–22:00", punkt: "Stoisko Olimpedii" },
-      { godzina: "16:00–19:00", punkt: "Dmuchańce" },
-      { godzina: "16:00–19:00", punkt: "Pojazd Żuk" },
-      { godzina: "16:00–17:00", punkt: "Policjant dzielnicowy z radiowozem" },
-      { godzina: "16:30–18:00 i 19:30–21:00", punkt: "Warsztaty szycia" },
-      { godzina: "18:00–19:30", punkt: "Wystawa ubrań ze stoiska szycia" },
-      { godzina: "od 16:00", punkt: "Stoisko Klubu Szachowego Cebularz Lublin" },
-      { godzina: "w trakcie festiwalu", punkt: "Aeroklub Lubelski w Radawcu – symulator lotu" },
-      { godzina: "19:00–22:00", punkt: "Świecący zbijak" },
-      { godzina: "19:00–20:00", punkt: "Poszukiwanie skarbu" },
-      { godzina: "w trakcie festiwalu", punkt: "Trener personalny – pokaz podstawowych ćwiczeń" },
-    ],
-  },
 ];
+
+// Stoiska nie są punktami w kolejności czasowej jak reszta harmonogramu -
+// stoją cały dzień równolegle do sceny - stąd osobna stała, osobny (drugi)
+// Accordion i inny akcent kolorystyczny (pomarańcz zamiast czerwieni), żeby
+// wizualnie nie wyglądało to jak kolejny, następujący po sobie punkt.
+const STOISKA: BlokHarmonogramu = {
+  id: "blok-stoiska",
+  tytul: "Stoiska i atrakcje",
+  zakres: "16:00–22:00",
+  pozycje: [
+    { godzina: "16:00–22:00", punkt: "Malowanie twarzy i warkoczyki" },
+    { godzina: "16:00–22:00", punkt: "Ludzkie warcaby" },
+    { godzina: "16:00–22:00", punkt: "Znajdź idealną olimpiadę na stoisku olimpedia.com" },
+    { godzina: "16:00–19:00", punkt: "Dmuchańce" },
+    { godzina: "16:00–19:00", punkt: "Pojazd Żuk" },
+    { godzina: "16:00–17:00", punkt: "Policjant dzielnicowy z radiowozem" },
+    { godzina: "16:30–18:00 i 19:30–21:00", punkt: "Warsztaty szycia" },
+    { godzina: "18:00–19:30", punkt: "Wystawa ubrań ze stoiska szycia" },
+    { godzina: "od 16:00", punkt: "Stoisko Klubu Szachowego Cebularz Lublin" },
+    { godzina: "w trakcie festiwalu", punkt: "Aeroklub Lubelski w Radawcu – symulator lotu" },
+    { godzina: "19:00–22:00", punkt: "Świecący zbijak" },
+    { godzina: "19:00–20:00", punkt: "Poszukiwanie skarbu" },
+    { godzina: "w trakcie festiwalu", punkt: "Trener personalny – pokaz podstawowych ćwiczeń" },
+  ],
+};
+
+function WierszePozycji({ blokId, pozycje }: { blokId: string; pozycje: PozycjaHarmonogramu[] }) {
+  return (
+    <div className="space-y-2">
+      {pozycje.map((p, i) => (
+        <div
+          key={`${blokId}-${i}`}
+          className="flex justify-between items-baseline gap-4 border-b border-sr-line pb-2 last:border-0 last:pb-0"
+        >
+          <span className="text-sm font-bold text-[#183153] shrink-0 tabular-nums">{p.godzina}</span>
+          <span className="text-sm text-[#3D4D65] text-right">{p.punkt}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function HarmonogramSection() {
   return (
@@ -121,22 +143,41 @@ export function HarmonogramSection() {
                 </span>
               </AccordionTrigger>
               <AccordionContent className="pb-5">
-                <div className="space-y-2">
-                  {blok.pozycje.map((p, i) => (
-                    <div
-                      key={`${blok.id}-${i}`}
-                      className="flex justify-between items-baseline gap-4 border-b border-sr-line pb-2 last:border-0 last:pb-0"
-                    >
-                      <span className="text-sm font-bold text-[#183153] shrink-0 tabular-nums">
-                        {p.godzina}
-                      </span>
-                      <span className="text-sm text-[#3D4D65] text-right">{p.punkt}</span>
-                    </div>
-                  ))}
-                </div>
+                <WierszePozycji blokId={blok.id} pozycje={blok.pozycje} />
               </AccordionContent>
             </AccordionItem>
           ))}
+        </Accordion>
+
+        {/* Separator + inny akcent koloru (pomarańcz zamiast czerwieni) - stoiska
+            stoją cały dzień równolegle do sceny, nie są kolejnym punktem "po"
+            "Finale wieczoru", więc mają wyglądać jak osobna kategoria. */}
+        <div className="max-w-3xl mx-auto flex items-center gap-3 mt-8 mb-3" aria-hidden="true">
+          <span className="h-px flex-1 bg-sr-line" />
+          <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-sr-orange whitespace-nowrap">
+            <MapPin className="w-3.5 h-3.5" />
+            Poza harmonogramem - przez cały festiwal
+          </span>
+          <span className="h-px flex-1 bg-sr-line" />
+        </div>
+
+        <Accordion type="multiple" className="max-w-3xl mx-auto space-y-3">
+          <AccordionItem
+            value={STOISKA.id}
+            className="rounded-2xl border border-dashed border-sr-line-strong bg-sr-white px-6"
+          >
+            <AccordionTrigger className="text-left text-[#183153] font-bold hover:no-underline text-base py-4">
+              <span className="flex flex-col sm:flex-row sm:items-baseline sm:gap-3">
+                <span>{STOISKA.tytul}</span>
+                <span className="text-xs font-semibold text-sr-orange uppercase tracking-wider">
+                  {STOISKA.zakres}
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="pb-5">
+              <WierszePozycji blokId={STOISKA.id} pozycje={STOISKA.pozycje} />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       </div>
     </section>
