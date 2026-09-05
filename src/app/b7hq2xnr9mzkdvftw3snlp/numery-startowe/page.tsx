@@ -118,6 +118,12 @@ export default function NumeryStartowePage() {
   const [pageW, setPageW] = useState(PAGE_PRESETS.a5.w);
   const [pageH, setPageH] = useState(PAGE_PRESETS.a5.h);
   const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  // Domyslnie numer jest wysrodkowany w poziomie (typowy uklad numeru
+  // startowego) - operator przesuwa go tylko w pionie, przeciagajac po
+  // widocznej linii. Odblokowanie pozwala ustawic dowolne X.
+  const [lockCenterX, setLockCenterX] = useState(true);
+  const [lockCenterY, setLockCenterY] = useState(false);
   const [fontSize, setFontSize] = useState(150);
   const [font, setFont] = useState<BibFont>("Helvetica-Bold");
   const [defaultColor, setDefaultColor] = useState("#183153");
@@ -210,6 +216,27 @@ export default function NumeryStartowePage() {
     visible.height = base.height;
     const ctx = visible.getContext("2d")!;
     ctx.drawImage(base, 0, 0);
+
+    if (lockCenterX || lockCenterY) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(228, 87, 46, 0.8)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([7, 5]);
+      if (lockCenterX) {
+        ctx.beginPath();
+        ctx.moveTo(base.width / 2, 0);
+        ctx.lineTo(base.width / 2, base.height);
+        ctx.stroke();
+      }
+      if (lockCenterY) {
+        ctx.beginPath();
+        ctx.moveTo(0, base.height / 2);
+        ctx.lineTo(base.width, base.height / 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
     if (!position) return;
 
     const px = position.x * base.width;
@@ -226,20 +253,42 @@ export default function NumeryStartowePage() {
     ctx.arc(px, py, 4, 0, Math.PI * 2);
     ctx.fillStyle = "rgba(228, 87, 46, 0.9)";
     ctx.fill();
-  }, [position, fontSize, pageH, colorForPreview, previewNumber]);
+  }, [position, fontSize, pageH, colorForPreview, previewNumber, lockCenterX, lockCenterY]);
 
   useEffect(() => {
     redraw();
   }, [redraw, templateFile]);
 
-  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = visibleCanvasRef.current;
-    if (!canvas) return;
+  // Gdy wlaczana jest blokada osi, od razu przyciagnij aktualna pozycje do
+  // srodka tej osi zamiast czekac na kolejne klikniecie/przeciagniecie.
+  useEffect(() => {
+    setPosition((p) => (p ? { x: lockCenterX ? 0.5 : p.x, y: lockCenterY ? 0.5 : p.y } : p));
+  }, [lockCenterX, lockCenterY]);
+
+  const fractionFromEvent = (e: { clientX: number; clientY: number }) => {
+    const canvas = visibleCanvasRef.current!;
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    setPosition({ x, y });
+    const x = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+    const y = Math.min(1, Math.max(0, (e.clientY - rect.top) / rect.height));
+    return { x: lockCenterX ? 0.5 : x, y: lockCenterY ? 0.5 : y };
   };
+
+  const handleCanvasPointerDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!visibleCanvasRef.current) return;
+    setIsDragging(true);
+    setPosition(fractionFromEvent(e));
+  };
+  const handleCanvasPointerMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDragging || !visibleCanvasRef.current) return;
+    setPosition(fractionFromEvent(e));
+  };
+  const stopDragging = () => setIsDragging(false);
+
+  useEffect(() => {
+    if (!isDragging) return;
+    window.addEventListener("mouseup", stopDragging);
+    return () => window.removeEventListener("mouseup", stopDragging);
+  }, [isDragging]);
 
   const addColorRule = (from: number, to: number, color: string) => {
     setColorRules((rules) => [...rules, { from, to, color }]);
@@ -422,14 +471,38 @@ export default function NumeryStartowePage() {
             {templateLoading && <p className="text-sm text-[#3D4D65]">Wczytywanie szablonu…</p>}
 
             {templateFile && (
+              <div className="flex flex-wrap gap-4">
+                <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#3D4D65]">
+                  <input
+                    type="checkbox"
+                    checked={lockCenterX}
+                    onChange={(e) => setLockCenterX(e.target.checked)}
+                  />
+                  Wyśrodkuj poziomo
+                </label>
+                <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#3D4D65]">
+                  <input
+                    type="checkbox"
+                    checked={lockCenterY}
+                    onChange={(e) => setLockCenterY(e.target.checked)}
+                  />
+                  Wyśrodkuj pionowo
+                </label>
+              </div>
+            )}
+
+            {templateFile && (
               <div
                 className="border border-sr-line rounded-2xl overflow-hidden"
                 style={{ display: templateLoading ? "none" : "block" }}
               >
                 <canvas
                   ref={visibleCanvasRef}
-                  onClick={handleCanvasClick}
-                  className="w-full h-auto cursor-crosshair block"
+                  onMouseDown={handleCanvasPointerDown}
+                  onMouseMove={handleCanvasPointerMove}
+                  onMouseUp={stopDragging}
+                  onMouseLeave={stopDragging}
+                  className="w-full h-auto cursor-crosshair block select-none"
                 />
               </div>
             )}
@@ -437,7 +510,9 @@ export default function NumeryStartowePage() {
               <p className="text-[11px] text-[#3D4D65]">
                 {position
                   ? `Pozycja numeru: ${(position.x * 100).toFixed(1)}% / ${(position.y * 100).toFixed(1)}%`
-                  : "Kliknij na podglądzie, aby ustawić miejsce numeru."}
+                  : "Kliknij lub przeciągnij na podglądzie, aby ustawić miejsce numeru."}
+                {(lockCenterX || lockCenterY) &&
+                  " Przerywana linia pokazuje oś, wzdłuż której możesz przeciągać numer."}
               </p>
             )}
           </div>
