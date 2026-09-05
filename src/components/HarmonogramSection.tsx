@@ -67,25 +67,26 @@ const HARMONOGRAM: BlokHarmonogramu[] = [
 // Stoiska nie są punktami w kolejności czasowej jak reszta harmonogramu -
 // stoją cały dzień równolegle do sceny - stąd osobna stała, osobny (drugi)
 // Accordion i inny akcent kolorystyczny (pomarańcz zamiast czerwieni), żeby
-// wizualnie nie wyglądało to jak kolejny, następujący po sobie punkt.
-const STOISKA: BlokHarmonogramu = {
-  id: "blok-stoiska",
+// wizualnie nie wyglądało to jak kolejny, następujący po sobie punkt. Bez
+// godzin przy poszczególnych stoiskach - na życzenie sztabu (były niespójne
+// i mniej istotne niż sama lista tego, co tam będzie).
+const STOISKA = {
   tytul: "Stoiska i atrakcje",
-  zakres: "16:00–22:00",
+  zakres: "Cały festiwal",
   pozycje: [
-    { godzina: "16:00–22:00", punkt: "Malowanie twarzy i warkoczyki" },
-    { godzina: "16:00–22:00", punkt: "Ludzkie warcaby" },
-    { godzina: "16:00–22:00", punkt: "Znajdź idealną olimpiadę na stoisku olimpedia.com" },
-    { godzina: "16:00–19:00", punkt: "Dmuchańce" },
-    { godzina: "16:00–19:00", punkt: "Pojazd Żuk" },
-    { godzina: "16:00–17:00", punkt: "Policjant dzielnicowy z radiowozem" },
-    { godzina: "16:30–18:00 i 19:30–21:00", punkt: "Warsztaty szycia" },
-    { godzina: "18:00–19:30", punkt: "Wystawa ubrań ze stoiska szycia" },
-    { godzina: "od 16:00", punkt: "Stoisko Klubu Szachowego Cebularz Lublin" },
-    { godzina: "w trakcie festiwalu", punkt: "Aeroklub Lubelski w Radawcu – symulator lotu" },
-    { godzina: "19:00–22:00", punkt: "Świecący zbijak" },
-    { godzina: "19:00–20:00", punkt: "Poszukiwanie skarbu" },
-    { godzina: "w trakcie festiwalu", punkt: "Trener personalny – pokaz podstawowych ćwiczeń" },
+    "Malowanie twarzy i warkoczyki",
+    "Ludzkie warcaby",
+    "Znajdź idealną olimpiadę na stoisku olimpedia.com",
+    "Dmuchańce",
+    "Pojazd Żuk",
+    "Policjant dzielnicowy z radiowozem",
+    "Warsztaty szycia",
+    "Wystawa ubrań ze stoiska szycia",
+    "Stoisko Klubu Szachowego Cebularz Lublin",
+    "Aeroklub Lubelski w Radawcu – symulator lotu",
+    "Świecący zbijak",
+    "Poszukiwanie skarbu",
+    "Trener personalny – pokaz podstawowych ćwiczeń",
   ],
 };
 
@@ -102,6 +103,22 @@ function WierszePozycji({ blokId, pozycje }: { blokId: string; pozycje: PozycjaH
         </div>
       ))}
     </div>
+  );
+}
+
+// Lista stoisk - bez kolumny z godziną (patrz komentarz przy STOISKA), więc
+// osobny, prostszy renderer niż WierszePozycji zamiast wciskania pustej
+// wartości w kształt danych zrobiony dla harmonogramu z godzinami.
+function ListaStoisk({ pozycje }: { pozycje: string[] }) {
+  return (
+    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+      {pozycje.map((nazwa, i) => (
+        <li key={i} className="flex items-start gap-2 text-sm text-[#3D4D65]">
+          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-sr-orange shrink-0" aria-hidden="true" />
+          {nazwa}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -163,7 +180,7 @@ export function HarmonogramSection() {
 
         <Accordion type="multiple" className="max-w-3xl mx-auto space-y-3">
           <AccordionItem
-            value={STOISKA.id}
+            value="blok-stoiska"
             className="rounded-2xl border border-dashed border-sr-line-strong bg-sr-white px-6"
           >
             <AccordionTrigger className="text-left text-[#183153] font-bold hover:no-underline text-base py-4">
@@ -175,7 +192,7 @@ export function HarmonogramSection() {
               </span>
             </AccordionTrigger>
             <AccordionContent className="pb-5">
-              <WierszePozycji blokId={STOISKA.id} pozycje={STOISKA.pozycje} />
+              <ListaStoisk pozycje={STOISKA.pozycje} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
