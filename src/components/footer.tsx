@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import SocialIcon from "./social-icon";
 import ShareModal from "./ShareModal";
 import { resetConsent } from "@/lib/consent";
@@ -51,14 +52,20 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_0.8fr_1.45fr_0.85fr] gap-10">
           {/* Znak i opis */}
           <div className="space-y-4">
-            <img
-              src="/logo/sunrun-skrocone-piaskowe.svg"
-              alt="Sun Run"
-              width={94}
-              height={56}
-              style={{ height: 56, width: "auto", display: "block" }}
-              draggable={false}
-            />
+            {/* Bez .cursor-target - zwykly link ma wlasny kursor systemowy
+                (pointer), wiec TargetCursor sam chowa czerwone slonko nad nim
+                (patrz maWlasnyKursor w TargetCursor.tsx) - dokladnie tak samo
+                jak logo w naglowku (StaggeredMenu.tsx, <a href="/" className="sm-logo">). */}
+            <Link href="/" aria-label="Przejdź na stronę główną" className="inline-block w-fit">
+              <img
+                src="/logo/sunrun-skrocone-piaskowe.svg"
+                alt="Sun Run"
+                width={94}
+                height={56}
+                style={{ height: 56, width: "auto", display: "block" }}
+                draggable={false}
+              />
+            </Link>
             <p className="text-xs leading-relaxed text-sr-sand/80">
               Bieg charytatywny dla Hospicjum Dobrego Samarytanina w&nbsp;Lublinie.
               Inicjatywa lubelskiej młodzieży.
