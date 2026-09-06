@@ -65,7 +65,12 @@ const MEDIA_PATRONI = [
 
 const SPONSORZY = [
   { name: "Lubella", file: "lubella.png", w: 861, h: 420, url: "https://lubella.pl" },
-  { name: "Uniwersytet Jazdy", file: "uniwersytet-jazdy.png", w: 1481, h: 420, url: "https://uniwersytet-jazdy.pl/" },
+  // Oryginalny plik mial canvas 1481x420, ale samo logo konczylo sie na
+  // x=1274 - dalej bylo ~200px pustej przestrzeni plus losowa kropka-artefakt
+  // w rogu (najwyrazniej z eksportu). Przycieto do realnego bounding-boxa
+  // tresci (1275x383), stad w/h nizej nie pasuja juz do wspolnej wysokosci
+  // 420px reszty sponsorow - to nie pomylka.
+  { name: "Uniwersytet Jazdy", file: "uniwersytet-jazdy.png", w: 1275, h: 383, url: "https://uniwersytet-jazdy.pl/" },
   { name: "Alfa Aluminium", file: "alfa-aluminium.png", w: 770, h: 420, url: "https://alfa-aluminium.com/" },
   // Herb, nie wordmark jak reszta - przy tej samej wysokosci co inni (h-8/h-10)
   // zakrzywiony napis i detale korony gubily sie calkowicie. hClass nadpisuje
@@ -73,6 +78,10 @@ const SPONSORZY = [
   // reszte rzedu, ale zostaje czytelny.
   { name: "Hotel Lwów", file: "hotel-lwow.png", w: 369, h: 420, url: "https://www.hotel-lwow.pl/", hClass: "h-12 sm:h-16" },
   { name: "Pryzmet", file: "pryzmet.png", w: 1320, h: 420, url: "https://pryzmet.pl/" },
+  // Zrodlowy plik mial canvas 4167x2037 z logo wycentrowanym na malej
+  // powierzchni posrodku - przycieto do bounding-boxa tresci (2809x558),
+  // inaczej przy wspolnej wysokosci h-8/h-10 logo wychodziloby mikroskopijne.
+  { name: "Safespot", file: "safespot.png", w: 2809, h: 558, url: "https://safespot.pl/" },
 ];
 
 export default function Home() {
