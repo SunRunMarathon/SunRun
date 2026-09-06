@@ -26,7 +26,7 @@ type BlokHarmonogramu = {
 const HARMONOGRAM: BlokHarmonogramu[] = [
   {
     id: "blok-1",
-    tytul: "Otwarcie i rozgrzewka",
+    tytul: "Otwarcie i\u00A0rozgrzewka",
     zakres: "16:00–18:30",
     pozycje: [
       { godzina: "16:00", punkt: "Otwarcie wydarzenia" },
@@ -45,7 +45,7 @@ const HARMONOGRAM: BlokHarmonogramu[] = [
   },
   {
     id: "blok-3",
-    tytul: "Pokazy i koncerty",
+    tytul: "Pokazy i\u00A0koncerty",
     zakres: "19:40–20:30",
     pozycje: [
       { godzina: "19:40–20:00", punkt: "Pokazy taneczne" },
@@ -71,19 +71,19 @@ const HARMONOGRAM: BlokHarmonogramu[] = [
 // godzin przy poszczególnych stoiskach - na życzenie sztabu (były niespójne
 // i mniej istotne niż sama lista tego, co tam będzie).
 const STOISKA = {
-  tytul: "Stoiska i atrakcje",
+  tytul: "Stoiska i\u00A0atrakcje",
   zakres: "Cały festiwal",
   pozycje: [
-    "Malowanie twarzy i warkoczyki",
+    "Malowanie twarzy i\u00A0warkoczyki",
     "Ludzkie warcaby",
     "Znajdź idealną olimpiadę na stoisku olimpedia.com",
     "Dmuchańce",
     "Pojazd Żuk",
-    "Policjant dzielnicowy z radiowozem",
+    "Policjant dzielnicowy z\u00A0radiowozem",
     "Warsztaty szycia",
     "Wystawa ubrań ze stoiska szycia",
     "Stoisko Klubu Szachowego Cebularz Lublin",
-    "Aeroklub Lubelski w Radawcu – symulator lotu",
+    "Aeroklub Lubelski w\u00A0Radawcu – symulator lotu",
     "Świecący zbijak",
     "Poszukiwanie skarbu",
     "Trener personalny – pokaz podstawowych ćwiczeń",
@@ -138,7 +138,7 @@ export function HarmonogramSection() {
           Harmonogram
         </h2>
         <p className="text-sm sm:text-base text-[#3D4D65] mb-8 max-w-2xl mx-auto text-center">
-          Program sceny głównej i miasteczka festiwalowego Sun Run 2026 - rozwiń każdy blok, żeby zobaczyć szczegółowy plan.
+          Program sceny głównej i&nbsp;miasteczka festiwalowego Sun Run 2026 - rozwiń każdy blok, żeby zobaczyć szczegółowy plan.
         </p>
 
         {/* type="multiple": bloki są niezależne, można mieć otwartych kilka

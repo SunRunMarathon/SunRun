@@ -214,9 +214,9 @@ export function SurveyPopup() {
                       ))}
                     </div>
                     <p className="text-[11px] text-[#3D4D65] leading-relaxed mt-5">
-                      Odpowiedź zapisujemy razem z podstawowymi danymi technicznymi (adres IP,
+                      Odpowiedź zapisujemy razem z&nbsp;podstawowymi danymi technicznymi (adres IP,
                       przybliżona lokalizacja, źródło wejścia na stronę), żeby lepiej rozumieć, skąd
-                      przychodzą uczestnicy. Szczegóły w{" "}
+                      przychodzą uczestnicy. Szczegóły w{" "}
                       <Link href="/polityka-prywatnosci" className="underline hover:text-[#183153]">
                         polityce prywatności
                       </Link>

@@ -263,7 +263,7 @@ export default function Home() {
         <span aria-hidden="true" className="text-sr-red">|</span>
         <span>16:00</span>
         <span aria-hidden="true" className="text-sr-red">|</span>
-        <span>Park Ludowy w Lublinie</span>
+        <span>Park Ludowy w&nbsp;Lublinie</span>
       </div>
 
       {/* Kostka 2x2: zawsze dokladnie dwie kolumny (grid-cols-2, nie auto-fit) -
@@ -290,7 +290,8 @@ export default function Home() {
           i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
-          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
+          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span>{" "}
+          i&nbsp;razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
           nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy
           się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
@@ -299,16 +300,17 @@ export default function Home() {
       <div className="sm:hidden text-sm text-[#183153] leading-relaxed">
         <div className={festiwalRozwiniety ? "space-y-4" : "space-y-4 line-clamp-6"}>
           <p>
-            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 - wydarzenie charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w Lublinie.
+            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i&nbsp;dobrej energii. Miejsce, gdzie możesz spotkać się z&nbsp;przyjaciółmi, poznać nowych ludzi i&nbsp;wspólnie zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 - wydarzenie charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w&nbsp;Lublinie.
           </p>
           <p>
-            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi i pomaganie połączą się w jedno niezapomniane wydarzenie.
+            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci, młodzieży i&nbsp;dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu. Chcemy stworzyć miejsce, w&nbsp;którym radość, spotkania z&nbsp;innymi i&nbsp;pomaganie połączą się w&nbsp;jedno niezapomniane wydarzenie.
           </p>
           <p>
-            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego - niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego - niezależnie od kondycji i&nbsp;doświadczenia. Możesz pobiec, ale możesz również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel i&nbsp;pomoc tym, którzy jej potrzebują.
           </p>
           <p>
-            <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+            <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span>{" "}
+          i&nbsp;razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca, nadziei i&nbsp;solidarności. Zabierz ze sobą rodzinę, przyjaciół i&nbsp;znajomych - spotkajmy się, poznajmy nowych ludzi i&nbsp;spędźmy ten dzień razem.
           </p>
         </div>
         {!festiwalRozwiniety && (
@@ -455,12 +457,12 @@ export default function Home() {
             </h1>
 
             <p className="hidden sm:block sm:flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed text-justify">
-              Sun Run to charytatywny festiwal w Parku Ludowym w Lublinie, organizowany na rzecz
-              Hospicjum Dobrego Samarytanina. Głównym punktem wydarzenia będzie{" "}
-              <span className="font-extrabold">5-kilometrowy bieg o zachodzie słońca</span>, który
-              możesz pokonać biegiem lub marszem. Załóż coś żółtego i zabierz ze sobą rodzinę,
-              przyjaciół – tych nowych i tych, z którymi dawno nie rozmawiałeś. Spotkajmy się dla
-              Hospicjum!
+              Sun Run to charytatywny festiwal w&nbsp;Parku Ludowym w&nbsp;Lublinie, organizowany na
+              rzecz Hospicjum Dobrego Samarytanina. Głównym punktem wydarzenia będzie{" "}
+              <span className="font-extrabold">5-kilometrowy bieg o&nbsp;zachodzie słońca</span>,
+              który możesz pokonać biegiem lub marszem. Załóż coś żółtego i&nbsp;zabierz ze sobą
+              rodzinę, przyjaciół – tych nowych i&nbsp;tych, z&nbsp;którymi dawno nie rozmawiałeś.
+              Spotkajmy się dla Hospicjum!
             </p>
           </div>
 
@@ -503,7 +505,7 @@ export default function Home() {
                   : "cursor-target cursor-pointer bg-sr-navy text-sr-orange shadow-xl hover:-translate-y-0.5 active:translate-y-0"
               }`}
             >
-              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Skąd o nas usłyszałaś/eś?"}
+              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Skąd o\u00A0nas usłyszałaś/eś?"}
             </button>
           </div>
         </div>
@@ -559,13 +561,13 @@ export default function Home() {
               <div className="space-y-3 text-sm sm:text-base text-sr-yellow leading-relaxed">
                 <p>
                   Motywem przewodnim Sun Run są słoneczniki, których ciepłe barwy budują pozytywny
-                  nastrój oraz kojarzone są z energią do działania. Zachęcamy do pomocy nam w uczynieniu
-                  tego festiwalu najżółciejszym w Lublinie poprzez założenie na siebie czegoś w
-                  tym kolorze! Koszulka, czapka, bransoletka – wszystko się nada.
+                  nastrój oraz kojarzone są z&nbsp;energią do działania. Zachęcamy do pomocy nam w&nbsp;uczynieniu
+                  tego festiwalu najżółciejszym w&nbsp;Lublinie poprzez założenie na siebie czegoś
+                  w&nbsp;tym kolorze! Koszulka, czapka, bransoletka – wszystko się nada.
                 </p>
                 <p>
-                  Jeśli nie macie w szafie niczego żółtego, nie przejmujcie się – będziecie mogli
-                  zaopatrzyć się w koszulki oraz gadżety Sun Run na miejscu w dniu wydarzenia,
+                  Jeśli nie macie w&nbsp;szafie niczego żółtego, nie przejmujcie się – będziecie mogli
+                  zaopatrzyć się w&nbsp;koszulki oraz gadżety Sun Run na miejscu w&nbsp;dniu wydarzenia,
                   nawet jeśli nie będziecie biegaczami!
                 </p>
               </div>
@@ -800,7 +802,7 @@ export default function Home() {
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
                   Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką
                   paliatywną
-                  ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z chorobami terminalnymi rocznie.
+                  ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z&nbsp;chorobami terminalnymi rocznie.
                   Środki zebrane podczas Sun Run przeznaczamy na specjalistyczny sprzęt medyczny
                   oraz doskonalenie warunków opieki.
                 </p>
@@ -929,7 +931,7 @@ export default function Home() {
           <div className="text-center mb-10 space-y-4">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-[#183153]">
-              Partnerzy i Patroni
+              Partnerzy i&nbsp;Patroni
             </h2>
           </div>
           <div className="rounded-3xl bg-white border border-sr-line shadow-lg p-8 sm:p-10 space-y-10">

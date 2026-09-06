@@ -60,7 +60,7 @@ export function Footer() {
               draggable={false}
             />
             <p className="text-xs leading-relaxed text-sr-sand/80">
-              Bieg charytatywny dla Hospicjum Dobrego Samarytanina w Lublinie.
+              Bieg charytatywny dla Hospicjum Dobrego Samarytanina w&nbsp;Lublinie.
               Inicjatywa lubelskiej młodzieży.
             </p>
             <ShareModal />
@@ -93,7 +93,7 @@ export function Footer() {
               hospicjum.samarytanin.bieg@gmail.com
             </a>
             <p className="text-xs text-sr-sand/80">
-              W sprawie partnerstw skontaktuj się z nami mailowo.
+              W&nbsp;sprawie partnerstw skontaktuj się z&nbsp;nami mailowo.
             </p>
           </div>
 
