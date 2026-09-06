@@ -454,7 +454,7 @@ export default function Home() {
               </span>
             </h1>
 
-            <p className="hidden sm:block sm:flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed">
+            <p className="hidden sm:block sm:flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed text-justify">
               Sun Run to charytatywny festiwal w Parku Ludowym w Lublinie, organizowany na rzecz
               Hospicjum Dobrego Samarytanina. Głównym punktem wydarzenia będzie{" "}
               <span className="font-extrabold">5-kilometrowy bieg o zachodzie słońca</span>, który
