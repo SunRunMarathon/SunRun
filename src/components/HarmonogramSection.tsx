@@ -133,11 +133,11 @@ export function HarmonogramSection() {
       <div className="max-w-[88rem] mx-auto w-full">
         <h2
           id="harmonogram-heading"
-          className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5"
+          className="text-[1.75rem] font-bold uppercase tracking-[0.3em] text-sr-red mb-5 text-center"
         >
           Harmonogram
         </h2>
-        <p className="text-sm sm:text-base text-[#3D4D65] mb-8 max-w-2xl">
+        <p className="text-sm sm:text-base text-[#3D4D65] mb-8 max-w-2xl mx-auto text-center">
           Program sceny głównej i miasteczka festiwalowego Sun Run 2026 - rozwiń każdy blok, żeby zobaczyć szczegółowy plan.
         </p>
 
