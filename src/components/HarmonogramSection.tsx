@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { MapPin } from "lucide-react";
 import {
   Accordion,
@@ -83,10 +84,17 @@ const STOISKA = {
     "Warsztaty szycia",
     "Wystawa ubrań ze stoiska szycia",
     "Stoisko Klubu Szachowego Cebularz Lublin",
-    "Aeroklub Lubelski w\u00A0Radawcu – symulator lotu",
+    "Aeroklub Lubelski w\u00A0Radawcu – symulator lotu oraz szybowiec",
     "Świecący zbijak",
     "Poszukiwanie skarbu",
     "Trener personalny – pokaz podstawowych ćwiczeń",
+    // Nazwa kanału kursywą - pozostałe pozycje to zwykłe stringi, więc ta
+    // jedna jako jedyna potrzebuje JSX (stąd typ pozycje: ReactNode[] niżej).
+    // CAŁOŚĆ w jednym <span>, nie w gołym fragmencie: <li> niżej jest
+    // "flex gap-2" - fragment rozpłaszczyłby tekst i <em> na DWA osobne
+    // dzieci flex, więc gap-2 (8px) doliczałby się do zwykłej spacji w
+    // tekście, dając widocznie szerszy odstęp niż w reszcie listy.
+    <span>Stoisko kanału <em>Naukowy Bełkot</em></span>,
   ],
 };
 
@@ -109,7 +117,7 @@ function WierszePozycji({ blokId, pozycje }: { blokId: string; pozycje: PozycjaH
 // Lista stoisk - bez kolumny z godziną (patrz komentarz przy STOISKA), więc
 // osobny, prostszy renderer niż WierszePozycji zamiast wciskania pustej
 // wartości w kształt danych zrobiony dla harmonogramu z godzinami.
-function ListaStoisk({ pozycje }: { pozycje: string[] }) {
+function ListaStoisk({ pozycje }: { pozycje: ReactNode[] }) {
   return (
     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
       {pozycje.map((nazwa, i) => (
