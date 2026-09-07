@@ -7,6 +7,7 @@ type Referral = {
   created_at: string;
   inviter_name: string;
   inviter_email: string;
+  inviter_start_number: string;
   invited_email: string;
   verified: boolean;
 };
@@ -104,6 +105,7 @@ export function ReferralsDashboard({ password }: { password: string }) {
             <thead>
               <tr className="border-t border-sr-line text-left text-[#3D4D65] uppercase tracking-wider">
                 <th className="px-4 py-2.5 whitespace-nowrap">Zaprosił(a)</th>
+                <th className="px-4 py-2.5 whitespace-nowrap">Numer startowy</th>
                 <th className="px-4 py-2.5 whitespace-nowrap">Zaproszono</th>
                 <th className="px-4 py-2.5 whitespace-nowrap">Weryfikacja</th>
               </tr>
@@ -114,6 +116,9 @@ export function ReferralsDashboard({ password }: { password: string }) {
                   <td className="px-4 py-2.5 whitespace-nowrap">
                     <span className="font-bold text-[#183153]">{r.inviter_name}</span>
                     <span className="block text-[10px] text-[#3D4D65]">{r.inviter_email}</span>
+                  </td>
+                  <td className="px-4 py-2.5 whitespace-nowrap text-[#183153]">
+                    {r.inviter_start_number}
                   </td>
                   <td className="px-4 py-2.5 whitespace-nowrap text-[#183153]">
                     {r.invited_email}
