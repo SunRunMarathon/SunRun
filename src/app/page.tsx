@@ -65,7 +65,12 @@ const MEDIA_PATRONI = [
 
 const SPONSORZY = [
   { name: "Lubella", file: "lubella.png", w: 861, h: 420, url: "https://lubella.pl" },
-  { name: "Uniwersytet Jazdy", file: "uniwersytet-jazdy.png", w: 1481, h: 420, url: "https://uniwersytet-jazdy.pl/" },
+  // Oryginalny plik mial canvas 1481x420, ale samo logo konczylo sie na
+  // x=1274 - dalej bylo ~200px pustej przestrzeni plus losowa kropka-artefakt
+  // w rogu (najwyrazniej z eksportu). Przycieto do realnego bounding-boxa
+  // tresci (1275x383), stad w/h nizej nie pasuja juz do wspolnej wysokosci
+  // 420px reszty sponsorow - to nie pomylka.
+  { name: "Uniwersytet Jazdy", file: "uniwersytet-jazdy.png", w: 1275, h: 383, url: "https://uniwersytet-jazdy.pl/" },
   { name: "Alfa Aluminium", file: "alfa-aluminium.png", w: 770, h: 420, url: "https://alfa-aluminium.com/" },
   // Herb, nie wordmark jak reszta - przy tej samej wysokosci co inni (h-8/h-10)
   // zakrzywiony napis i detale korony gubily sie calkowicie. hClass nadpisuje
@@ -73,8 +78,10 @@ const SPONSORZY = [
   // reszte rzedu, ale zostaje czytelny.
   { name: "Hotel Lwów", file: "hotel-lwow.png", w: 369, h: 420, url: "https://www.hotel-lwow.pl/", hClass: "h-12 sm:h-16" },
   { name: "Pryzmet", file: "pryzmet.png", w: 1320, h: 420, url: "https://pryzmet.pl/" },
-  // Bez url - adres strony jeszcze niepotwierdzony, patrz komentarz przy renderze.
-  { name: "Safespot Ubezpieczenia", file: "safespot.png", w: 1357, h: 420 },
+  // Zrodlowy plik mial canvas 4167x2037 z logo wycentrowanym na malej
+  // powierzchni posrodku - przycieto do bounding-boxa tresci (2809x558),
+  // inaczej przy wspolnej wysokosci h-8/h-10 logo wychodziloby mikroskopijne.
+  { name: "Safespot", file: "safespot.png", w: 2809, h: 558, url: "https://safespot.pl/" },
 ];
 
 export default function Home() {
@@ -256,7 +263,7 @@ export default function Home() {
         <span aria-hidden="true" className="text-sr-red">|</span>
         <span>16:00</span>
         <span aria-hidden="true" className="text-sr-red">|</span>
-        <span>Park Ludowy w Lublinie</span>
+        <span>Park Ludowy w&nbsp;Lublinie</span>
       </div>
 
       {/* Kostka 2x2: zawsze dokladnie dwie kolumny (grid-cols-2, nie auto-fit) -
@@ -283,7 +290,8 @@ export default function Home() {
           i pomoc tym, którzy jej potrzebują.
         </p>
         <p>
-          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
+          <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span>{" "}
+          i&nbsp;razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca,
           nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy
           się, poznajmy nowych ludzi i spędźmy ten dzień razem.
         </p>
@@ -292,16 +300,17 @@ export default function Home() {
       <div className="sm:hidden text-sm text-[#183153] leading-relaxed">
         <div className={festiwalRozwiniety ? "space-y-4" : "space-y-4 line-clamp-6"}>
           <p>
-            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i dobrej energii. Miejsce, gdzie możesz spotkać się z przyjaciółmi, poznać nowych ludzi i wspólnie zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 - wydarzenie charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w Lublinie.
+            Wyobraź sobie wrześniowe popołudnie pełne muzyki, uśmiechu i&nbsp;dobrej energii. Miejsce, gdzie możesz spotkać się z&nbsp;przyjaciółmi, poznać nowych ludzi i&nbsp;wspólnie zrobić coś dobrego. Tak właśnie wyglądać będzie Sun Run 2026 - wydarzenie charytatywne, którego celem jest wsparcie podopiecznych Hospicjum Dobrego Samarytanina w&nbsp;Lublinie.
           </p>
           <p>
-            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci, młodzieży i dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu. Chcemy stworzyć miejsce, w którym radość, spotkania z innymi i pomaganie połączą się w jedno niezapomniane wydarzenie.
+            Na uczestników czekać będzie wyjątkowa atmosfera, muzyka, wiele atrakcji dla dzieci, młodzieży i&nbsp;dorosłych, strefa jedzenia oraz przestrzeń do wspólnego spędzenia czasu. Chcemy stworzyć miejsce, w&nbsp;którym radość, spotkania z&nbsp;innymi i&nbsp;pomaganie połączą się w&nbsp;jedno niezapomniane wydarzenie.
           </p>
           <p>
-            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego - niezależnie od kondycji i doświadczenia. Możesz pobiec, ale możesz również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel i pomoc tym, którzy jej potrzebują.
+            Głównym punktem Sun Run będzie charytatywny bieg na 5 km. To wydarzenie dla każdego - niezależnie od kondycji i&nbsp;doświadczenia. Możesz pobiec, ale możesz również przejść całą trasę własnym tempem. Najważniejsze nie jest miejsce na mecie, ale wspólny cel i&nbsp;pomoc tym, którzy jej potrzebują.
           </p>
           <p>
-            <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span> i razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca, nadziei i solidarności. Zabierz ze sobą rodzinę, przyjaciół i znajomych - spotkajmy się, poznajmy nowych ludzi i spędźmy ten dzień razem.
+            <span className="font-extrabold text-[#CE2F25]">Ubierz się na żółto</span>{" "}
+          i&nbsp;razem sprawmy, aby Park Ludowy rozbłysnął kolorem słońca, nadziei i&nbsp;solidarności. Zabierz ze sobą rodzinę, przyjaciół i&nbsp;znajomych - spotkajmy się, poznajmy nowych ludzi i&nbsp;spędźmy ten dzień razem.
           </p>
         </div>
         {!festiwalRozwiniety && (
@@ -447,13 +456,13 @@ export default function Home() {
               </span>
             </h1>
 
-            <p className="hidden sm:block sm:flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed">
-              Sun Run to charytatywny festiwal w Parku Ludowym w Lublinie, organizowany na rzecz
-              Hospicjum Dobrego Samarytanina. Głównym punktem wydarzenia będzie{" "}
-              <span className="font-extrabold">5-kilometrowy bieg o zachodzie słońca</span>, który
-              możesz pokonać biegiem lub marszem. Załóż coś żółtego i zabierz ze sobą rodzinę,
-              przyjaciół – tych nowych i tych, z którymi dawno nie rozmawiałeś. Spotkajmy się dla
-              Hospicjum!
+            <p className="hidden sm:block sm:flex-1 text-lg sm:text-xl lg:text-2xl text-[#183153] leading-relaxed text-justify">
+              Sun Run to charytatywny festiwal w&nbsp;Parku Ludowym w&nbsp;Lublinie, organizowany na
+              rzecz Hospicjum Dobrego Samarytanina. Głównym punktem wydarzenia będzie{" "}
+              <span className="font-extrabold">5-kilometrowy bieg o&nbsp;zachodzie słońca</span>,
+              który możesz pokonać biegiem lub marszem. Załóż coś żółtego i&nbsp;zabierz ze sobą
+              rodzinę, przyjaciół – tych nowych i&nbsp;tych, z&nbsp;którymi dawno nie rozmawiałeś.
+              Spotkajmy się dla Hospicjum!
             </p>
           </div>
 
@@ -496,7 +505,7 @@ export default function Home() {
                   : "cursor-target cursor-pointer bg-sr-navy text-sr-orange shadow-xl hover:-translate-y-0.5 active:translate-y-0"
               }`}
             >
-              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Skąd o nas usłyszałaś/eś?"}
+              {ankietaOdpowiedziana ? "Dziękujemy za odpowiedź!" : "Skąd o\u00A0nas usłyszałaś/eś?"}
             </button>
           </div>
         </div>
@@ -552,13 +561,13 @@ export default function Home() {
               <div className="space-y-3 text-sm sm:text-base text-sr-yellow leading-relaxed">
                 <p>
                   Motywem przewodnim Sun Run są słoneczniki, których ciepłe barwy budują pozytywny
-                  nastrój oraz kojarzone są z energią do działania. Zachęcamy do pomocy nam w uczynieniu
-                  tego festiwalu najżółciejszym w Lublinie poprzez założenie na siebie czegoś w
-                  tym kolorze! Koszulka, czapka, bransoletka – wszystko się nada.
+                  nastrój oraz kojarzone są z&nbsp;energią do działania. Zachęcamy do pomocy nam w&nbsp;uczynieniu
+                  tego festiwalu najżółciejszym w&nbsp;Lublinie poprzez założenie na siebie czegoś
+                  w&nbsp;tym kolorze! Koszulka, czapka, bransoletka – wszystko się nada.
                 </p>
                 <p>
-                  Jeśli nie macie w szafie niczego żółtego, nie przejmujcie się – będziecie mogli
-                  zaopatrzyć się w koszulki oraz gadżety Sun Run na miejscu w dniu wydarzenia,
+                  Jeśli nie macie w&nbsp;szafie niczego żółtego, nie przejmujcie się – będziecie mogli
+                  zaopatrzyć się w&nbsp;koszulki oraz gadżety Sun Run na miejscu w&nbsp;dniu wydarzenia,
                   nawet jeśli nie będziecie biegaczami!
                 </p>
               </div>
@@ -793,7 +802,7 @@ export default function Home() {
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
                   Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką
                   paliatywną
-                  ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z chorobami terminalnymi rocznie.
+                  ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z&nbsp;chorobami terminalnymi rocznie.
                   Środki zebrane podczas Sun Run przeznaczamy na specjalistyczny sprzęt medyczny
                   oraz doskonalenie warunków opieki.
                 </p>
@@ -922,7 +931,7 @@ export default function Home() {
           <div className="text-center mb-10 space-y-4">
             <span className="text-sm font-bold uppercase tracking-[0.3em] text-sr-red">Wsparcie</span>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-[#183153]">
-              Partnerzy i Patroni
+              Partnerzy i&nbsp;Patroni
             </h2>
           </div>
           <div className="rounded-3xl bg-white border border-sr-line shadow-lg p-8 sm:p-10 space-y-10">
@@ -989,9 +998,15 @@ export default function Home() {
                 Sponsorzy
               </p>
               <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
-                {SPONSORZY.map((p) => {
-                  const logo = (
-                    // eslint-disable-next-line @next/next/no-img-element
+                {SPONSORZY.map((p) => (
+                  <a
+                    key={p.name}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-target block"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={`/partners/${p.file}`}
                       alt={p.name}
@@ -1000,28 +1015,8 @@ export default function Home() {
                       className={`${p.hClass || "h-8 sm:h-10"} w-auto object-contain`}
                       loading="lazy"
                     />
-                  );
-                  // Safespot na razie bez potwierdzonego adresu strony (Wiktor
-                  // ma go dosłać) - logo bez linku zamiast zgadywanego URL-a.
-                  if (!p.url) {
-                    return (
-                      <span key={p.name} className="block">
-                        {logo}
-                      </span>
-                    );
-                  }
-                  return (
-                    <a
-                      key={p.name}
-                      href={p.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="cursor-target block"
-                    >
-                      {logo}
-                    </a>
-                  );
-                })}
+                  </a>
+                ))}
               </div>
             </div>
           </div>

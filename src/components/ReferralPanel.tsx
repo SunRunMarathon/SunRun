@@ -79,7 +79,7 @@ export function ReferralPanel() {
           Zapisany?
         </span>
         <p className="text-sm sm:text-base text-[#183153] font-bold">
-          Zaproś rodzinę i znajomych do wzięcia udziału w biegu Sun Run i otrzymaj nagrodę w dniu biegu!
+          Zaproś rodzinę i&nbsp;znajomych do wzięcia udziału w&nbsp;biegu Sun Run i&nbsp;otrzymaj nagrodę w&nbsp;dniu biegu!
           <br />
           Na tych, którzy zrekrutują największą liczbę biegaczy, czekają nagrody specjalne!
         </p>

@@ -60,12 +60,14 @@ const stworzPrzewinDoSekcji = (sekcjaId) => (e) => {
 
 const przejdzDoGory = stworzPrzewinDoSekcji(null);
 const przejdzDoFestiwalu = stworzPrzewinDoSekcji("o-festiwalu");
+const przejdzDoHarmonogramu = stworzPrzewinDoSekcji("harmonogram");
 const przejdzDoBiegu = stworzPrzewinDoSekcji("o-biegu");
 const przejdzDoPartnerow = stworzPrzewinDoSekcji("partnerzy");
 
 const items = [
   { label: "Strona główna", link: "/", ariaLabel: "Przejdź na stronę główną", onSelect: przejdzDoGory },
   { label: "O Festiwalu", link: "/#o-festiwalu", ariaLabel: "O Festiwalu Sun Run 2026", onSelect: przejdzDoFestiwalu },
+  { label: "Harmonogram", link: "/#harmonogram", ariaLabel: "Harmonogram wydarzeń na scenie Sun Run 2026", onSelect: przejdzDoHarmonogramu },
   { label: "O Biegu", link: "/#o-biegu", ariaLabel: "Szczegóły biegu - dystans, trasa, limit czasu", onSelect: przejdzDoBiegu },
   {
     label: "Zaproś znajomych",

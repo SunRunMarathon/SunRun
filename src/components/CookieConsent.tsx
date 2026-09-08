@@ -95,8 +95,8 @@ export function CookieConsent() {
         >
           <div className="mx-auto max-w-3xl bg-sr-navy text-sr-sand rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <p className="text-xs sm:text-sm leading-relaxed flex-1">
-              Używamy Google Analytics, żeby zrozumieć, skąd przychodzą odwiedzający i jak
-              korzystają ze strony. Włączy się dopiero po Twojej zgodzie. Szczegóły w{" "}
+              Używamy Google Analytics, żeby zrozumieć, skąd przychodzą odwiedzający i&nbsp;jak
+              korzystają ze strony. Włączy się dopiero po Twojej zgodzie. Szczegóły w{" "}
               <Link href="/polityka-prywatnosci" className="underline hover:text-sr-orange">
                 polityce prywatności
               </Link>

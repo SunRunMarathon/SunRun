@@ -8,7 +8,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api/"],
+        // Panel admina NIE jest tu wypisany celowo - to jego jedyna ochrona
+        // (ukryta, nieprzewidywalna sciezka). Wpisanie jej do robots.txt
+        // (pliku publicznie dostepnego dla kazdego) natychmiast zdradziloby
+        // adres kazdemu, kto go otworzy - dokladne przeciwienstwo ukrycia.
+        disallow: ["/api/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

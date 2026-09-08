@@ -15,10 +15,10 @@ const TargetCursor = dynamic(() => import("@/components/TargetCursor"), { ssr: f
 
 const ARTICLES = [
   {
-    title: "Pobiegli i pomogli. Wyjątkowy bieg dla Hospicjum Dobrego Samarytanina w Lublinie",
+    title: "Pobiegli i\u00A0pomogli. Wyjątkowy bieg dla Hospicjum Dobrego Samarytanina w\u00A0Lublinie",
     source: "Kurier Lubelski",
     date: "8 września 2025",
-    excerpt: "Relacja z pierwszej edycji biegu w Parku Ludowym, w którym wzięło udział ponad 350 osób.",
+    excerpt: "Relacja z\u00A0pierwszej edycji biegu w\u00A0Parku Ludowym, w\u00A0którym wzięło udział ponad 350 osób.",
     url: "https://kurierlubelski.pl/pobiegli-i-pomogli-wyjatkowy-bieg-dla-hospicjum-dobrego-samarytanina-w-lublinie/ar/c2p2-27946763",
     // color = kolor PLAMY po lewej krawędzi kafelka, nie tekstu
     color: "#FED46D",
@@ -27,7 +27,7 @@ const ARTICLES = [
     title: "Bieg charytatywny dla Hospicjum Dobrego Samarytanina. Trwają zapisy na Sun Run",
     source: "Lublin24.pl",
     date: "31 lipca 2025",
-    excerpt: "Zapowiedź biegu na 5 km w Parku Ludowym - zebrane środki miały trafić na materace przeciwodleżynowe dla hospicjum.",
+    excerpt: "Zapowiedź biegu na 5 km w\u00A0Parku Ludowym - zebrane środki miały trafić na materace przeciwodleżynowe dla hospicjum.",
     url: "https://lublin24.pl/zapowiedzi-imprez-w-lublinie/bieg-charytatywny-dla-hospicjum-dobrego-samarytanina-trwaja-zapisy-na-sun-run/shZf9LfjNIkGP8rtrwGg",
     color: "#F6941D",
   },
@@ -35,7 +35,7 @@ const ARTICLES = [
     title: "Sun Run 2025 - Bieg Charytatywny",
     source: "Radio Lublin",
     date: "6 września 2025",
-    excerpt: "Zapowiedź wydarzenia w Parku Ludowym - biegowi towarzyszyły festyn, koncert i animacje dla najmłodszych.",
+    excerpt: "Zapowiedź wydarzenia w\u00A0Parku Ludowym - biegowi towarzyszyły festyn, koncert i\u00A0animacje dla najmłodszych.",
     url: "https://radio.lublin.pl/events/sun-run-2025-bieg-charytatywny/",
     color: "#F94C1F",
   },
@@ -43,7 +43,7 @@ const ARTICLES = [
     title: "Sun Run dla Hospicjum Dobrego Samarytanina",
     source: "running.life",
     date: "6 września 2025",
-    excerpt: "Karta wydarzenia w serwisie biegowym - trasa, zapisy i cel charytatywny biegu w Lublinie.",
+    excerpt: "Karta wydarzenia w\u00A0serwisie biegowym - trasa, zapisy i\u00A0cel charytatywny biegu w\u00A0Lublinie.",
     url: "https://running.life/pl/wydarzenie/sun-run-dla-hospicjum-dobrego-samarytanina",
     color: "#183153",
   },

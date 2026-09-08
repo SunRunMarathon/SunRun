@@ -5,18 +5,27 @@ import { trackEvent } from "@/lib/analytics";
 
 const EMPTY_FORM = { name: "", email: "", startNumber: "", invitedEmail: "" };
 
+// "e­‑mail" w opisach ponizej: miekki lacznik U+00AD tuz przed
+// NIEROZDZIELAJACYM lacznikiem U+2011 (wyglada jak zwykly "-", ale
+// przegladarka nigdy nie lamie po nim wiersza). To jedyny mozliwy punkt
+// zlamania w tym slowie - gdy wiersz musi tu pekac, U+00AD pokazuje sie jako
+// widoczny lacznik na koncu pierwszej linii, a U+2011 (tez widoczny) zaczyna
+// druga, czyli "e-" / "-mail" - zgodnie z polska zasada powtarzania
+// lacznika przy zlamaniu wiersza dokladnie w miejscu istniejacego w slowie
+// lacznika (a nie "e-" / "mail", jakby slowo brzmialo "email"). Gdy wiersz
+// sie nie lamie, U+00AD jest niewidoczny i wychodzi zwykle "e-mail".
 const KROKI = [
   {
     tytul: "Podajesz swoje dane",
-    opis: "Twoje imię, e-mail i numer startowy, a także e-mail osoby przez ciebie zaproszonej. E-maile powinny pokrywać się z tymi użytymi do rejestracji w serwisie FRS.",
+    opis: "Twoje imię, e­‑mail i\u00A0numer startowy, a\u00A0także e­‑mail osoby przez ciebie zaproszonej. E­‑maile powinny pokrywać się z\u00A0tymi użytymi do rejestracji w\u00A0serwisie FRS.",
   },
   {
     tytul: "Sprawdzamy zgodność",
-    opis: "Sprawdzimy, czy użytkownik o podanym e-mailu jest w naszej bazie uczestników oraz czy nikt wcześniej nie zadeklarował zaproszenia go.",
+    opis: "Sprawdzimy, czy użytkownik o\u00A0podanym e­‑mailu jest w\u00A0naszej bazie uczestników oraz czy nikt wcześniej nie zadeklarował zaproszenia go.",
   },
   {
     tytul: "Otrzymujesz nagrody",
-    opis: "W dniu biegu otrzymasz nagrody w formie gadżetów - ich rodzaj będzie zależał od twojego miejsca w rankingu zapraszających.",
+    opis: "W\u00A0dniu biegu otrzymasz nagrody w\u00A0formie gadżetów - ich rodzaj będzie zależał od twojego miejsca w\u00A0rankingu zapraszających.",
   },
 ];
 
@@ -79,7 +88,7 @@ export function ReferralGenerator() {
       setForm((f) => ({ ...f, invitedEmail: "" }));
       setSukces(true);
     } catch {
-      setError("Błąd połączenia z serwerem");
+      setError("Błąd połączenia z\u00A0serwerem");
     } finally {
       setSubmitting(false);
     }
@@ -97,7 +106,7 @@ export function ReferralGenerator() {
           </h1>
           <p className="text-base sm:text-lg text-[#3D4D65] leading-relaxed max-w-2xl mx-auto">
             Masz już numer startowy? Dzięki tobie ktoś inny zapisał się na bieg? Znaczy to,
-            że jesteś o krok od otrzymania gadżetów Sun Run! Wypełnij poniższy formularz, a w dniu
+            że jesteś o&nbsp;krok od otrzymania gadżetów Sun Run! Wypełnij poniższy formularz, a&nbsp;w&nbsp;dniu
             biegu będziesz mógł odebrać swój prezent. Dla TOP 10 zapraszających przewidziane są
             specjalne Mystery Boxy Sun Run.
           </p>

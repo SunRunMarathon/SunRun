@@ -13,9 +13,9 @@ import { trackEvent } from "@/lib/analytics";
 // bylo jedna pozycja w tej tablicy - patrz podobne podejscie w survey-options.ts.
 const faqs = [
   {
-    question: "Kiedy i gdzie odbędzie się Sun Run 2026?",
+    question: "Kiedy i\u00A0gdzie odbędzie się Sun Run 2026?",
     answer:
-      "12 września 2026 w Parku Ludowym w Lublinie (al. Józefa Piłsudskiego). Festiwal otwiera się o 16:00, sam bieg startuje o 18:30.",
+      "12 września 2026 w\u00A0Parku Ludowym w\u00A0Lublinie (al. Józefa Piłsudskiego). Festiwal otwiera się o\u00A016:00, sam bieg startuje o\u00A018:30.",
   },
   {
     // Kwoty i daty MUSZĄ się zgadzać co do znaku z osią czasu w sekcji „O biegu"
@@ -24,12 +24,12 @@ const faqs = [
     // trzymane centralnie w src/lib/pricing.ts (TIERS).
     question: "Ile kosztuje udział?",
     answer:
-      "To bieg charytatywny, więc opłata to minimalna wpłata (darowizna), nie sztywna cena biletu - można wpłacić więcej. Minimum wynosi 60 zł przy zapisie do 9 sierpnia 2026, 70 zł do 9 września 2026 i 80 zł w dniu biegu (12 września 2026). Cały dochód trafia do Hospicjum Dobrego Samarytanina.",
+      "To bieg charytatywny, więc opłata to minimalna wpłata (darowizna), nie sztywna cena biletu - można wpłacić więcej. Minimum wynosi 60 zł przy zapisie do 9 sierpnia 2026, 70 zł do 9 września 2026 i\u00A080 zł w\u00A0dniu biegu (12 września 2026). Cały dochód trafia do Hospicjum Dobrego Samarytanina.",
   },
   {
-    question: "Jaki dystans i limit czasu ma bieg?",
+    question: "Jaki dystans i\u00A0limit czasu ma bieg?",
     answer:
-      "5 km w formie 2 pętli po asfaltowych alejkach Parku Ludowego, z limitem czasu 80 minut. Trasa ma atest PZLA (Polski Związek Lekkiej Atletyki).",
+      "5 km w\u00A0formie 2 pętli po asfaltowych alejkach Parku Ludowego, z\u00A0limitem czasu 80 minut. Trasa ma atest PZLA (Polski Związek Lekkiej Atletyki).",
   },
   {
     question: "Kto może wystartować?",
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "Jak wygląda zapis na bieg?",
     answer:
-      "Rejestracja odbywa się w pełni elektronicznie przez system FRS (frslublin.pl) - link do formularza zapisów znajdziesz w przyciskach „Zapisz się” na tej stronie.",
+      "Rejestracja odbywa się w\u00A0pełni elektronicznie przez system FRS (frslublin.pl) - link do formularza zapisów znajdziesz w\u00A0przyciskach „Zapisz się” na tej stronie.",
   },
 ] as const;
 

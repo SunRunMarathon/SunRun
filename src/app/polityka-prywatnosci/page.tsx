@@ -31,7 +31,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
       <>
         <p>
           Administratorami danych osobowych zbieranych przez tę stronę są (współadministrowanie
-          w rozumieniu art. 26 RODO):
+          w&nbsp;rozumieniu art. 26 RODO):
         </p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
@@ -51,8 +51,8 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
           </li>
         </ul>
         <p>
-          Zgodnie z uzgodnieniem między współadministratorami, w sprawach związanych z ochroną
-          danych osobowych (dostęp, sprostowanie, usunięcie i pozostałe prawa opisane w sekcji 7)
+          Zgodnie z&nbsp;uzgodnieniem między współadministratorami, w&nbsp;sprawach związanych z&nbsp;ochroną
+          danych osobowych (dostęp, sprostowanie, usunięcie i&nbsp;pozostałe prawa opisane w&nbsp;sekcji 7)
           napisz na adres:{" "}
           <a href="mailto:miloszzkamm@gmail.com" className="underline hover:text-sr-orange">
             miloszzkamm@gmail.com
@@ -69,44 +69,44 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
         <p>Zbieramy następujące kategorie danych:</p>
         <ul className="list-disc pl-5 space-y-1.5">
           <li>
-            <strong>Odpowiedź w ankiecie „Skąd się o nas dowiedziałeś?"</strong> - wybrana opcja
-            (np. media społecznościowe, od znajomego, z ulotki, telewizja), przy wyborze „media
-            społecznościowe" dodatkowo doprecyzowanie (np. TikTok, Instagram, Facebook), a przy
+            <strong>Odpowiedź w&nbsp;ankiecie „Skąd się o&nbsp;nas dowiedziałeś?"</strong> - wybrana opcja
+            (np. media społecznościowe, od znajomego, z&nbsp;ulotki, telewizja), przy wyborze „media
+            społecznościowe" dodatkowo doprecyzowanie (np. TikTok, Instagram, Facebook), a&nbsp;przy
             wyborze „Inne" na dowolnym poziomie - opcjonalny, dowolny tekst wpisany przez Ciebie.
-            To pole jest wolnym tekstem, więc jeśli sam(a) wpiszesz w nim dane osobowe (np. swoje
-            imię i nazwisko), zostaną one zapisane razem z resztą odpowiedzi.
+            To pole jest wolnym tekstem, więc jeśli sam(a) wpiszesz w&nbsp;nim dane osobowe (np. swoje
+            imię i&nbsp;nazwisko), zostaną one zapisane razem z&nbsp;resztą odpowiedzi.
           </li>
           <li>
             <strong>Adres IP oraz przybliżona lokalizacja</strong> (miasto, region, kraj) ustalona
-            na podstawie adresu IP, a także typ urządzenia - przy wypełnieniu ankiety, ale dopiero
-            po wyrażeniu zgody na analitykę w banerze cookies. Sama odpowiedź w ankiecie zapisuje
+            na podstawie adresu IP, a&nbsp;także typ urządzenia - przy wypełnieniu ankiety, ale dopiero
+            po wyrażeniu zgody na analitykę w&nbsp;banerze cookies. Sama odpowiedź w&nbsp;ankiecie zapisuje
             się niezależnie od tej zgody - patrz punkt wyżej.
           </li>
           <li>
             <strong>Adres IP bez geolokalizacji</strong> - osobno, przy każdym wejściu na stronę
-            główną, ale dopiero po wyrażeniu zgody na analitykę w banerze cookies (ten sam licznik,
-            który liczy też wskaźnik „wejścia / wypełnienia ankiety" w panelu administracyjnym).
+            główną, ale dopiero po wyrażeniu zgody na analitykę w&nbsp;banerze cookies (ten sam licznik,
+            który liczy też wskaźnik „wejścia / wypełnienia ankiety" w&nbsp;panelu administracyjnym).
           </li>
           <li>
             <strong>Sam fakt wejścia na stronę</strong> - bez adresu IP, urządzenia ani żadnego
-            innego identyfikatora - zbierany zawsze, niezależnie od zgody w banerze cookies. To
-            wyłącznie anonimowy licznik odwiedzin (do ilu osób w ogóle dociera strona), który nie
+            innego identyfikatora - zbierany zawsze, niezależnie od zgody w&nbsp;banerze cookies. To
+            wyłącznie anonimowy licznik odwiedzin (do ilu osób w&nbsp;ogóle dociera strona), który nie
             pozwala zidentyfikować żadnej konkretnej osoby ani urządzenia.
           </li>
           <li>
             <strong>Źródło ruchu</strong> - informacja, skąd trafiłeś na stronę: wyszukiwarka
             (np. Google), media społecznościowe (Instagram, Facebook, TikTok), konkretna kampania
-            lub post (parametry UTM w adresie URL) albo wejście bezpośrednie.
+            lub post (parametry UTM w&nbsp;adresie URL) albo wejście bezpośrednie.
           </li>
           <li>
-            <strong>Dane techniczne</strong> - typ przeglądarki i urządzenia (user agent), rodzaj
+            <strong>Dane techniczne</strong> - typ przeglądarki i&nbsp;urządzenia (user agent), rodzaj
             urządzenia (telefon / tablet / komputer), znacznik czasu oraz podstrona, na którą
             trafiłeś (ścieżka wejścia).
           </li>
           <li>
-            <strong>Dane z Google Analytics</strong> (pliki cookie) - wyłącznie po wyrażeniu zgody
-            w banerze cookies: statystyki odwiedzin, czas spędzony na stronie, przewijanie strony,
-            kliknięcia w wybrane elementy, ścieżka nawigacji między podstronami.
+            <strong>Dane z&nbsp;Google Analytics</strong> (pliki cookie) - wyłącznie po wyrażeniu zgody
+            w&nbsp;banerze cookies: statystyki odwiedzin, czas spędzony na stronie, przewijanie strony,
+            kliknięcia w&nbsp;wybrane elementy, ścieżka nawigacji między podstronami.
           </li>
         </ul>
       </>
@@ -116,10 +116,10 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "3. Cel przetwarzania",
     body: (
       <p>
-        Dane wykorzystujemy wyłącznie do celów statystycznych i organizacyjnych: żeby zrozumieć,
-        skąd dowiadują się o nas uczestnicy, ocenić skuteczność promocji (media społecznościowe,
+        Dane wykorzystujemy wyłącznie do celów statystycznych i&nbsp;organizacyjnych: żeby zrozumieć,
+        skąd dowiadują się o&nbsp;nas uczestnicy, ocenić skuteczność promocji (media społecznościowe,
         ulotki, poczta pantoflowa) oraz poprawiać działanie strony. Nie sprzedajemy ani nie
-        udostępniamy tych danych podmiotom trzecim w celach marketingowych.
+        udostępniamy tych danych podmiotom trzecim w&nbsp;celach marketingowych.
       </p>
     ),
   },
@@ -128,20 +128,20 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <ul className="list-disc pl-5 space-y-1.5">
         <li>
-          Art. 6 ust. 1 lit. a) RODO - <strong>zgoda</strong>: dla treści odpowiedzi w ankiecie
+          Art. 6 ust. 1 lit. a) RODO - <strong>zgoda</strong>: dla treści odpowiedzi w&nbsp;ankiecie
           (wyrażana przez wybranie opcji), dla adresu IP/geolokalizacji/urządzenia towarzyszących
-          tej odpowiedzi oraz dla licznika wejść na stronę i plików cookie Google Analytics
-          (wszystkie trzy wyrażane w banerze zgody).
+          tej odpowiedzi oraz dla licznika wejść na stronę i&nbsp;plików cookie Google Analytics
+          (wszystkie trzy wyrażane w&nbsp;banerze zgody).
         </li>
         <li>
           Art. 6 ust. 1 lit. f) RODO - <strong>prawnie uzasadniony interes</strong> administratora:
-          podstawowe logi techniczne (np. adres IP) niezbędne do zabezpieczenia i utrzymania
+          podstawowe logi techniczne (np. adres IP) niezbędne do zabezpieczenia i&nbsp;utrzymania
           strony.
         </li>
         <li>
           <strong>Poza zakresem RODO</strong>: anonimowy licznik samego faktu wejścia na stronę
           (bez IP, urządzenia czy jakiegokolwiek identyfikatora) nie pozwala zidentyfikować żadnej
-          osoby, więc nie stanowi przetwarzania danych osobowych w rozumieniu art. 4 ust. 1 RODO -
+          osoby, więc nie stanowi przetwarzania danych osobowych w&nbsp;rozumieniu art. 4 ust. 1 RODO -
           zbieramy go niezależnie od zgody.
         </li>
       </ul>
@@ -151,10 +151,10 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "5. Jak długo przechowujemy dane",
     body: (
       <p>
-        Dane z ankiety i statystyki wewnętrzne przechowujemy nie dłużej niż 24 miesiące od
-        zakończenia danej edycji Sun Run, po czym są usuwane lub anonimizowane. Dane w Google
-        Analytics przechowywane są zgodnie z ustawieniami retencji Google (domyślnie do 14
-        miesięcy) i podlegają odrębnej polityce prywatności Google.
+        Dane z&nbsp;ankiety i&nbsp;statystyki wewnętrzne przechowujemy nie dłużej niż 24 miesiące od
+        zakończenia danej edycji Sun Run, po czym są usuwane lub anonimizowane. Dane w&nbsp;Google
+        Analytics przechowywane są zgodnie z&nbsp;ustawieniami retencji Google (domyślnie do 14
+        miesięcy) i&nbsp;podlegają odrębnej polityce prywatności Google.
       </p>
     ),
   },
@@ -163,15 +163,15 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <ul className="list-disc pl-5 space-y-1.5">
         <li>
-          Dostawca hostingu i bazy danych: Railway Corporation - przechowuje dane serwisu i bazę
+          Dostawca hostingu i&nbsp;bazy danych: Railway Corporation - przechowuje dane serwisu i&nbsp;bazę
           danych na potrzeby jego działania.
         </li>
         <li>
-          Google Ireland Limited (Google Analytics) - wyłącznie po wyrażeniu zgody w banerze
-          cookies, w celu analizy ruchu na stronie. Google przetwarza dane w infrastrukturze
-          obejmującej serwery poza Europejskim Obszarem Gospodarczym, w tym w USA. Transfer odbywa
+          Google Ireland Limited (Google Analytics) - wyłącznie po wyrażeniu zgody w&nbsp;banerze
+          cookies, w&nbsp;celu analizy ruchu na stronie. Google przetwarza dane w&nbsp;infrastrukturze
+          obejmującej serwery poza Europejskim Obszarem Gospodarczym, w&nbsp;tym w&nbsp;USA. Transfer odbywa
           się na podstawie mechanizmów przewidzianych przez RODO (m.in. ramy Data Privacy
-          Framework UE-USA lub standardowe klauzule umowne Google) - szczegóły w polityce
+          Framework UE-USA lub standardowe klauzule umowne Google) - szczegóły w&nbsp;polityce
           prywatności Google.
         </li>
       </ul>
@@ -181,23 +181,23 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "7. Twoje prawa",
     body: (
       <>
-        <p>Zgodnie z RODO przysługuje Ci prawo do:</p>
+        <p>Zgodnie z&nbsp;RODO przysługuje Ci prawo do:</p>
         <ul className="list-disc pl-5 space-y-1.5">
-          <li>dostępu do swoich danych i uzyskania ich kopii,</li>
+          <li>dostępu do swoich danych i&nbsp;uzyskania ich kopii,</li>
           <li>sprostowania (poprawienia) danych,</li>
           <li>usunięcia danych („prawo do bycia zapomnianym"),</li>
           <li>ograniczenia przetwarzania,</li>
-          <li>przenoszenia danych (otrzymania ich w ustrukturyzowanym, powszechnie używanym formacie),</li>
+          <li>przenoszenia danych (otrzymania ich w&nbsp;ustrukturyzowanym, powszechnie używanym formacie),</li>
           <li>wniesienia sprzeciwu wobec przetwarzania,</li>
           <li>
-            cofnięcia zgody w dowolnym momencie (bez wpływu na zgodność z prawem przetwarzania
-            sprzed cofnięcia) - zgodę na analitykę możesz wycofać jednym kliknięciem w stopce
-            strony („Zarządzaj zgodą"), bez grzebania w ustawieniach przeglądarki,
+            cofnięcia zgody w&nbsp;dowolnym momencie (bez wpływu na zgodność z&nbsp;prawem przetwarzania
+            sprzed cofnięcia) - zgodę na analitykę możesz wycofać jednym kliknięciem w&nbsp;stopce
+            strony („Zarządzaj zgodą"), bez grzebania w&nbsp;ustawieniach przeglądarki,
           </li>
           <li>wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych (UODO).</li>
         </ul>
         <p className="mt-3">
-          Aby skorzystać z tych praw, napisz na{" "}
+          Aby skorzystać z&nbsp;tych praw, napisz na{" "}
           <a href="mailto:miloszzkamm@gmail.com" className="underline hover:text-sr-orange">
             miloszzkamm@gmail.com
           </a>
@@ -211,10 +211,10 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     body: (
       <>
         <p>
-          Strona korzysta z plików cookie Google Analytics wyłącznie po wyrażeniu zgody w banerze
-          wyświetlanym przy pierwszej wizycie. Zgodę możesz w każdej chwili wycofać linkiem
-          „Zarządzaj zgodą" w stopce strony - baner pojawi się ponownie od razu, na tej samej
-          stronie, bez konieczności czyszczenia czegokolwiek w ustawieniach przeglądarki.
+          Strona korzysta z&nbsp;plików cookie Google Analytics wyłącznie po wyrażeniu zgody w&nbsp;banerze
+          wyświetlanym przy pierwszej wizycie. Zgodę możesz w&nbsp;każdej chwili wycofać linkiem
+          „Zarządzaj zgodą" w&nbsp;stopce strony - baner pojawi się ponownie od razu, na tej samej
+          stronie, bez konieczności czyszczenia czegokolwiek w&nbsp;ustawieniach przeglądarki.
         </p>
         <div className="overflow-x-auto mt-3">
           <table className="w-full text-sm border-collapse">
@@ -229,22 +229,22 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
             <tbody className="text-[#3D4D65]">
               <tr className="border-b border-sr-line/60">
                 <td className="py-2 pr-4 font-mono text-xs">_ga</td>
-                <td className="py-2 pr-4">Rozróżnianie unikalnych użytkowników w Google Analytics</td>
+                <td className="py-2 pr-4">Rozróżnianie unikalnych użytkowników w&nbsp;Google Analytics</td>
                 <td className="py-2 pr-4">2 lata</td>
                 <td className="py-2">Google (zewnętrzny), po zgodzie</td>
               </tr>
               <tr className="border-b border-sr-line/60">
                 <td className="py-2 pr-4 font-mono text-xs">_ga_&lt;identyfikator&gt;</td>
-                <td className="py-2 pr-4">Utrzymanie stanu sesji w Google Analytics 4</td>
+                <td className="py-2 pr-4">Utrzymanie stanu sesji w&nbsp;Google Analytics 4</td>
                 <td className="py-2 pr-4">2 lata</td>
                 <td className="py-2">Google (zewnętrzny), po zgodzie</td>
               </tr>
               <tr>
-                <td className="py-2 pr-4 font-mono text-xs">sr_consent_analytics i in.</td>
+                <td className="py-2 pr-4 font-mono text-xs">sr_consent_analytics i&nbsp;in.</td>
                 <td className="py-2 pr-4">
-                  Zapamiętanie Twojego wyboru w banerze zgody oraz techniczne działanie strony
-                  (np. żeby ankieta nie pokazała się drugi raz) - localStorage, nie cookie w
-                  ścisłym sensie
+                  Zapamiętanie Twojego wyboru w&nbsp;banerze zgody oraz techniczne działanie strony
+                  (np. żeby ankieta nie pokazała się drugi raz) - localStorage, nie cookie w&nbsp;ścisłym
+                  sensie
                 </td>
                 <td className="py-2 pr-4">bezterminowo, do wyczyszczenia danych strony</td>
                 <td className="py-2">Ta strona (własne, techniczne)</td>
@@ -259,11 +259,11 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
     title: "9. Zapisy przez zewnętrzny serwis FRS",
     body: (
       <p>
-        Przycisk „Zapisz się" prowadzi do formularza rejestracji w systemie FRS
-        (frslublin.pl) - to osobny serwis, niezależny od tej strony. Dane podane w
-        formularzu zapisów (np. imię, nazwisko, data urodzenia, dane do kontaktu) trafiają
-        bezpośrednio do FRS i podlegają jego własnej polityce prywatności, a nie niniejszemu
-        dokumentowi - nie mamy wglądu w te dane ani kontroli nad ich przetwarzaniem.
+        Przycisk „Zapisz się" prowadzi do formularza rejestracji w&nbsp;systemie FRS
+        (frslublin.pl) - to osobny serwis, niezależny od tej strony. Dane podane
+        w&nbsp;formularzu zapisów (np. imię, nazwisko, data urodzenia, dane do kontaktu) trafiają
+        bezpośrednio do FRS i&nbsp;podlegają jego własnej polityce prywatności, a&nbsp;nie niniejszemu
+        dokumentowi - nie mamy wglądu w&nbsp;te dane ani kontroli nad ich przetwarzaniem.
       </p>
     ),
   },
