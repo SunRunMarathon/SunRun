@@ -10,6 +10,7 @@ import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
 import { FaqSection } from "@/components/FaqSection";
+import { HarmonogramSection } from "@/components/HarmonogramSection";
 import { ReferralPanel } from "@/components/ReferralPanel";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
@@ -72,6 +73,8 @@ const SPONSORZY = [
   // reszte rzedu, ale zostaje czytelny.
   { name: "Hotel Lwów", file: "hotel-lwow.png", w: 369, h: 420, url: "https://www.hotel-lwow.pl/", hClass: "h-12 sm:h-16" },
   { name: "Pryzmet", file: "pryzmet.png", w: 1320, h: 420, url: "https://pryzmet.pl/" },
+  // Bez url - adres strony jeszcze niepotwierdzony, patrz komentarz przy renderze.
+  { name: "Safespot Ubezpieczenia", file: "safespot.png", w: 1357, h: 420 },
 ];
 
 export default function Home() {
@@ -151,8 +154,8 @@ export default function Home() {
   // 1.25rem/20px - dzieli kartę "Dane" od karty "Minimalna wpłata").
   const LUKA_MALA = 20;
 
-  // Licznik "Zapisanych uczestników" - wpisywany ręcznie w /admin (FRS nie ma
-  // publicznego API), strona tylko odczytuje ostatnią wartość.
+  // Licznik "Zapisanych uczestników" - wpisywany ręcznie w panelu admina
+  // (FRS nie ma publicznego API), strona tylko odczytuje ostatnią wartość.
   const [registeredCount, setRegisteredCount] = useState<string | null>(null);
   useEffect(() => {
     fetch("/api/stats")
@@ -596,6 +599,8 @@ export default function Home() {
         <div className="max-w-[88rem] mx-auto w-full">{festiwal}</div>
       </section>
 
+      <HarmonogramSection />
+
       {/* ═══════════════════════════════════════════
           2. STATS DASHBOARD — Mapa + Dane + Licznik
           (wszystkie widoczne naraz na ekranie)
@@ -984,15 +989,9 @@ export default function Home() {
                 Sponsorzy
               </p>
               <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-8">
-                {SPONSORZY.map((p) => (
-                  <a
-                    key={p.name}
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cursor-target block"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                {SPONSORZY.map((p) => {
+                  const logo = (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={`/partners/${p.file}`}
                       alt={p.name}
@@ -1001,8 +1000,28 @@ export default function Home() {
                       className={`${p.hClass || "h-8 sm:h-10"} w-auto object-contain`}
                       loading="lazy"
                     />
-                  </a>
-                ))}
+                  );
+                  // Safespot na razie bez potwierdzonego adresu strony (Wiktor
+                  // ma go dosłać) - logo bez linku zamiast zgadywanego URL-a.
+                  if (!p.url) {
+                    return (
+                      <span key={p.name} className="block">
+                        {logo}
+                      </span>
+                    );
+                  }
+                  return (
+                    <a
+                      key={p.name}
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cursor-target block"
+                    >
+                      {logo}
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
