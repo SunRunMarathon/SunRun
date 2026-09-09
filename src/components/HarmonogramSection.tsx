@@ -83,10 +83,11 @@ const STOISKA = {
     "Warsztaty szycia",
     "Wystawa ubrań ze stoiska szycia",
     "Stoisko Klubu Szachowego Cebularz Lublin",
-    "Aeroklub Lubelski w Radawcu – symulator lotu",
+    "Aeroklub Lubelski w Radawcu – symulator lotu oraz szybowiec",
     "Świecący zbijak",
     "Poszukiwanie skarbu",
     "Trener personalny – pokaz podstawowych ćwiczeń",
+    "Stoisko kanału Naukowy Bełkot",
   ],
 };
 
