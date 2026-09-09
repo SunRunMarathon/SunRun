@@ -804,8 +804,8 @@ export default function Home() {
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
                   Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką
                   paliatywną
-                  ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z&nbsp;chorobami terminalnymi rocznie.
-                  Środki zebrane podczas Sun Run przeznaczamy na specjalistyczny sprzęt medyczny
+                  ok. <strong className="text-[#183153]">800 rodzin </strong> pacjentów z&nbsp;chorobami terminalnymi rocznie.
+                  Środki zebrane podczas Sun Run przeznaczamy na renowację budynku hospicjum
                   oraz doskonalenie warunków opieki.
                 </p>
                 <div className="flex flex-wrap gap-3">
