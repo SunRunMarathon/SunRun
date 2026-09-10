@@ -84,6 +84,7 @@ const SPONSORZY = [
   { name: "Safespot", file: "safespot.png", w: 2809, h: 558, url: "https://safespot.pl/" },
   { name: "Amerpharma", file: "amerpharma.png", w: 977, h: 420, url: "https://amerpharma.com/" },
   { name: "Grela", file: "grela.png", w: 573, h: 420, url: "https://cukierniagrela.pl/" },
+  { name: "Perła", file: "perla.png", w: 420, h: 420, url: "https://perla.pl/" },
 ];
 
 export default function Home() {
