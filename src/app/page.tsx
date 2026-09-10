@@ -83,8 +83,9 @@ const SPONSORZY = [
   // powierzchni posrodku - przycieto do bounding-boxa tresci (2809x558),
   // inaczej przy wspolnej wysokosci h-8/h-10 logo wychodziloby mikroskopijne.
   { name: "Safespot", file: "safespot.png", w: 2809, h: 558, url: "https://safespot.pl/" },
-  { name: "Amerpharma", file: "amerpharma.png", w: 767, h: 420, url: "https://amerpharma.com/" },
+  { name: "Amerpharma", file: "amerpharma.png", w: 977, h: 420, url: "https://amerpharma.com/" },
   { name: "Grela", file: "grela.png", w: 573, h: 420, url: "https://cukierniagrela.pl/" },
+  { name: "Perła", file: "perla.png", w: 420, h: 420, url: "https://perla.pl/" },
 ];
 
 export default function Home() {
@@ -809,8 +810,8 @@ export default function Home() {
                 <p className="text-sm sm:text-base text-[#183153] leading-relaxed">
                   Hospicjum Dobrego Samarytanina w Lublinie (ul. Bernardyńska 11A) otacza opieką
                   paliatywną
-                  ok. <strong className="text-[#183153]">800 rodzin</strong> pacjentów z&nbsp;chorobami terminalnymi rocznie.
-                  Środki zebrane podczas Sun Run przeznaczamy na specjalistyczny sprzęt medyczny
+                  ok. <strong className="text-[#183153]">800 rodzin </strong> pacjentów z&nbsp;chorobami terminalnymi rocznie.
+                  Środki zebrane podczas Sun Run przeznaczamy na renowację budynku hospicjum
                   oraz doskonalenie warunków opieki.
                 </p>
                 <div className="flex flex-wrap gap-3">

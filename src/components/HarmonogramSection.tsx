@@ -30,7 +30,7 @@ const HARMONOGRAM: BlokHarmonogramu[] = [
     zakres: "16:00–18:30",
     pozycje: [
       { godzina: "16:00", punkt: "Otwarcie wydarzenia" },
-      { godzina: "17:00–18:00", punkt: "Koncert" },
+      { godzina: "17:00–18:00", punkt: "Koncert zespołu Milion Limonów" },
       { godzina: "18:00–18:10", punkt: "Belgijka przed biegiem" },
       { godzina: "18:10–18:30", punkt: "Oficjalna rozgrzewka na scenie (LUK Lublin)" },
     ],
@@ -49,7 +49,7 @@ const HARMONOGRAM: BlokHarmonogramu[] = [
     zakres: "19:40–20:30",
     pozycje: [
       { godzina: "19:40–20:00", punkt: "Pokazy taneczne" },
-      { godzina: "20:00–20:30", punkt: "Koncert" },
+      { godzina: "20:00–20:30", punkt: "Koncert Rzędziana Wąsaka" },
     ],
   },
   {
@@ -85,8 +85,6 @@ const STOISKA = {
     "Stoisko Klubu Szachowego Cebularz Lublin",
     "Aeroklub Lubelski w Radawcu – symulator lotu oraz szybowiec",
     "Świecący zbijak",
-    "Poszukiwanie skarbu",
-    "Trener personalny – pokaz podstawowych ćwiczeń",
     "Stoisko kanału Naukowy Bełkot",
   ],
 };
