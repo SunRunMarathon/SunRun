@@ -7,6 +7,7 @@ import ShareModal from "./ShareModal";
 import { resetConsent } from "@/lib/consent";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
+import { OPEN_REGISTRATION_EVENT } from "@/components/RegistrationModal";
 
 /**
  * Wspólna stopka serwisu.
@@ -76,18 +77,29 @@ export function Footer() {
           {/* Nawigacja */}
           <div className="space-y-3">
             <h4 className="text-[13px] font-bold uppercase tracking-widest">Strony</h4>
-            {(POKAZ_PARTNEROW ? [...STRONY, { label: "Partnerzy", href: "/#partnerzy" }] : STRONY).map((l) => (
-              <a
-                key={l.label}
-                href={l.href}
-                target={l.href.startsWith("http") ? "_blank" : undefined}
-                rel={l.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                onClick={l.href.includes("frslublin.pl") ? () => trackSignupClick("footer") : undefined}
-                className="block text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
-              >
-                {l.label}
-              </a>
-            ))}
+            {(POKAZ_PARTNEROW ? [...STRONY, { label: "Partnerzy", href: "/#partnerzy" }] : STRONY).map((l) => {
+              const jestZapisem = l.href.includes("frslublin.pl");
+              return (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  target={!jestZapisem && l.href.startsWith("http") ? "_blank" : undefined}
+                  rel={!jestZapisem && l.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  onClick={
+                    jestZapisem
+                      ? (e) => {
+                          e.preventDefault();
+                          trackSignupClick("footer");
+                          window.dispatchEvent(new Event(OPEN_REGISTRATION_EVENT));
+                        }
+                      : undefined
+                  }
+                  className="block text-sm text-sr-sand/80 hover:text-sr-orange transition-colors"
+                >
+                  {l.label}
+                </a>
+              );
+            })}
           </div>
 
           {/* Kontakt */}

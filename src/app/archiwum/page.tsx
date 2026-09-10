@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { trackSignupClick } from "@/lib/track-interaction";
+import { OPEN_REGISTRATION_EVENT } from "@/components/RegistrationModal";
 
 // gsap w TargetCursor jest bezuzyteczny na dotyku — dynamic + ssr:false, zeby
 // jego JS w ogole nie trafial do bundle'a mobile (patrz src/app/page.tsx).
@@ -343,15 +344,16 @@ export default function ArchiwumPage() {
             <p className="text-sm text-[#183153]">
               II edycja Sun Run 2026 już w drodze. Zapisz się i biegnij z nami!
             </p>
-            <a
-              href="https://frslublin.pl/pl/app/races/sign_up_form/295"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackSignupClick("archiwum")}
+            <button
+              type="button"
+              onClick={() => {
+                trackSignupClick("archiwum");
+                window.dispatchEvent(new Event(OPEN_REGISTRATION_EVENT));
+              }}
               className="cursor-target inline-flex items-center justify-center px-10 py-4 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-sm tracking-widest uppercase transition-all shadow-xl"
             >
               Zapisz się na 2026 →
-            </a>
+            </button>
           </div>
         </section>
       </main>

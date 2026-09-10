@@ -8,6 +8,7 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { ScrollDepthTracker } from "@/components/ScrollDepthTracker";
 import { OutboundLinkTracker } from "@/components/OutboundLinkTracker";
 import { VisitTracker } from "@/components/VisitTracker";
+import { RegistrationModal } from "@/components/RegistrationModal";
 
 /**
  * Montserrat — font tekstowy wg księgi znaku (SemiBold, Bold, ExtraBold, Black
@@ -179,6 +180,7 @@ export default function RootLayout({
         <ScrollDepthTracker />
         <OutboundLinkTracker />
         <VisitTracker />
+        <RegistrationModal />
         <CookieConsent />
       </body>
     </html>

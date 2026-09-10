@@ -7,6 +7,7 @@ import { ShareModal, ShareIcon } from "./ShareModal";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
+import { OPEN_REGISTRATION_EVENT } from "./RegistrationModal";
 
 /**
  * Pozycje menu bocznego.
@@ -20,7 +21,8 @@ import { trackSignupClick, trackSocialClick } from "@/lib/track-interaction";
  * oczywisty.
  *
  * ZAPISZ SIĘ (punkt 10 listy sztabu) wyróżnia się kolorem #F94C1F zamiast
- * granatu i prowadzi wprost do formularza FRS w nowej karcie.
+ * granatu i otwiera popup rejestracji (RegistrationModal) zamiast nawigować
+ * do formularza FRS.
  */
 
 /**
@@ -91,11 +93,14 @@ const items = [
   { label: "O nas", link: "/o-nas", ariaLabel: "O nas - organizatorzy Sun Run" },
   {
     label: "Zapisz się",
-    link: "https://frslublin.pl/pl/app/races/sign_up_form/295",
-    ariaLabel: "Zapisz się na Sun Run 2026 - formularz zapisów FRS",
-    external: true,
+    link: "#",
+    ariaLabel: "Zapisz się na Sun Run 2026",
     color: "#F94C1F",
-    onSelect: () => trackSignupClick("navbar"),
+    onSelect: (e) => {
+      e.preventDefault();
+      trackSignupClick("navbar");
+      window.dispatchEvent(new Event(OPEN_REGISTRATION_EVENT));
+    },
   },
 ];
 

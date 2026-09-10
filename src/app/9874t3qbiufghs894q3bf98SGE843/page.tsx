@@ -7,6 +7,7 @@ import { InteractionDashboard } from "@/components/admin/InteractionDashboard";
 import { VisitsDashboard } from "@/components/admin/VisitsDashboard";
 import { SecurityDashboard } from "@/components/admin/SecurityDashboard";
 import { ReferralsDashboard } from "@/components/admin/ReferralsDashboard";
+import { RegistrationsDashboard } from "@/components/admin/RegistrationsDashboard";
 import { TimelineDashboard } from "@/components/admin/TimelineDashboard";
 import { RegisteredCountEditor } from "@/components/admin/RegisteredCountEditor";
 import { RetentionStatus } from "@/components/admin/RetentionStatus";
@@ -35,7 +36,14 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<
-    "ankieta" | "udostepnienia" | "wizyty" | "klikniecia" | "zaproszenia" | "os-czasu" | "bezpieczenstwo"
+    | "ankieta"
+    | "udostepnienia"
+    | "wizyty"
+    | "klikniecia"
+    | "zaproszenia"
+    | "rejestracje"
+    | "os-czasu"
+    | "bezpieczenstwo"
   >("ankieta");
 
   const [showSecretsForm, setShowSecretsForm] = useState(false);
@@ -353,6 +361,16 @@ export default function AdminPage() {
             Zaproszenia
           </button>
           <button
+            onClick={() => setTab("rejestracje")}
+            className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+              tab === "rejestracje"
+                ? "border-sr-orange text-[#183153]"
+                : "border-transparent text-[#3D4D65] hover:text-[#183153]"
+            }`}
+          >
+            Rejestracje
+          </button>
+          <button
             onClick={() => setTab("os-czasu")}
             className={`px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-b-2 -mb-px ${
               tab === "os-czasu"
@@ -383,6 +401,8 @@ export default function AdminPage() {
         {tab === "klikniecia" && <InteractionDashboard password={token} />}
 
         {tab === "zaproszenia" && <ReferralsDashboard password={token} />}
+
+        {tab === "rejestracje" && <RegistrationsDashboard password={token} />}
 
         {tab === "os-czasu" && <TimelineDashboard password={token} />}
 

@@ -9,6 +9,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { POKAZ_PARTNEROW } from "@/flagi";
 import SurveyPopup, { OPEN_SURVEY_EVENT, ANSWERED_KEY, SURVEY_ANSWERED_EVENT } from "@/components/SurveyPopup";
+import { OPEN_REGISTRATION_EVENT } from "@/components/RegistrationModal";
 import { FaqSection } from "@/components/FaqSection";
 import { HarmonogramSection } from "@/components/HarmonogramSection";
 import { ReferralPanel } from "@/components/ReferralPanel";
@@ -404,15 +405,16 @@ export default function Home() {
           {/* px-6 poniżej sm: przy pełnym px-12 powiększony przycisk wchodził
               na krzyżyk zamykania na telefonach węższych niż 390px (przy 320px
               aż o 30px). Wysokość paska zostaje 1,5×, zwężamy tylko boki. */}
-          <a
-            href="https://frslublin.pl/pl/app/races/sign_up_form/295"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackSignupClick("sticky_bar")}
+          <button
+            type="button"
+            onClick={() => {
+              trackSignupClick("sticky_bar");
+              window.dispatchEvent(new Event(OPEN_REGISTRATION_EVENT));
+            }}
             className="cursor-target inline-flex items-center justify-center px-6 sm:px-12 py-[0.9375rem] bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-[1.3125rem]/[1.875rem] tracking-widest uppercase transition-all duration-200 shadow-lg hover:shadow-sr-orange/30"
           >
             Zapisz się →
-          </a>
+          </button>
           <button
             type="button"
             onClick={() => setCtaDismissed(true)}
@@ -472,11 +474,14 @@ export default function Home() {
               nad nimi (grid-cols-3, wysokość komórek wyrównana automatycznie
               przez grid) zamiast wąskiej kolumny pod logo. */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 w-full pointer-events-auto">
-            <a ref={przyciskZapiszRef} href="https://frslublin.pl/pl/app/races/sign_up_form/295" target="_blank" rel="noopener noreferrer"
-              onClick={() => trackSignupClick("hero")}
+            <button type="button" ref={przyciskZapiszRef}
+              onClick={() => {
+                trackSignupClick("hero");
+                window.dispatchEvent(new Event(OPEN_REGISTRATION_EVENT));
+              }}
               className="cursor-target inline-flex items-center justify-center px-8 py-5 bg-sr-orange hover:bg-sr-orange/90 text-sr-navy font-black rounded-full text-lg tracking-widest uppercase transition-all duration-300 shadow-xl hover:-translate-y-0.5 active:translate-y-0">
               Zapisz się
-            </a>
+            </button>
             <button
               data-track-event="dowiedz_sie_wiecej_click"
               onClick={() => document.getElementById("o-festiwalu")?.scrollIntoView({ behavior: "smooth" })}
