@@ -79,13 +79,10 @@ const SPONSORZY = [
   // reszte rzedu, ale zostaje czytelny.
   { name: "Hotel Lwów", file: "hotel-lwow.png", w: 369, h: 420, url: "https://www.hotel-lwow.pl/", hClass: "h-12 sm:h-16" },
   { name: "Pryzmet", file: "pryzmet.png", w: 1320, h: 420, url: "https://pryzmet.pl/" },
-  // Zrodlowy plik mial canvas 4167x2037 z logo wycentrowanym na malej
-  // powierzchni posrodku - przycieto do bounding-boxa tresci (2809x558),
-  // inaczej przy wspolnej wysokosci h-8/h-10 logo wychodziloby mikroskopijne.
-  { name: "Safespot", file: "safespot.png", w: 2809, h: 558, url: "https://safespot.pl/" },
+  { name: "Safespot", file: "safespot.png", w: 1650, h: 807, url: "https://safespot.pl/" },
   { name: "Amerpharma", file: "amerpharma.png", w: 977, h: 420, url: "https://amerpharma.com/" },
   { name: "Grela", file: "grela.png", w: 573, h: 420, url: "https://cukierniagrela.pl/" },
-  { name: "Perła", file: "perla.png", w: 420, h: 420, url: "https://perla.pl/" },
+  { name: "Perła", file: "perla.jpg", w: 1500, h: 750, url: "https://perla.pl/" },
 ];
 
 export default function Home() {
